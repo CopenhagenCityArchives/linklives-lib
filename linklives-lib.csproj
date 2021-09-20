@@ -2,7 +2,27 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Linklives.Lib</RootNamespace>
+    <RootNamespace>Linklives</RootNamespace>
+    <Authors>Copenhagen City Archives</Authors>
+    <Company>Copenhagen City Archives</Company>
+    <PackageId>LinkLivesLib</PackageId>
+    <Product>LinkLivesLib</Product>
+    <Copyright>Copenhagen City Archives</Copyright>
+    <AssemblyName>LinkLivesLib</AssemblyName>
+    <VersionPrefix>1.0.$([System.Convert]::ToInt32($([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2000/01/01"))).TotalDays))).$([System.Convert]::ToInt32($([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds),2))))</VersionPrefix>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.1.1" />
+    <PackageReference Include="NEST" Version="7.14.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+  <Target Name="CopyPackage" AfterTargets="Pack" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Copy SourceFiles="$(OutDir)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\svn\Repositories\nuget\LinkLivesLib" />
+  </Target>
 
 </Project>
