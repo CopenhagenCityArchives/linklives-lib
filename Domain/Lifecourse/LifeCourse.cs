@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CsvHelper.Configuration.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -10,8 +11,19 @@ namespace Linklives.Domain
         {
             PersonAppearances = new List<BasePA>();
         }
+        [Name("life_course_id")]
         public int Life_course_id { get; set; }
+        [Name("pa_ids")]
+        public string Pa_ids { get; set; }
+        [Name("source_ids")]
+        public string Source_ids { get; set; }
+        [Name("link_ids")]
+        public string Link_ids { get; set; }
+        [Name("n_sources")]
+        public string N_sources { get; set; }
+        [CsvHelper.Configuration.Attributes.Ignore]
         public ICollection<Link> Links { get; set; }
+        [CsvHelper.Configuration.Attributes.Ignore]
         [NotMapped] //Tells entity framework to ignore this property since we are adding it from another source
         public List<BasePA> PersonAppearances { get; set; }
 
