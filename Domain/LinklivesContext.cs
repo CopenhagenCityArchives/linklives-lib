@@ -1,7 +1,6 @@
-﻿using Linklives.Domain;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace linklives_api_dal
+namespace Linklives.Domain
 {
     public class LinklivesContext : DbContext
     {
@@ -26,7 +25,7 @@ namespace linklives_api_dal
             modelBuilder.Entity<Link>(entity =>
             {
                 entity.HasKey(x => x.Key);
-                entity.HasMany(x=> x.Ratings).WithOne(x => x.Link).HasForeignKey(x => x.LinkKey);
+                entity.HasMany(x => x.Ratings).WithOne(x => x.Link).HasForeignKey(x => x.LinkKey);
             });
 
             modelBuilder.Entity<LinkRating>(entity =>
