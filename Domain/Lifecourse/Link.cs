@@ -26,9 +26,10 @@ namespace Linklives.Domain
         public int Source_id2 { get; set; }
         [Ignore]
         public string LifeCourseKey { get; set; }
-        [JsonIgnore]
+        [JsonIgnore] //Ignore when serializing to avoid endless recursion in json
         public virtual LifeCourse LifeCourse { get; set; }
-
+        [Nest.Ignore]
+        public virtual IEnumerable<LinkRating> Ratings { get; set; }
         public override void InitKey()
         {
             Key = $"{Source_id1}-{Pa_id1}_{Source_id2}-{Pa_id2}";
