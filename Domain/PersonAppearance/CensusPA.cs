@@ -12,10 +12,10 @@
         public CensusPA(StandardPA standardPA, int sourceId) : base(standardPA, sourceId)
         {
             Type = SourceType.census;
-            InitFields();
         }
-        private void InitFields()
+        protected override void InitFields()
         {
+            base.InitFields();
             //TODO: Implement census mapping
         }
     }

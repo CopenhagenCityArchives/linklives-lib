@@ -16,10 +16,10 @@ namespace Linklives.Domain
         public BurialPA(StandardPA standardPA, int sourceId) : base(standardPA, sourceId)
         {
             Type = SourceType.burial_protocol;
-            InitFields();
         }
-        private void InitFields()
+        protected override void InitFields()
         {
+            base.InitFields();
             //TODO: Implement burial mapping
         }
     }

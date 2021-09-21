@@ -12,10 +12,10 @@
         public ParishPA(StandardPA standardPA, int sourceId) : base(standardPA, sourceId)
         {
             Type = SourceType.parish_register;
-            InitFields();
         }
-        private void InitFields()
+        protected override void InitFields()
         {
+            base.InitFields();
             //TODO: Implement parish mapping
         }
     }

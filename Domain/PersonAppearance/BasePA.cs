@@ -92,7 +92,7 @@ namespace Linklives.Domain
                     throw new ArgumentOutOfRangeException($"{type.ToString()} is not a suported source type");
             }
         }
-        private void InitFields()
+        protected virtual void InitFields()
         {
             //TODO: Implement general mapping
         }
