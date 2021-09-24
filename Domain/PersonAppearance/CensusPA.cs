@@ -13,9 +13,8 @@
         {
             Type = SourceType.census;
         }
-        protected override void InitFields()
+        protected override void InitSourceSpecificFields()
         {
-            base.InitFields();
             //TODO: Implement census mapping
         }
     }

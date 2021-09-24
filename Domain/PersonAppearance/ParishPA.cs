@@ -13,9 +13,8 @@
         {
             Type = SourceType.parish_register;
         }
-        protected override void InitFields()
+        protected override void InitSourceSpecificFields()
         {
-            base.InitFields();
             //TODO: Implement parish mapping
         }
     }

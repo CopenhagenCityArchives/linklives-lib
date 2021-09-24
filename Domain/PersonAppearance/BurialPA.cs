@@ -17,10 +17,9 @@ namespace Linklives.Domain
         {
             Type = SourceType.burial_protocol;
         }
-        protected override void InitFields()
+        protected override void InitSourceSpecificFields()
         {
-            base.InitFields();
-            //TODO: Implement burial mapping
+            //TODO: Implement census mapping
         }
     }
 }

@@ -79,7 +79,8 @@ namespace Linklives.Domain
             Pa_id = standardPA.Pa_id;
             Source_id = sourceId;
             InitKey();
-            InitFields();
+            InitStandardFields();
+            InitSourceSpecificFields();
         }
         public static BasePA Create(int sourceId, StandardPA standardPA)
         {
@@ -96,7 +97,7 @@ namespace Linklives.Domain
                     throw new ArgumentOutOfRangeException($"{type.ToString()} is not a suported source type");
             }
         }
-        protected virtual void InitFields()
+        private void InitStandardFields()
         {
             Name_searchable = Standard.Name_cl;
             Name_searchable_fz = $"{Standard.Name_cl} {Standard.Name}";
@@ -162,7 +163,9 @@ namespace Linklives.Domain
             Deathyear_display = Deathyear_searchable;
             Source_type_display = null; //To be filled by derived class
             Source_archive_display = null; //To be filled by derived class
+
         }
+        protected abstract void InitSourceSpecificFields();
         public override void InitKey()
         {
             Key = $"{Source_id}-{Pa_id}";
