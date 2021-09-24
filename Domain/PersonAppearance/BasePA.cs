@@ -76,6 +76,7 @@ namespace Linklives.Domain
         }
         public BasePA(StandardPA standardPA, int sourceId)
         {
+            Standard = standardPA;
             Pa_id = standardPA.Pa_id;
             Source_id = sourceId;
             InitKey();
