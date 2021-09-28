@@ -25,10 +25,10 @@ namespace Linklives.Domain
         public string Lastname_searchable_fz { get; set; }
         public string Firstnames_searchable { get; set; }
         public string Firstnames_searchable_fz { get; set; }
-        public int Birthyear_searchable { get; set; }
+        public int? Birthyear_searchable { get; set; }
         public string Birthyear_searchable_fz { get; set; }
         public string Birthplace_searchable { get; set; }
-        public int Sourceyear_searchable { get; set; }
+        public int? Sourceyear_searchable { get; set; }
         public string Sourceyear_searchable_fz { get; set; }
         public string Sourceplace_searchable { get; set; }
         public int? Deathyear_searchable { get; set; }
@@ -40,7 +40,7 @@ namespace Linklives.Domain
         //Sortables
         public string First_names_sortable { get; set; }
         public string Family_names_sortable { get; set; }
-        public int Birthyear_sortable { get; set; }
+        public int? Birthyear_sortable { get; set; }
 
         //Metadata
         public string Pa_entry_permalink_wp4 { get; set; }
@@ -49,7 +49,7 @@ namespace Linklives.Domain
 
         //Display
         public string Name_display { get; set; }
-        public int Birthyear_display { get; set; }
+        public int? Birthyear_display { get; set; }
         public string Role_display { get; set; }
         public string Birthplace_display { get; set; }
         public string Occupation_display { get; set; }
@@ -111,33 +111,33 @@ namespace Linklives.Domain
                 .Concat(Standard.All_patronyms.Split(' '))
                 .Concat(Standard.All_family_names.Split(' '))
                 .Distinct());
-            Firstnames_searchable = Standard.Name_cl.Substring(0, Standard.Name_cl.Length - Lastname_searchable.Length + 1); //+1 to also get the preceding space
+            Firstnames_searchable = string.IsNullOrEmpty(Standard.Name_cl) ? null : Standard.Name_cl.Substring(0, Standard.Name_cl.Length - Lastname_searchable.Length + 1); //+1 to also get the preceding space
             Firstnames_searchable_fz = string.Join(' ', new string[]
                 { Firstnames_searchable }
                 .Concat(Standard.First_names.Split(' '))
                 .Distinct());
-            Birthyear_searchable = Convert.ToInt32(Standard.Birth_year);
-            Birthyear_searchable_fz = string.Join(' ', new int[]
+            Birthyear_searchable = Int32.TryParse(Standard.Birth_year, out var tempBirthyear) ? tempBirthyear : (int?)null;
+            Birthyear_searchable_fz = Birthyear_searchable == null ? null : string.Join(' ', new int[]
                 {
-                    Birthyear_searchable -3,
-                    Birthyear_searchable -2,
-                    Birthyear_searchable -1,
-                    Birthyear_searchable,
-                    Birthyear_searchable +1,
-                    Birthyear_searchable +2,
-                    Birthyear_searchable +3
+                    Birthyear_searchable.Value -3,
+                    Birthyear_searchable.Value -2,
+                    Birthyear_searchable.Value -1,
+                    Birthyear_searchable.Value,
+                    Birthyear_searchable.Value +1,
+                    Birthyear_searchable.Value +2,
+                    Birthyear_searchable.Value +3
                 });
             Birthplace_searchable = string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place });
-            Sourceyear_searchable = Convert.ToInt32(Standard.Event_year);
-            Sourceyear_searchable_fz = string.Join(' ', new int[]
+            Sourceyear_searchable = Int32.TryParse(Standard.Birth_year, out var tempSourceYear) ? tempSourceYear : (int?)null;
+            Sourceyear_searchable_fz = Sourceyear_searchable == null ? null :  string.Join(' ', new int[]
                 {
-                    Sourceyear_searchable -3,
-                    Sourceyear_searchable -2,
-                    Sourceyear_searchable -1,
-                    Sourceyear_searchable,
-                    Sourceyear_searchable +1,
-                    Sourceyear_searchable +2,
-                    Sourceyear_searchable +3
+                    Sourceyear_searchable.Value -3,
+                    Sourceyear_searchable.Value -2,
+                    Sourceyear_searchable.Value -1,
+                    Sourceyear_searchable.Value,
+                    Sourceyear_searchable.Value +1,
+                    Sourceyear_searchable.Value +2,
+                    Sourceyear_searchable.Value +3
                 });
             Sourceplace_searchable = null; //To be filled by derived class
             Deathyear_searchable = null; //To be filled by derived class
@@ -153,7 +153,7 @@ namespace Linklives.Domain
             Last_updated_wp4 = DateTime.Now;
             Pa_entry_permalink_wp4 = ""; //TODO: figure out whats supposed to go in this field
 
-            Name_display = string.Join(' ', Standard.Name_cl.Split(' ').Select(s => s[0].ToString().ToUpper() + s.Substring(1))); //Make first letter of each word uppercase
+            Name_display = (string.IsNullOrEmpty(Standard.Name_cl) || Standard.Name_cl.Length < 2) ? Standard.Name_cl : string.Join(' ', Standard.Name_cl.Split(' ').Select(s => s.Length > 1 ? s[0].ToString().ToUpper() + s.Substring(1) : s.ToUpper() )); //Make first letter of each word uppercase
             Birthyear_display = Birthyear_searchable;
             Role_display = PAStrings.ResourceManager.GetString(Standard.Role.ToLower()) ?? Standard.Role;
             Birthplace_display = Birthplace_searchable;
