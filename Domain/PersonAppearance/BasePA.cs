@@ -55,7 +55,7 @@ namespace Linklives.Domain
         public string Occupation_display { get; set; }
         public string Sourceplace_display { get; set; }
         public string Event_type_display { get; set; }
-        public int Sourceyear_display { get; set; }
+        public int? Sourceyear_display { get; set; }
         public string Event_year_display { get; set; }
         public int? Deathyear_display { get; set; }
         public string Source_type_display { get; set; }
@@ -102,7 +102,7 @@ namespace Linklives.Domain
         {
             Name_searchable = Standard.Name_cl;
             Name_searchable_fz = $"{Standard.Name_cl} {Standard.Name}";
-            Lastname_searchable = Standard.Name_cl.Split(' ').Last();
+            Lastname_searchable = Standard.Name_cl.Trim().Split(' ').Last();
             Lastname_searchable_fz = string.Join(' ', new string[]
                 { Lastname_searchable }
                 .Concat(Standard.Patronyms.Split(' '))
@@ -111,7 +111,7 @@ namespace Linklives.Domain
                 .Concat(Standard.All_patronyms.Split(' '))
                 .Concat(Standard.All_family_names.Split(' '))
                 .Distinct());
-            Firstnames_searchable = string.IsNullOrEmpty(Standard.Name_cl) ? null : Standard.Name_cl.Substring(0, Standard.Name_cl.Length - Lastname_searchable.Length + 1); //+1 to also get the preceding space
+            Firstnames_searchable = (string.IsNullOrEmpty(Standard.Name_cl) || Standard.Name_cl.Length < 2) ? Standard.Name_cl : Standard.Name_cl.Substring(0, Standard.Name_cl.Length - Lastname_searchable.Length + 1); //+1 to also get the preceding space
             Firstnames_searchable_fz = string.Join(' ', new string[]
                 { Firstnames_searchable }
                 .Concat(Standard.First_names.Split(' '))
@@ -160,7 +160,7 @@ namespace Linklives.Domain
             Occupation_display = null; //To be filled by derived class
             Sourceplace_display = null; //To be filled by derived class
             Event_type_display = PAStrings.ResourceManager.GetString(Standard.Event_type.ToLower()) ?? Standard.Event_type;
-            Sourceyear_display = Convert.ToInt32(Standard.Event_year);
+            Sourceyear_display = Sourceyear_searchable;
             Deathyear_display = Deathyear_searchable;
             Source_type_display = null; //To be filled by derived class
             Source_archive_display = null; //To be filled by derived class
