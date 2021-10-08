@@ -35,7 +35,7 @@ namespace Linklives.Domain
                 sb.Append(link.Key);
                 sb.Append("..");
             }
-            sb.ToString(0, sb.Length - 2); //Exclude the extra .. that always gets tagged on the end.
+            Key = sb.ToString(0, sb.Length - 2); //Exclude the extra .. that always gets tagged on the end.
         }
     }
 }
