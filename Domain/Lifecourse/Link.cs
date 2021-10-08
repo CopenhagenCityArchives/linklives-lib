@@ -9,15 +9,15 @@ namespace Linklives.Domain
         [Name("link_id")]
         public int Link_id { get; set; }
         [Name("iteration")]
-        public int Iteration { get; set; }
+        public string Iteration { get; set; }
         [Name("iteration_inner")]
-        public int Iteration_inner { get; set; }
+        public string Iteration_inner { get; set; }
         [Name("method_id")]
-        public int Method_id { get; set; }
+        public string Method_id { get; set; }
         [Name("pa_id1")]
         public int Pa_id1 { get; set; }
         [Name("score")]
-        public double Score { get; set; }
+        public string Score { get; set; }
         [Name("pa_id2")]
         public int Pa_id2 { get; set; }
         [Name("source_id1")]
@@ -26,13 +26,15 @@ namespace Linklives.Domain
         public int Source_id2 { get; set; }
         [Ignore]
         public string LifeCourseKey { get; set; }
+        public string[] PaKeys { get => new string[] { $"{Source_id1}-{Pa_id1}", $"{Source_id2}-{Pa_id2}" }; }
         [JsonIgnore] //Ignore when serializing to avoid endless recursion in json
+        [Nest.Ignore]
         public virtual LifeCourse LifeCourse { get; set; }
         [Nest.Ignore]
         public virtual IEnumerable<LinkRating> Ratings { get; set; }
         public override void InitKey()
         {
-            Key = $"{Source_id1}-{Pa_id1}_{Source_id2}-{Pa_id2}";
+            Key = $"{PaKeys[0]}_{PaKeys[1]}";
         }
     }
 }
