@@ -1,4 +1,5 @@
 ﻿using Elasticsearch.Net;
+using Linklives.Domain;
 using Nest;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -18,18 +19,19 @@ namespace Linklives.DAL
             this.sourceRepository = sourceRepository;
         }
 
-        public dynamic GetById(string id)
+        public BasePA GetById(string id)
         {
-            var searchResponse = client.Get<dynamic>(id, g => g.Index("pas"));
-            dynamic pas = searchResponse.Source["person_appearance"];
-            pas.Add("source", sourceRepository.GetById((int)pas["source_id"]));
+            var searchResponse = client.Get<BasePA>(id, g => g.Index("pas"));
+            //dynamic pas = searchResponse.Source["person_appearance"];
+            //pas.Add("source", sourceRepository.GetById((int)pas["source_id"]));
 
-            return pas;
+            return searchResponse.Source;
         }
 
-        public IEnumerable<dynamic> GetByIds(List<string> Ids)
+        public IEnumerable<BasePA> GetByIds(List<string> Ids)
         {
-            var pasSearchResponse = client.Search<dynamic>(s => s
+            //TODO: Fix this up and tag on the transcribed source before returning
+            var pasSearchResponse = client.Search<BasePA>(s => s
             .Index("pas")
             .From(0)
             .Size(1000)
@@ -40,14 +42,14 @@ namespace Linklives.DAL
                         .Terms(t => t
                             .Field("person_appearance.id")
                             .Terms(Ids))))));
-            var pass = pasSearchResponse.Documents.Select(x => x["person_appearance"]).ToList();
-            var sourceids = pass.Select(p => (int)p["source_id"]).ToList();
-            var sources = sourceRepository.GetByIds(sourceids);
-            foreach (var pas in pass)
-            {
-                pas.Add("source", sources.Single(s => (int)s["source_id"] == (int)pas["source_id"]));
-            }
-            return pass;
+            //var pass = pasSearchResponse.Documents.Select(x => x["person_appearance"]).ToList();
+            //var sourceids = pass.Select(p => (int)p["source_id"]).ToList();
+            //var sources = sourceRepository.GetByIds(sourceids);
+            //foreach (var pas in pass)
+            //{
+            //    pas.Add("source", sources.Single(s => (int)s["source_id"] == (int)pas["source_id"]));
+            //}
+            return pasSearchResponse.Documents;
         }
     }
 }
