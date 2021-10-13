@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using linklives_api_dal;
+using Linklives.Domain;
 
 namespace linklives_api_dal.Migrations
 {
