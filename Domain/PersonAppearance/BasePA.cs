@@ -74,26 +74,27 @@ namespace Linklives.Domain
         {
 
         }
-        public BasePA(StandardPA standardPA, int sourceId)
+        public BasePA(StandardPA standardPA, TranscribedPA transcribedPA, int sourceId)
         {
             Standard = standardPA;
+            Transcribed = transcribedPA;
             Pa_id = standardPA.Pa_id;
             Source_id = sourceId;
             InitKey();
             InitStandardFields();
             InitSourceSpecificFields();
         }
-        public static BasePA Create(int sourceId, StandardPA standardPA)
+        public static BasePA Create(int sourceId, StandardPA standardPA, TranscribedPA transcribedPA)
         {
             var type = Source.GetType(sourceId);
             switch (type)
             {
                 case SourceType.parish_register:
-                    return new ParishPA(standardPA, sourceId);
+                    return new ParishPA(standardPA, transcribedPA, sourceId);
                 case SourceType.census:
-                    return new CensusPA(standardPA, sourceId);
+                    return new CensusPA(standardPA, transcribedPA, sourceId);
                 case SourceType.burial_protocol:
-                    return new BurialPA(standardPA, sourceId);
+                    return new BurialPA(standardPA, transcribedPA, sourceId);
                 default:
                     throw new ArgumentOutOfRangeException($"{type.ToString()} is not a suported source type");
             }

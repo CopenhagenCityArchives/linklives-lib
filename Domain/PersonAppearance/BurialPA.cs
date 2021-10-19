@@ -13,7 +13,7 @@ namespace Linklives.Domain
         {
             
         }
-        public BurialPA(StandardPA standardPA, int sourceId) : base(standardPA, sourceId)
+        public BurialPA(StandardPA standardPA, TranscribedPA transcribedPA, int sourceId) : base(standardPA, transcribedPA, sourceId)
         {
             Type = SourceType.burial_protocol;
         }

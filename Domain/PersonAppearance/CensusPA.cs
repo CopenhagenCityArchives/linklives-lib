@@ -9,7 +9,7 @@
         {
 
         }
-        public CensusPA(StandardPA standardPA, int sourceId) : base(standardPA, sourceId)
+        public CensusPA(StandardPA standardPA, TranscribedPA transcribedPA, int sourceId) : base(standardPA, transcribedPA, sourceId)
         {
             Type = SourceType.census;
         }

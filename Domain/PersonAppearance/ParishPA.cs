@@ -9,7 +9,7 @@
         {
 
         }
-        public ParishPA(StandardPA standardPA, int sourceId) : base(standardPA, sourceId)
+        public ParishPA(StandardPA standardPA, TranscribedPA transcribedPA, int sourceId) : base(standardPA, transcribedPA, sourceId)
         {
             Type = SourceType.parish_register;
         }
