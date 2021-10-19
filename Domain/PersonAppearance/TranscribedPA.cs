@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Linklives.Domain.PersonAppearance
+namespace Linklives.Domain
 {
     public class TranscribedPA : KeyedItem
     {
