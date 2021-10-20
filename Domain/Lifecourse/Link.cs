@@ -7,7 +7,7 @@ namespace Linklives.Domain
     public partial class Link : KeyedItem
     {
         [Name("link_id")]
-        public int Link_id { get; set; }
+        public string Link_id { get; set; }
         [Name("iteration")]
         public string Iteration { get; set; }
         [Name("iteration_inner")]
