@@ -2,6 +2,7 @@
 using Nest;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Linklives.DAL
@@ -17,15 +18,42 @@ namespace Linklives.DAL
 
         public IEnumerable<TranscribedPA> GetBySource(int sourceId)
         {
-            var searchResponse = client.Search<TranscribedPA>(s => s
-                .Index("Transcribed")
+            //TODO: Make the timeout configurable or take it in as a parameter
+            string scrollTimeout = "2m";
+            var initialResponse = client.Search<TranscribedPA>(s => s
+                .Index("transcribed")
                 .From(0)
-                .Size(int.MaxValue)
+                .Size(10000)
                 .Query(q => q
                     .Match(m => m
                         .Field(f => f.Source_id)
-                        .Query(sourceId.ToString()))));
-            return searchResponse.Documents;
+                        .Query(sourceId.ToString())))
+                .Scroll(scrollTimeout));
+
+            var results = new List<TranscribedPA>();
+
+            if (!initialResponse.IsValid || string.IsNullOrEmpty(initialResponse.ScrollId))
+                throw new Exception(initialResponse.ServerError.Error.Reason);
+
+            if (initialResponse.Documents.Any())
+                results.AddRange(initialResponse.Documents);
+
+            string scrollid = initialResponse.ScrollId;
+            bool scrollSetHasData = true;
+            while (scrollSetHasData)
+            {
+                ISearchResponse<TranscribedPA> loopingResponse = client.Scroll<TranscribedPA>(scrollTimeout, scrollid);
+                if (loopingResponse.IsValid)
+                {
+                    results.AddRange(loopingResponse.Documents);
+                    scrollid = loopingResponse.ScrollId;
+                }
+                scrollSetHasData = loopingResponse.Documents.Any();
+            }
+
+            client.ClearScroll(new ClearScrollRequest(scrollid));
+            return results;
+
 
         }
     }
