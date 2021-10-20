@@ -35,7 +35,10 @@ namespace Linklives.DAL
         }
         public void Upsert(IEnumerable<T> entitties)
         {
-            context.Set<T>().BulkMerge(entitties);
+            context.Set<T>().BulkMerge(entitties, options =>
+            {
+                options.IncludeGraph = true;
+            });
         }
 
     }
