@@ -18,6 +18,7 @@ namespace Linklives.DAL
 
         public IEnumerable<TranscribedPA> GetBySource(int sourceId)
         {
+            //TODO: It easily takes a couple of minutes to scroll through all results, can we improve on this?
             //TODO: Make the timeout configurable or take it in as a parameter
             string scrollTimeout = "2m";
             var initialResponse = client.Search<TranscribedPA>(s => s
@@ -53,8 +54,6 @@ namespace Linklives.DAL
 
             client.ClearScroll(new ClearScrollRequest(scrollid));
             return results;
-
-
         }
     }
 }
