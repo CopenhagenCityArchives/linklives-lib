@@ -7,6 +7,6 @@ namespace Linklives.DAL
 {
     public interface ITranscribedPARepository
     {
-        IEnumerable<TranscribedPA> GetBySource(int sourceId);
+        IList<TranscribedPA> GetBySource(int sourceId);
     }
 }

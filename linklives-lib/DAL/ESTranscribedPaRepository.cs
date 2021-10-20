@@ -16,7 +16,7 @@ namespace Linklives.DAL
             this.client = client;
         }
 
-        public IEnumerable<TranscribedPA> GetBySource(int sourceId)
+        public IList<TranscribedPA> GetBySource(int sourceId)
         {
             //TODO: It easily takes a couple of minutes to scroll through all results, can we improve on this?
             //TODO: Make the timeout configurable or take it in as a parameter
