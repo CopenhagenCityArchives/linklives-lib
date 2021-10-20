@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace linklives_api_dal.Migrations
+namespace Linklives.Migrations
 {
     [DbContext(typeof(LinklivesContext))]
     partial class LinklivesContextModelSnapshot : ModelSnapshot
@@ -17,10 +17,25 @@ namespace linklives_api_dal.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.11");
 
+            modelBuilder.Entity("LifeCourseLink", b =>
+                {
+                    b.Property<string>("LifeCoursesKey")
+                        .HasColumnType("Varchar(350)");
+
+                    b.Property<string>("LinksKey")
+                        .HasColumnType("Varchar(350)");
+
+                    b.HasKey("LifeCoursesKey", "LinksKey");
+
+                    b.HasIndex("LinksKey");
+
+                    b.ToTable("LifeCourseLink");
+                });
+
             modelBuilder.Entity("Linklives.Domain.LifeCourse", b =>
                 {
                     b.Property<string>("Key")
-                        .HasColumnType("varchar(767)");
+                        .HasColumnType("Varchar(350)");
 
                     b.Property<int>("Life_course_id")
                         .HasColumnType("int");
@@ -45,16 +60,13 @@ namespace linklives_api_dal.Migrations
             modelBuilder.Entity("Linklives.Domain.Link", b =>
                 {
                     b.Property<string>("Key")
-                        .HasColumnType("varchar(767)");
+                        .HasColumnType("Varchar(350)");
 
                     b.Property<string>("Iteration")
                         .HasColumnType("text");
 
                     b.Property<string>("Iteration_inner")
                         .HasColumnType("text");
-
-                    b.Property<string>("LifeCourseKey")
-                        .HasColumnType("varchar(767)");
 
                     b.Property<int>("Link_id")
                         .HasColumnType("int");
@@ -79,8 +91,6 @@ namespace linklives_api_dal.Migrations
 
                     b.HasKey("Key");
 
-                    b.HasIndex("LifeCourseKey");
-
                     b.ToTable("Links");
                 });
 
@@ -92,7 +102,7 @@ namespace linklives_api_dal.Migrations
 
                     b.Property<string>("LinkKey")
                         .IsRequired()
-                        .HasColumnType("varchar(767)");
+                        .HasColumnType("Varchar(350)");
 
                     b.Property<int>("RatingId")
                         .HasColumnType("int");
@@ -127,13 +137,19 @@ namespace linklives_api_dal.Migrations
                     b.ToTable("RatingOptions");
                 });
 
-            modelBuilder.Entity("Linklives.Domain.Link", b =>
+            modelBuilder.Entity("LifeCourseLink", b =>
                 {
-                    b.HasOne("Linklives.Domain.LifeCourse", "LifeCourse")
-                        .WithMany("Links")
-                        .HasForeignKey("LifeCourseKey");
+                    b.HasOne("Linklives.Domain.LifeCourse", null)
+                        .WithMany()
+                        .HasForeignKey("LifeCoursesKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("LifeCourse");
+                    b.HasOne("Linklives.Domain.Link", null)
+                        .WithMany()
+                        .HasForeignKey("LinksKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Linklives.Domain.LinkRating", b =>
@@ -153,11 +169,6 @@ namespace linklives_api_dal.Migrations
                     b.Navigation("Link");
 
                     b.Navigation("Rating");
-                });
-
-            modelBuilder.Entity("Linklives.Domain.LifeCourse", b =>
-                {
-                    b.Navigation("Links");
                 });
 
             modelBuilder.Entity("Linklives.Domain.Link", b =>

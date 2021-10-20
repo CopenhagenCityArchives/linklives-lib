@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using MySql.EntityFrameworkCore.Metadata;
 
-namespace linklives_api_dal.Migrations
+namespace Linklives.Migrations
 {
     public partial class initialcreate : Migration
     {
@@ -11,12 +11,36 @@ namespace linklives_api_dal.Migrations
                 name: "LifeCourses",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "varchar(767)", nullable: false),
-                    Life_course_id = table.Column<int>(type: "int", nullable: false)
+                    Key = table.Column<string>(type: "Varchar(350)", nullable: false),
+                    Life_course_id = table.Column<int>(type: "int", nullable: false),
+                    Pa_ids = table.Column<string>(type: "text", nullable: true),
+                    Source_ids = table.Column<string>(type: "text", nullable: true),
+                    Link_ids = table.Column<string>(type: "text", nullable: true),
+                    N_sources = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LifeCourses", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Links",
+                columns: table => new
+                {
+                    Key = table.Column<string>(type: "Varchar(350)", nullable: false),
+                    Link_id = table.Column<int>(type: "int", nullable: false),
+                    Iteration = table.Column<string>(type: "text", nullable: true),
+                    Iteration_inner = table.Column<string>(type: "text", nullable: true),
+                    Method_id = table.Column<string>(type: "text", nullable: true),
+                    Pa_id1 = table.Column<int>(type: "int", nullable: false),
+                    Score = table.Column<string>(type: "text", nullable: true),
+                    Pa_id2 = table.Column<int>(type: "int", nullable: false),
+                    Source_id1 = table.Column<int>(type: "int", nullable: false),
+                    Source_id2 = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Links", x => x.Key);
                 });
 
             migrationBuilder.CreateTable(
@@ -34,33 +58,27 @@ namespace linklives_api_dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Links",
+                name: "LifeCourseLink",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "varchar(767)", nullable: false),
-                    Link_id = table.Column<int>(type: "int", nullable: false),
-                    Iteration = table.Column<int>(type: "int", nullable: false),
-                    Iteration_inner = table.Column<int>(type: "int", nullable: false),
-                    Method_id = table.Column<int>(type: "int", nullable: false),
-                    Pa_id1 = table.Column<int>(type: "int", nullable: false),
-                    Score = table.Column<double>(type: "double", nullable: false),
-                    Pa_id2 = table.Column<int>(type: "int", nullable: false),
-                    Source_id1 = table.Column<int>(type: "int", nullable: false),
-                    Source_id2 = table.Column<int>(type: "int", nullable: false),
-                    Method_type = table.Column<string>(type: "text", nullable: true),
-                    Method_subtype1 = table.Column<string>(type: "text", nullable: true),
-                    Method_description = table.Column<string>(type: "text", nullable: true),
-                    LifeCourseKey = table.Column<string>(type: "varchar(767)", nullable: true)
+                    LifeCoursesKey = table.Column<string>(type: "Varchar(350)", nullable: false),
+                    LinksKey = table.Column<string>(type: "Varchar(350)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Links", x => x.Key);
+                    table.PrimaryKey("PK_LifeCourseLink", x => new { x.LifeCoursesKey, x.LinksKey });
                     table.ForeignKey(
-                        name: "FK_Links_LifeCourses_LifeCourseKey",
-                        column: x => x.LifeCourseKey,
+                        name: "FK_LifeCourseLink_LifeCourses_LifeCoursesKey",
+                        column: x => x.LifeCoursesKey,
                         principalTable: "LifeCourses",
                         principalColumn: "Key",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LifeCourseLink_Links_LinksKey",
+                        column: x => x.LinksKey,
+                        principalTable: "Links",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,9 +87,9 @@ namespace linklives_api_dal.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    User = table.Column<string>(type: "text", nullable: false),
                     RatingId = table.Column<int>(type: "int", nullable: false),
-                    LinkKey = table.Column<string>(type: "varchar(767)", nullable: false),
-                    User = table.Column<string>(type: "text", nullable: false)
+                    LinkKey = table.Column<string>(type: "Varchar(350)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,6 +109,11 @@ namespace linklives_api_dal.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_LifeCourseLink_LinksKey",
+                table: "LifeCourseLink",
+                column: "LinksKey");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LinkRatings_LinkKey",
                 table: "LinkRatings",
                 column: "LinkKey");
@@ -99,26 +122,24 @@ namespace linklives_api_dal.Migrations
                 name: "IX_LinkRatings_RatingId",
                 table: "LinkRatings",
                 column: "RatingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Links_LifeCourseKey",
-                table: "Links",
-                column: "LifeCourseKey");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "LifeCourseLink");
+
+            migrationBuilder.DropTable(
                 name: "LinkRatings");
+
+            migrationBuilder.DropTable(
+                name: "LifeCourses");
 
             migrationBuilder.DropTable(
                 name: "Links");
 
             migrationBuilder.DropTable(
                 name: "RatingOptions");
-
-            migrationBuilder.DropTable(
-                name: "LifeCourses");
         }
     }
 }

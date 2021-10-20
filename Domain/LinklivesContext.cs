@@ -19,7 +19,7 @@ namespace Linklives.Domain
             modelBuilder.Entity<LifeCourse>(entity =>
             {
                 entity.HasKey(x => x.Key);
-                entity.HasMany(x => x.Links).WithOne(x => x.LifeCourse).HasForeignKey(x => x.LifeCourseKey);
+                entity.HasMany(x => x.Links).WithMany(x => x.LifeCourses);
             });
 
             modelBuilder.Entity<Link>(entity =>

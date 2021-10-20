@@ -24,14 +24,12 @@ namespace Linklives.Domain
         public int Source_id1 { get; set; }
         [Name("source_id2")]
         public int Source_id2 { get; set; }
-        [Ignore]
-        public string LifeCourseKey { get; set; }
         public string[] PaKeys { get => new string[] { $"{Source_id1}-{Pa_id1}", $"{Source_id2}-{Pa_id2}" }; }
         [JsonIgnore] //Ignore when serializing to avoid endless recursion in json
         [Nest.Ignore]
-        public virtual LifeCourse LifeCourse { get; set; }
+        public virtual ICollection<LifeCourse> LifeCourses { get; set; }
         [Nest.Ignore]
-        public virtual IEnumerable<LinkRating> Ratings { get; set; }
+        public virtual ICollection<LinkRating> Ratings { get; set; }
         public override void InitKey()
         {
             Key = $"{PaKeys[0]}_{PaKeys[1]}";

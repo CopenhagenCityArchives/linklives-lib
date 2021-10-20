@@ -39,6 +39,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
   <Target Name="CopyPackage" AfterTargets="Pack" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Copy SourceFiles="$(OutDir)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\svn\Repositories\nuget\LinkLivesLib" />
   </Target>
