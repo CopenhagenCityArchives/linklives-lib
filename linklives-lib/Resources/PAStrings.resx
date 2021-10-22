@@ -117,49 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="andet" xml:space="preserve">
-    <value>Andet</value>
+  <data name="arrival" xml:space="preserve">
+    <value>Ankomst</value>
   </data>
-  <data name="barn" xml:space="preserve">
-    <value>Barn</value>
+  <data name="arrived" xml:space="preserve">
+    <value>Ankommet</value>
+  </data>
+  <data name="babtism" xml:space="preserve">
+    <value>Dåb</value>
+  </data>
+  <data name="baptism" xml:space="preserve">
+    <value>Dåb</value>
+  </data>
+  <data name="baptized" xml:space="preserve">
+    <value>Dåbsbarn</value>
+  </data>
+  <data name="burial" xml:space="preserve">
+    <value>Begravelse</value>
+  </data>
+  <data name="burial_protocol" xml:space="preserve">
+    <value>Begravelsesprotokol</value>
+  </data>
+  <data name="census" xml:space="preserve">
+    <value>Folketælling</value>
+  </data>
+  <data name="confirmant" xml:space="preserve">
+    <value>Konfirmand</value>
+  </data>
+  <data name="confirmation" xml:space="preserve">
+    <value>Konfirmation</value>
   </data>
   <data name="deceased" xml:space="preserve">
-    <value>Afdød</value>
+    <value>Afdøde</value>
+  </data>
+  <data name="departure" xml:space="preserve">
+    <value>Afrejse</value>
+  </data>
+  <data name="departured" xml:space="preserve">
+    <value>Afrejst</value>
+  </data>
+  <data name="f" xml:space="preserve">
+    <value>Kvinde</value>
   </data>
   <data name="father" xml:space="preserve">
     <value>Far</value>
   </data>
-  <data name="fatherinlaw" xml:space="preserve">
-    <value>Svigerfar</value>
+  <data name="groom" xml:space="preserve">
+    <value>Brudgom</value>
   </data>
-  <data name="hans barn" xml:space="preserve">
-    <value>Hans barn</value>
+  <data name="m" xml:space="preserve">
+    <value>Mand</value>
   </data>
-  <data name="hendes barn" xml:space="preserve">
-    <value>Hendes barn</value>
-  </data>
-  <data name="husfader" xml:space="preserve">
-    <value>Husfader</value>
-  </data>
-  <data name="husmoder" xml:space="preserve">
-    <value>Husmoder</value>
-  </data>
-  <data name="kone" xml:space="preserve">
-    <value>Hustru</value>
+  <data name="marriage" xml:space="preserve">
+    <value>Vielse</value>
   </data>
   <data name="mother" xml:space="preserve">
     <value>Mor</value>
   </data>
-  <data name="motherinlaw" xml:space="preserve">
-    <value>Svigermor</value>
-  </data>
   <data name="spouse" xml:space="preserve">
     <value>Ægtefælle</value>
-  </data>
-  <data name="tjeneste" xml:space="preserve">
-    <value>Tjeneste</value>
-  </data>
-  <data name="unknown" xml:space="preserve">
-    <value>Ukendt</value>
   </data>
 </root>

@@ -61,29 +61,128 @@ namespace Linklives.Domain {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Andet.
+        ///   Looks up a localized string similar to Ankomst.
         /// </summary>
-        public static string andet {
+        public static string arrival {
             get {
-                return ResourceManager.GetString("andet", resourceCulture);
+                return ResourceManager.GetString("arrival", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Barn.
+        ///   Looks up a localized string similar to Ankommet.
         /// </summary>
-        public static string barn {
+        public static string arrived {
             get {
-                return ResourceManager.GetString("barn", resourceCulture);
+                return ResourceManager.GetString("arrived", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Afdød.
+        ///   Looks up a localized string similar to Dåb.
+        /// </summary>
+        public static string babtism {
+            get {
+                return ResourceManager.GetString("babtism", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dåb.
+        /// </summary>
+        public static string baptism {
+            get {
+                return ResourceManager.GetString("baptism", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dåbsbarn.
+        /// </summary>
+        public static string baptized {
+            get {
+                return ResourceManager.GetString("baptized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begravelse.
+        /// </summary>
+        public static string burial {
+            get {
+                return ResourceManager.GetString("burial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begravelsesprotokol.
+        /// </summary>
+        public static string burial_protocol {
+            get {
+                return ResourceManager.GetString("burial_protocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folketælling.
+        /// </summary>
+        public static string census {
+            get {
+                return ResourceManager.GetString("census", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Konfirmand.
+        /// </summary>
+        public static string confirmant {
+            get {
+                return ResourceManager.GetString("confirmant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Konfirmation.
+        /// </summary>
+        public static string confirmation {
+            get {
+                return ResourceManager.GetString("confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Afdøde.
         /// </summary>
         public static string deceased {
             get {
                 return ResourceManager.GetString("deceased", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Afrejse.
+        /// </summary>
+        public static string departure {
+            get {
+                return ResourceManager.GetString("departure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Afrejst.
+        /// </summary>
+        public static string departured {
+            get {
+                return ResourceManager.GetString("departured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kvinde.
+        /// </summary>
+        public static string f {
+            get {
+                return ResourceManager.GetString("f", resourceCulture);
             }
         }
         
@@ -97,56 +196,29 @@ namespace Linklives.Domain {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Svigerfar.
+        ///   Looks up a localized string similar to Brudgom.
         /// </summary>
-        public static string fatherinlaw {
+        public static string groom {
             get {
-                return ResourceManager.GetString("fatherinlaw", resourceCulture);
+                return ResourceManager.GetString("groom", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hans barn.
+        ///   Looks up a localized string similar to Mand.
         /// </summary>
-        public static string hans_barn {
+        public static string m {
             get {
-                return ResourceManager.GetString("hans barn", resourceCulture);
+                return ResourceManager.GetString("m", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hendes barn.
+        ///   Looks up a localized string similar to Vielse.
         /// </summary>
-        public static string hendes_barn {
+        public static string marriage {
             get {
-                return ResourceManager.GetString("hendes barn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Husfader.
-        /// </summary>
-        public static string husfader {
-            get {
-                return ResourceManager.GetString("husfader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Husmoder.
-        /// </summary>
-        public static string husmoder {
-            get {
-                return ResourceManager.GetString("husmoder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hustru.
-        /// </summary>
-        public static string kone {
-            get {
-                return ResourceManager.GetString("kone", resourceCulture);
+                return ResourceManager.GetString("marriage", resourceCulture);
             }
         }
         
@@ -160,38 +232,11 @@ namespace Linklives.Domain {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Svigermor.
-        /// </summary>
-        public static string motherinlaw {
-            get {
-                return ResourceManager.GetString("motherinlaw", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Ægtefælle.
         /// </summary>
         public static string spouse {
             get {
                 return ResourceManager.GetString("spouse", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tjeneste.
-        /// </summary>
-        public static string tjeneste {
-            get {
-                return ResourceManager.GetString("tjeneste", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ukendt.
-        /// </summary>
-        public static string unknown {
-            get {
-                return ResourceManager.GetString("unknown", resourceCulture);
             }
         }
     }
