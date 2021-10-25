@@ -140,7 +140,9 @@ namespace Linklives.Domain
                     Sourceyear_searchable.Value +2,
                     Sourceyear_searchable.Value +3
                 });
-            Sourceplace_searchable = null; //To be filled by derived class
+            Sourceplace_searchable = string.Join(' ', new string[]
+                { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }
+                .Distinct());
             Deathyear_searchable = null; //To be filled by derived class
             Deathyear_searchable_fz = null; //To be filled by derived class
             Gender_searchable = string.IsNullOrEmpty(Standard.Sex) ? "u" : Standard.Sex;
@@ -157,7 +159,7 @@ namespace Linklives.Domain
             Name_display = (string.IsNullOrEmpty(Standard.Name_cl) || Standard.Name_cl.Length < 2) ? Standard.Name_cl : string.Join(' ', Standard.Name_cl.Split(' ').Select(s => s.Length > 1 ? s[0].ToString().ToUpper() + s.Substring(1) : s.ToUpper() )); //Make first letter of each word uppercase
             Birthyear_display = Birthyear_searchable;
             Role_display = PAStrings.ResourceManager.GetString(Standard.Role.ToLower()) ?? Standard.Role;
-            Birthplace_display = Birthplace_searchable;
+            Birthplace_display =  string.Join(',', new string[] { Standard.Birth_place, Standard.Birth_location, string.IsNullOrEmpty(Standard.Birth_parish) ? null : Standard.Birth_parish + " sogn", Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place });
             Occupation_display = null; //To be filled by derived class
             Sourceplace_display = null; //To be filled by derived class
             Event_type_display = PAStrings.ResourceManager.GetString(Standard.Event_type.ToLower()) ?? Standard.Event_type;
