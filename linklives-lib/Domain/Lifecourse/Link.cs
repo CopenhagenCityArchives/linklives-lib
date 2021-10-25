@@ -32,7 +32,7 @@ namespace Linklives.Domain
         public virtual ICollection<LinkRating> Ratings { get; set; }
         public override void InitKey()
         {
-            Key = $"{PaKeys[0]}_{PaKeys[1]}";
+            Key = $"{PaKeys[0]}_{PaKeys[1]}_{Method_id}";
         }
     }
 }
