@@ -69,7 +69,7 @@ namespace Linklives.Domain
         /// The raw transcribed Person Appearance data
         /// </summary>
         [Nest.Ignore] //Tells nest to ignore the property when indexing but still lets us include it when serializing to json
-        public dynamic Transcribed { get; set; }
+        public TranscribedPA Transcribed { get; set; }
         public BasePA()
         {
 

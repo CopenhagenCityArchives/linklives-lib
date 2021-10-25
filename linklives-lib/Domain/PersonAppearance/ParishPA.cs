@@ -19,11 +19,11 @@ namespace Linklives.Domain
         {
             if (string.IsNullOrEmpty(Birthplace_searchable))
             {
-                Birthplace_searchable = string.Join(' ', new string[] { Transcribed.BirthPlace, Transcribed.BirthParish, Transcribed.BirthMunicilality, Transcribed.BirthState });
+                Birthplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace, Transcribed.Transcription.BirthParish, Transcribed.Transcription.BirthMunicilality, Transcribed.Transcription.BirthState });
             }
             if (string.IsNullOrEmpty(Sourceplace_searchable))
             {
-                Sourceplace_searchable = string.Join(' ', new string[] { Transcribed.Browselevel, Transcribed.Browselevel1 });
+                Sourceplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.Browselevel, Transcribed.Transcription.Browselevel1 });
             }
             if (Standard.Event_type == "burial")
             {
@@ -42,10 +42,10 @@ namespace Linklives.Domain
             }
             if (string.IsNullOrEmpty(Birthplace_display))
             {
-                Birthplace_searchable = string.Join(',', new string[] { Transcribed.BirthPlace, string.IsNullOrEmpty(Transcribed.BirthParish) ? null : Transcribed.BirthParish + " sogn", Transcribed.BirthMunicipality, Transcribed.BirthState });
+                Birthplace_searchable = string.Join(',', new string[] { Transcribed.Transcription.BirthPlace, string.IsNullOrEmpty(Transcribed.Transcription.BirthParish) ? null : Transcribed.Transcription.BirthParish + " sogn", Transcribed.Transcription.BirthMunicipality, Transcribed.Transcription.BirthState });
             }
-            Sourceplace_display = string.Join(',', new string[] { Transcribed.Browselevel1, Transcribed.Browselevel });
-            Sourceyear_display = Transcribed.Browselevel2;
+            Sourceplace_display = string.Join(',', new string[] { Transcribed.Transcription.Browselevel1, Transcribed.Transcription.Browselevel });
+            Sourceyear_display = Transcribed.Transcription.Browselevel2;
             Event_year_display = Standard.Event_year;
             Deathyear_display = Deathyear_searchable;
             Source_type_display = "Kirkebog";
