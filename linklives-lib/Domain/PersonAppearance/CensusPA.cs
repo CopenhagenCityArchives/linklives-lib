@@ -19,9 +19,9 @@ namespace Linklives.Domain
         {
             if (string.IsNullOrEmpty(Sourceplace_searchable))
             {
-                Sourceplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.Sogn, Transcribed.Transcription.Herred, Transcribed.Transcription.Amt });
+                Sourceplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription["Sogn"], Transcribed.Transcription["Herred"], Transcribed.Transcription["Amt"] });
             }
-            Occupation_searchable = Transcribed.Transcription.Stilling_i_husstanden;
+            Occupation_searchable = Transcribed.Transcription["Stilling_i_husstanden"];
             Role_display = Standard.Household_position;
             Occupation_display = Occupation_searchable;
             Sourceplace_display = Sourceplace_searchable.Replace(' ', ',');
