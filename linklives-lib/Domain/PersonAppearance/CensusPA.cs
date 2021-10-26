@@ -11,7 +11,7 @@ namespace Linklives.Domain
         {
 
         }
-        public CensusPA(StandardPA standardPA, TranscribedPA transcribedPA, int sourceId) : base(standardPA, transcribedPA, sourceId)
+        public CensusPA(StandardPA standardPA, TranscribedPA transcribedPA, Source source) : base(standardPA, transcribedPA, source)
         {
             Type = SourceType.census;
         }

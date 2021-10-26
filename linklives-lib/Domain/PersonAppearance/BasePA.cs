@@ -70,33 +70,34 @@ namespace Linklives.Domain
         /// </summary>
         [Nest.Ignore] //Tells nest to ignore the property when indexing but still lets us include it when serializing to json
         public TranscribedPA Transcribed { get; set; }
+        [Nest.Ignore]
+        public Source Source { get; set; }
         public BasePA()
         {
 
         }
-        public BasePA(StandardPA standardPA, TranscribedPA transcribedPA, int sourceId)
+        public BasePA(StandardPA standardPA, TranscribedPA transcribedPA, Source source)
         {
             Standard = standardPA;
             Transcribed = transcribedPA;
             Pa_id = standardPA.Pa_id;
-            Source_id = sourceId;
+            Source_id = source.Source_id;
             InitKey();
             InitStandardFields();
             InitSourceSpecificFields();
         }
-        public static BasePA Create(int sourceId, StandardPA standardPA, TranscribedPA transcribedPA)
+        public static BasePA Create(Source source, StandardPA standardPA, TranscribedPA transcribedPA)
         {
-            var type = Source.GetType(sourceId);
-            switch (type)
+            switch (source.Type)
             {
                 case SourceType.parish_register:
-                    return new ParishPA(standardPA, transcribedPA, sourceId);
+                    return new ParishPA(standardPA, transcribedPA, source);
                 case SourceType.census:
-                    return new CensusPA(standardPA, transcribedPA, sourceId);
+                    return new CensusPA(standardPA, transcribedPA, source);
                 case SourceType.burial_protocol:
-                    return new BurialPA(standardPA, transcribedPA, sourceId);
+                    return new BurialPA(standardPA, transcribedPA, source);
                 default:
-                    throw new ArgumentOutOfRangeException($"{type.ToString()} is not a suported source type");
+                    throw new ArgumentOutOfRangeException($"{source.Type.ToString()} is not a suported source type");
             }
         }
         private void InitStandardFields()
@@ -111,12 +112,12 @@ namespace Linklives.Domain
                 .Concat(Standard.Maiden_names.Split(' '))
                 .Concat(Standard.All_patronyms.Split(' '))
                 .Concat(Standard.All_family_names.Split(' '))
-                .Distinct());
+                .Distinct()).Trim();
             Firstnames_searchable = (string.IsNullOrEmpty(Standard.Name_cl) || Standard.Name_cl.Length < 2) ? Standard.Name_cl : Standard.Name_cl.Substring(0, Standard.Name_cl.Length - Lastname_searchable.Length + 1); //+1 to also get the preceding space
             Firstnames_searchable_fz = string.Join(' ', new string[]
                 { Firstnames_searchable }
                 .Concat(Standard.First_names.Split(' '))
-                .Distinct());
+                .Distinct()).Trim();
             Birthyear_searchable = Int32.TryParse(Standard.Birth_year, out var tempBirthyear) ? tempBirthyear : (int?)null;
             Birthyear_searchable_fz = Birthyear_searchable == null ? null : string.Join(' ', new int[]
                 {
@@ -128,7 +129,7 @@ namespace Linklives.Domain
                     Birthyear_searchable.Value +2,
                     Birthyear_searchable.Value +3
                 });
-            Birthplace_searchable = string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place });
+            Birthplace_searchable = string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim();
             Sourceyear_searchable = Int32.TryParse(Standard.Birth_year, out var tempSourceYear) ? tempSourceYear : (int?)null;
             Sourceyear_searchable_fz = Sourceyear_searchable == null ? null :  string.Join(' ', new int[]
                 {
@@ -142,7 +143,7 @@ namespace Linklives.Domain
                 });
             Sourceplace_searchable = string.Join(' ', new string[]
                 { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }
-                .Distinct());
+                .Distinct()).Trim();
             Deathyear_searchable = null; //To be filled by derived class
             Deathyear_searchable_fz = null; //To be filled by derived class
             Gender_searchable = string.IsNullOrEmpty(Standard.Sex) ? "u" : Standard.Sex;
@@ -159,7 +160,7 @@ namespace Linklives.Domain
             Name_display = (string.IsNullOrEmpty(Standard.Name_cl) || Standard.Name_cl.Length < 2) ? Standard.Name_cl : string.Join(' ', Standard.Name_cl.Split(' ').Select(s => s.Length > 1 ? s[0].ToString().ToUpper() + s.Substring(1) : s.ToUpper() )); //Make first letter of each word uppercase
             Birthyear_display = Birthyear_searchable;
             Role_display = PAStrings.ResourceManager.GetString(Standard.Role.ToLower()) ?? Standard.Role;
-            Birthplace_display =  string.Join(',', new string[] { Standard.Birth_place, Standard.Birth_location, string.IsNullOrEmpty(Standard.Birth_parish) ? null : Standard.Birth_parish + " sogn", Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place });
+            Birthplace_display =  string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, string.IsNullOrEmpty(Standard.Birth_parish) ? null : Standard.Birth_parish + " sogn", Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim().Replace(' ', ',');  //trim and replace so we dont end up with strings of just commas
             Occupation_display = null; //To be filled by derived class
             Sourceplace_display = null; //To be filled by derived class
             Event_type_display = PAStrings.ResourceManager.GetString(Standard.Event_type.ToLower()) ?? Standard.Event_type;
