@@ -19,7 +19,7 @@ namespace Linklives.Domain
         {
             if (string.IsNullOrEmpty(Birthplace_searchable))
             {
-                Birthplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace., Transcribed.Transcription.BirthParish., Transcribed.Transcription.BirthMunicilality, Transcribed.Transcription.BirthState });
+                Birthplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace, Transcribed.Transcription.BirthParish, Transcribed.Transcription.BirthMunicilality, Transcribed.Transcription.BirthState });
             }
             if (string.IsNullOrEmpty(Sourceplace_searchable))
             {
