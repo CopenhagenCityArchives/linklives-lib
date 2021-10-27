@@ -21,6 +21,8 @@ namespace Linklives.Domain
         public string Source_name { get; set; }
         [Name("file_reference")]
         public string File_reference { get; set; }
+        [Name("original_data_reference")]
+        public string Original_data_reference { get; set; }
         [Name("institution_origin")]
         public string Institution_origin { get; set; }
         [Name("link")]

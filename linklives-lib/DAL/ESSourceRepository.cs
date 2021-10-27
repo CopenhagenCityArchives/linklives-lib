@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Linklives.DAL
 {
+    //TODO: Verify that all queries conform to the new object mapping
     public class ESSourceRepository : ISourceRepository
     {
         private readonly ElasticClient client;
