@@ -24,6 +24,8 @@ namespace Linklives.Domain
         public int Source_id1 { get; set; }
         [Name("source_id2")]
         public int Source_id2 { get; set; }
+        [Name("duplicates")]
+        public int Duplicates { get; set; }
         public string[] PaKeys { get => new string[] { $"{Source_id1}-{Pa_id1}", $"{Source_id2}-{Pa_id2}" }; }
         [JsonIgnore] //Ignore when serializing to avoid endless recursion in json
         [Nest.Ignore]
