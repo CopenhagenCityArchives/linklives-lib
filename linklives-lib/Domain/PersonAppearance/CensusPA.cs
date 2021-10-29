@@ -25,7 +25,7 @@ namespace Linklives.Domain
             Role_display = Standard.Household_position;
             Occupation_display = Occupation_searchable;
             Sourceplace_display = Sourceplace_searchable.Replace(' ', ',');
-            Sourceyear_display = Convert.ToInt32(Standard.Event_year);
+            Sourceyear_display = Standard.Event_year;
             Event_year_display = Standard.Event_year;
             Source_type_display = "Folketælling";
             Source_archive_display = "Rigsarkivet";
