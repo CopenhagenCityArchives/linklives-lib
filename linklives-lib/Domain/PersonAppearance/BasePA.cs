@@ -55,7 +55,7 @@ namespace Linklives.Domain
         public string Occupation_display { get; set; }
         public string Sourceplace_display { get; set; }
         public string Event_type_display { get; set; }
-        public int? Sourceyear_display { get; set; }
+        public string Sourceyear_display { get; set; }
         public string Event_year_display { get; set; }
         public int? Deathyear_display { get; set; }
         public string Source_type_display { get; set; }
@@ -164,7 +164,7 @@ namespace Linklives.Domain
             Occupation_display = null; //To be filled by derived class
             Sourceplace_display = null; //To be filled by derived class
             Event_type_display = PAStrings.ResourceManager.GetString(Standard.Event_type.ToLower()) ?? Standard.Event_type;
-            Sourceyear_display = Sourceyear_searchable;
+            Sourceyear_display = Sourceyear_searchable.ToString();
             Deathyear_display = Deathyear_searchable;
             Source_type_display = null; //To be filled by derived class
             Source_archive_display = null; //To be filled by derived class
