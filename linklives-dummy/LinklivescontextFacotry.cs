@@ -11,7 +11,10 @@ namespace linklives_dummy
     {
         public LinklivesContext CreateDbContext(string[] args)
         {
-            var dbConn = @"server=***REMOVED***;***REMOVED***;pwd=***REMOVED***;database=***REMOVED***";
+            //TODO: The new dataset changes didnt migrate cleanly to the test db so it was nescesary to drop all tables and wipe the migration history to do a new create from scratch. This will also need to be done on prod.
+            //TODO: Before wiping prod database remember to take backups of the RatingOptions table so that the data can be rolled back on afterwards.
+            //This factory is used by EF when running migrations to db, change dbConn to connect to different databases
+            var dbConn = @"server=***REMOVED***;***REMOVED***;pwd=***REMOVED***;database=***REMOVED***"; //Test db
             var dbContext = new LinklivesContext(new DbContextOptionsBuilder<LinklivesContext>().UseMySQL(dbConn).Options);
             return dbContext;
         }
