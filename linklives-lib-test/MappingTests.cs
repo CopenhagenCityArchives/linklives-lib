@@ -277,7 +277,7 @@ namespace linklives_lib_test
             Assert.AreEqual(finishedPa.Family_names_sortable, "jensen");
             Assert.AreEqual(finishedPa.Birthyear_sortable, "1903");
 
-            //TODO: I dont believe these values are, but in the test values sheet they were all blank
+            //TODO: I dont believe these values are correct, but in the test values sheet they were all blank
             Assert.AreEqual(finishedPa.Pa_entry_permalink_wp4, "");
             Assert.AreEqual(finishedPa.Last_updated_wp4, "");
             Assert.AreEqual(finishedPa.Source_type_wp4, "");
