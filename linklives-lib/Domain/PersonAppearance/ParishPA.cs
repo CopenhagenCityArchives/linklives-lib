@@ -27,18 +27,26 @@ namespace Linklives.Domain
             }
             if (Standard.Event_type == "burial")
             {
-                Deathyear_searchable = Convert.ToInt32(Standard.Event_year);
-                Deathyear_searchable_fz = string.Join(' ', new int[]
+                int event_year = 0;
+                if(Int32.TryParse(Standard.Event_year, out event_year))
                 {
-                    Deathyear_searchable.Value -3,
-                    Deathyear_searchable.Value -2,
-                    Deathyear_searchable.Value -1,
-                    Deathyear_searchable.Value,
-                    Deathyear_searchable.Value +1,
-                    Deathyear_searchable.Value +2,
-                    Deathyear_searchable.Value +3
-                });
-
+                    Deathyear_searchable =  event_year;
+                    Deathyear_searchable_fz = string.Join(' ', new int[]
+                    {
+                        Deathyear_searchable.Value -3,
+                        Deathyear_searchable.Value -2,
+                        Deathyear_searchable.Value -1,
+                        Deathyear_searchable.Value,
+                        Deathyear_searchable.Value +1,
+                        Deathyear_searchable.Value +2,
+                        Deathyear_searchable.Value +3
+                    });
+                }
+                else
+                {
+                    Deathyear_searchable = null;
+                    Deathyear_searchable_fz = null;
+                }
             }
             if (string.IsNullOrEmpty(Birthplace_display))
             {
