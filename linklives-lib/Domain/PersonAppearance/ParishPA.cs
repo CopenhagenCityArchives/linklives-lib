@@ -21,10 +21,12 @@ namespace Linklives.Domain
             {
                 Birthplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace, Transcribed.Transcription.BirthParish, Transcribed.Transcription.BirthMunicipality, Transcribed.Transcription.BirthState });
             }
+            if (string.IsNullOrEmpty(Birthplace_searchable)) { Birthplace_searchable = null; }
             if (string.IsNullOrEmpty(Sourceplace_searchable))
             {
                 Sourceplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BrowseLevel, Transcribed.Transcription.BrowseLevel1 }).Trim();
             }
+
             if (Standard.Event_type == "burial")
             {
                 int event_year = 0;
@@ -52,7 +54,8 @@ namespace Linklives.Domain
             {
                 Birthplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace, string.IsNullOrEmpty(Transcribed.Transcription.BirthParish) ? null : Transcribed.Transcription.BirthParish + " sogn", Transcribed.Transcription.BirthMunicipality, Transcribed.Transcription.BirthState }).Trim().Replace(' ', ','); //trim and replace so we dont end up with strings of just commas
             }
-            Sourceplace_display = string.Join(' ', new string[] { Transcribed.Transcription.BrowseLevel1, Transcribed.Transcription.BrowseLevel }).Trim().Replace(' ', ',');  //trim and replace so we dont end up with strings of just commas
+            Birthplace_searchable = string.IsNullOrEmpty(Birthplace_searchable) ? null : Birthplace_searchable;
+            Sourceplace_display = string.Join(", ", new string[] { Transcribed.Transcription.BrowseLevel1, Transcribed.Transcription.BrowseLevel }).Trim();  //trim and replace so we dont end up with strings of just commas
             Sourceyear_display = Transcribed.Transcription.BrowseLevel2;
             Event_year_display = Standard.Event_year;
             Deathyear_display = Deathyear_searchable;

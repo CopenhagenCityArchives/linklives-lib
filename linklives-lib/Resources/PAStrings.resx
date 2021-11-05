@@ -136,7 +136,7 @@
     <value>Begravelse</value>
   </data>
   <data name="burial_protocol" xml:space="preserve">
-    <value>Begravelsesprotokol</value>
+    <value>Begravelse</value>
   </data>
   <data name="census" xml:space="preserve">
     <value>Folketælling</value>
@@ -157,7 +157,7 @@
     <value>Afrejst</value>
   </data>
   <data name="f" xml:space="preserve">
-    <value>Kvinde</value>
+    <value>kvinde</value>
   </data>
   <data name="father" xml:space="preserve">
     <value>Far</value>

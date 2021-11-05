@@ -115,7 +115,7 @@ namespace Linklives.Domain {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Begravelsesprotokol.
+        ///   Looks up a localized string similar to Begravelse.
         /// </summary>
         public static string burial_protocol {
             get {
@@ -178,7 +178,7 @@ namespace Linklives.Domain {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kvinde.
+        ///   Looks up a localized string similar to kvinde.
         /// </summary>
         public static string f {
             get {
