@@ -1,5 +1,7 @@
 using Linklives.Domain;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Dynamic;
 
 namespace linklives_lib_test
@@ -11,11 +13,113 @@ namespace linklives_lib_test
         {
         }
 
+        private ExpandoObject GetTranscriptionExpandoObjectFromCommaSeparatedStrings(string headers, string row)
+        {
+            var properties = headers.Split(",");
+            var values = row.Split(",");
+
+            if (properties.Length != values.Length)
+            {
+                throw new ArgumentException($"Number of header and row columns does not match ({properties.Length} vs {values.Length})");
+            }
+            var transcription = new ExpandoObject();
+            IDictionary<string, object> propertyValues = (IDictionary<string, object>)transcription;
+            int count = 0;
+            foreach (string property in properties)
+            {
+                propertyValues.TryAdd(property, values[count].Replace(";",","));
+                count++;
+            }
+
+            return transcription;
+        }
+
+        [Test]
+        public void CBP_MapsCorrectly()
+        {
+            #region input data
+            //10,CBP,standardized_sources/CBP/CBP.csv,transcribed_sources/CBP/CBP_20210309.csv,Københavns Stadsarkiv,https://kbharkiv.dk/brug-samlingerne/kilder-paa-nettet/begravelser-i-koebenhavn/
+            var source = new Source
+            {
+                Source_id = 10,
+                Source_name = "CBP",
+                File_reference = "standardized_sources/CBP/CBP.csv",
+                Original_data_reference = "transcribed_sources/CBP/CBP_20210309.csv",
+                Institution_origin = "Københavns Stadsarkiv",
+                Link = "https://kbharkiv.dk/brug-samlingerne/kilder-paa-nettet/begravelser-i-koebenhavn/"
+            };
+
+            // Standardized burial: LL_data_v1.0\LL_data\standardized_sources\CBP\CBP.csv
+            var standardBurialStr = "54, kraa,krak,,,krak,,,krak,,m,,,,1909,,,1909-01-10,1909,1,10,,,,,,,,,,,,,,,,,deceased,burial_protocol,3,,3851";
+            var standardizedPA = StandardPA.FromCommaSeparatedString(standardBurialStr);
+
+            // Transcribed burial: transcribed_data_v1.0\transcribed_sources\CBP\CBP_20210309.csv
+            var transcribedBurialHeaderStr = "pa_id,id,number,firstnames,lastname,birthname,ageYears,ageMonth,ageWeeks,ageDays,ageHours,dateOfBirth,dateOfDeath,yearOfBirth,deathplace,civilstatus,adressOutsideCph,sex,comment,cemetary,chapel,parish,street,hood,street_unique,street_number,letter,floor,institution,institution_street,institution_hood,institution_street_unique,institution_street_number,positions,relationtypes,workplaces,deathcauses";
+            var transcribedBurialStr = "54,548,3851.0,Dødfødt,Kraa,,0.0,,,,,,1909-10-01,1909.0,,,,Mand,,Assistens Kirkegård,Hjemmet (bopælen),Fredens,Helgesensgade,Østerbro,Helgesensgade,,,,,,,,,\"Barber;Frisør (Friseur)\",\"Fars erhverv; Fars erhverv\",,Dødfødt";
+
+            var transcribedPA = GetTranscriptionExpandoObjectFromCommaSeparatedStrings(transcribedBurialHeaderStr, transcribedBurialStr);
+
+            #endregion
+
+            var transcribed = new TranscribedPA(transcribedPA, source.Source_id);
+            var finishedPa = BasePA.Create(source, standardizedPA, transcribed);
+
+            //TODO: These asserts are based on the values found in the testing sheet, but looking at them i am not confident that that are correct to the mapping defined in the mapping sheet and consequently this test is unlikely to provide much value in its current form.
+            Assert.AreEqual(finishedPa.Pa_id, 54);
+
+            Assert.AreEqual("kraa", finishedPa.Name_searchable);
+            Assert.AreEqual("kraa krak", finishedPa.Name_searchable_fz);
+            Assert.AreEqual("kraa", finishedPa.Lastname_searchable);
+            Assert.AreEqual("kraa krak", finishedPa.Lastname_searchable_fz);
+            //Assert.AreEqual(null, finishedPa.Firstnames_searchable);
+            //Assert.AreEqual(null, finishedPa.Firstnames_searchable_fz);
+            Assert.AreEqual(1909, finishedPa.Birthyear_searchable);
+            Assert.AreEqual("1906 1907 1908 1909 1910 1911 1912", finishedPa.Birthyear_searchable_fz);
+            Assert.AreEqual(null, finishedPa.Birthplace_searchable);
+            Assert.AreEqual(1909, finishedPa.Sourceyear_searchable);
+            Assert.AreEqual("1906 1907 1908 1909 1910 1911 1912", finishedPa.Sourceyear_searchable_fz);
+            Assert.AreEqual("København", finishedPa.Sourceplace_searchable);
+            Assert.AreEqual(1909, finishedPa.Deathyear_searchable);
+            Assert.AreEqual("1906 1907 1908 1909 1910 1911 1912", finishedPa.Deathyear_searchable_fz);
+            Assert.AreEqual("Mand", finishedPa.Gender_searchable);
+            Assert.AreEqual(null, finishedPa.Birthname_searchable);
+            Assert.AreEqual(null, finishedPa.Occupation_searchable);
+            //TODO: The test values sheet list a couple of extra fields that are neither implemented in BasePa nor present in the mapping sheet.
+            /*
+                eventyear_searchable
+                eventyear_searchable_fz
+                role_searchable
+            */
+
+            //Assert.AreEqual(null, finishedPa.First_names_sortable);
+            Assert.AreEqual("kraa", finishedPa.Family_names_sortable);
+            Assert.AreEqual(1909, finishedPa.Birthyear_sortable);
+
+            //TODO: I dont believe these values are correct, but in the test values sheet they were all blank
+            //Assert.AreEqual("", finishedPa.Pa_entry_permalink_wp4);
+            //Assert.AreEqual("", finishedPa.Last_updated_wp4);
+            //Assert.AreEqual("", finishedPa.Source_type_wp4);
+
+            Assert.AreEqual("Kraa", finishedPa.Name_display);
+            Assert.AreEqual(1909, finishedPa.Birthyear_display);
+            Assert.AreEqual("Afdøde", finishedPa.Role_display);
+            Assert.AreEqual(null, finishedPa.Birthplace_display);
+            Assert.AreEqual("Fars erhverv Barber, Fars erhverv Frisør (Friseur)", finishedPa.Occupation_display);
+            Assert.AreEqual("København", finishedPa.Sourceplace_display);
+            Assert.AreEqual("Begravelse", finishedPa.Event_type_display);
+            Assert.AreEqual("1909", finishedPa.Sourceyear_display);
+            //Assert.AreEqual("1906", finishedPa.Event_year_display);
+            Assert.AreEqual(1909, finishedPa.Deathyear_display);
+            Assert.AreEqual("Begravelsesprotokol", finishedPa.Source_type_display);
+            Assert.AreEqual("Københavns Stadsarkiv", finishedPa.Source_archive_display);
+        }
+
         [Test]
         public void PRBurial_MapsCorrectly()
         {
             #region input data
             //11,PR-burial,standardized_sources/PR/burial/burial.csv,transcribed_sources/PR/by_PA/burial.csv,Rigsarkivet,https://www.sa.dk/ao-soegesider/da/geo/geo-collection/5
+
             var source = new Source
             {
                 Source_id = 11,
@@ -25,276 +129,66 @@ namespace linklives_lib_test
                 Institution_origin = "Rigsarkivet",
                 Link = "https://www.sa.dk/ao-soegesider/da/geo/geo-collection/5"
             };
-            //4,bent nielsen,bent nielsen,bent,nielsen,,,nielsen,,,m,,56.0,,1759,,,1815-05-18,1815,5,18,,,,,,,,,,,,,ålborg,,,,deceased,burial,0,197,4
-            var standard = new StandardPA
-            {
-                Pa_id = 4,
-                Name_cl = "bent nielsen",
-                Name = "bent nielsen",
-                First_names = "bent",
-                Patronyms = "nielsen",
-                Family_names = "",
-                Maiden_names = "",
-                All_patronyms = "nielsen",
-                All_family_names = "",
-                Uncat_names = "",
-                Sex = "m",
-                Marital_status = "",
-                Age = "56.0",
-                Birth_date = "",
-                Birth_year = "1759",
-                Birth_month = "",
-                Birth_day = "",
-                Event_date = "1815-05-18",
-                Event_year = "1815",
-                Event_month = "5",
-                Event_day = "18",
-                Birth_place_cl = "",
-                Birth_place = "",
-                Birth_location = "",
-                Birth_parish = "",
-                Birth_town = "",
-                Birth_county = "",
-                Birth_foreign_place = "",
-                Birth_country = "",
-                Event_location = "",
-                Event_parish = "",
-                Event_district = "",
-                Event_town = "ålborg",
-                Event_county = "",
-                Event_country = "",
-                Household_id = "",
-                Household_position = "",
-                Role = "deceased",
-                Event_type = "burial",
-                Book_id = "0",
-                Image_id = "197",
-                Image_appearance = "4"
-            };
-            //4,3972,48438_22021000034_2058-00197,48438_22021000034_2058,3962.0,1040.0,,Kontraministerialbog. Nørresundby Sogn. Fødte kvinder. 1815 - 2003,8032839331,,1815-1833,Ålborg Amt,Nørresundby Sogn,1815-1833,,,,Bent,Nielsen,,,,,Mandlige,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,13.0,maj,1815.0,,,,,,18.0,maj,1815.0,56,,Nørresundby,,Ålborg,Ålborg Amt,Danmark,,,,,,,,,,,,18.0,maj,1815,56,,Nørresundby Sogn,,Ålborg Amt,,Ålborg,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,197,0,4.0,burial,main,1   
-            dynamic transcribtion = new ExpandoObject();
-            transcribtion.pa_id = "4";
-            transcribtion.event_id = "3972";
-            transcribtion.ImageFileName = "48438_22021000034_2058 - 00197";
-            transcribtion.ImageFolder = "48438_22021000034_2058";
-            transcribtion.unique_identifier = "3962.0";
-            transcribtion.SequenceNumber = "1040.0";
-            transcribtion.SourceCollectionID = "";
-            transcribtion.SourceDescription = "Kontraministerialbog.Nørresundby Sogn.Fødte kvinder. 1815 - 2003";
-            transcribtion.SourceReferenceNumber = "8032839331";
-            transcribtion.SourceComments = "";
-            transcribtion.SourceYearRange = "1815 - 1833";
-            transcribtion.BrowseLevel = "Ålborg Amt";
-            transcribtion.BrowseLevel1 = "Nørresundby Sogn";
-            transcribtion.BrowseLevel2 = "1815 - 1833";
-            transcribtion.KeyedParish = "";
-            transcribtion.Notes = "";
-            transcribtion.NamePrefix = "";
-            transcribtion.GivenName = "Bent";
-            transcribtion.Surname = "Nielsen";
-            transcribtion.NameSuffix = "";
-            transcribtion.GivenNameAlias = "";
-            transcribtion.SurnameAlias = "";
-            transcribtion.MaidenName = "";
-            transcribtion.Gender = "Mandlige";
-            transcribtion.BirthDay = "";
-            transcribtion.BirthMonth = "";
-            transcribtion.BirthYear = "";
-            transcribtion.BirthPlace = "";
-            transcribtion.BirthParish = "";
-            transcribtion.BirthMunicipality = "";
-            transcribtion.BirthState = "";
-            transcribtion.BaptismAge = "";
-            transcribtion.BaptismDay = "";
-            transcribtion.BaptismMonth = "";
-            transcribtion.BaptismYear = "";
-            transcribtion.BaptismPlace = "";
-            transcribtion.BaptismParish = "";
-            transcribtion.BaptismMunicipality = "";
-            transcribtion.BaptismCounty = "";
-            transcribtion.BaptismState = "";
-            transcribtion.BaptismCountry = "";
-            transcribtion.ConfirmationDay = "";
-            transcribtion.ConfirmationMonth = "";
-            transcribtion.ConfirmationYear = "";
-            transcribtion.ConfirmationPlace = "";
-            transcribtion.ConfirmationParish = "";
-            transcribtion.ConfirmationMunicipality = "";
-            transcribtion.ConfirmationCounty = "";
-            transcribtion.ConfirmationState = "";
-            transcribtion.ConfirmationCountry = "";
-            transcribtion.ArrivalDay = "";
-            transcribtion.ArrivalMonth = "";
-            transcribtion.ArrivalYear = "";
-            transcribtion.ArrivalAge = "";
-            transcribtion.ArrivalPlace = "";
-            transcribtion.DeparturePlace = "";
-            transcribtion.ArrivalParish = "";
-            transcribtion.ArrivalMunicipality = "";
-            transcribtion.ArrivalCounty = "";
-            transcribtion.ArrivalState = "";
-            transcribtion.ArrivalCountry = "";
-            transcribtion.DepartureDay = "";
-            transcribtion.DepartureMonth = "";
-            transcribtion.DepartureYear = "";
-            transcribtion.DepartureAge = "";
-            transcribtion.DepartureParish = "";
-            transcribtion.DepartureMunicipality = "";
-            transcribtion.DepartureCounty = "";
-            transcribtion.DepartureState = "";
-            transcribtion.DepartureCountry = "";
-            transcribtion.MarriageDay = "";
-            transcribtion.MarriageMonth = "";
-            transcribtion.MarriageYear = "";
-            transcribtion.MarriageAge = "";
-            transcribtion.MarriagePlace = "";
-            transcribtion.MarriageParish = "";
-            transcribtion.MarriageMunicipality = "";
-            transcribtion.MarriageCounty = "";
-            transcribtion.MarriageState = "";
-            transcribtion.MarriageCountry = "";
-            transcribtion.DeathDay = "13.0";
-            transcribtion.DeathMonth = "maj";
-            transcribtion.DeathYear = "1815.0";
-            transcribtion.DeathAge = "";
-            transcribtion.DeathPlace = "";
-            transcribtion.DeathParish = "";
-            transcribtion.DeathMunicipality = "";
-            transcribtion.DeathState = "";
-            transcribtion.BurialDay = "18.0";
-            transcribtion.BurialMonth = "maj";
-            transcribtion.BurialYear = "1815.0";
-            transcribtion.BurialAge = "56";
-            transcribtion.BurialPlace = "";
-            transcribtion.BurialParish = "Nørresundby";
-            transcribtion.BurialMunicipality = "";
-            transcribtion.BurialCounty = "Ålborg";
-            transcribtion.BurialState = "Ålborg Amt";
-            transcribtion.BurialCountry = "Danmark";
-            transcribtion.ResidenceAge = "";
-            transcribtion.ResidenceParish = "";
-            transcribtion.ResidenceMunicipality = "";
-            transcribtion.ResidenceCounty = "";
-            transcribtion.ReligiousDay = "";
-            transcribtion.ReligiousMonth = "";
-            transcribtion.ReligiousYear = "";
-            transcribtion.ReligiousAge = "";
-            transcribtion.ReligiousParish = "";
-            transcribtion.ReligiousMunicipality = "";
-            transcribtion.ReligiousState = "";
-            transcribtion.VitalDay = "18.0";
-            transcribtion.VitalMonth = "maj";
-            transcribtion.VitalYear = "1815";
-            transcribtion.VitalAge = "56";
-            transcribtion.VitalPlace = "";
-            transcribtion.VitalParish = "Nørresundby Sogn";
-            transcribtion.VitalMunicipality = "";
-            transcribtion.VitalState = "Ålborg Amt";
-            transcribtion.VitalCountry = "";
-            transcribtion.VitalCounty = "Ålborg";
-            transcribtion.VitalTownship = "";
-            transcribtion.ArrivalCity = "";
-            transcribtion.BaptismCity = "";
-            transcribtion.BirthCountry = "";
-            transcribtion.BurialCity = "";
-            transcribtion.ConfirmationAge = "";
-            transcribtion.ConfirmationCity = "";
-            transcribtion.DepartureCity = "";
-            transcribtion.MarriageCity = "";
-            transcribtion.VitalCity = "";
-            transcribtion.FatherGivenName = "";
-            transcribtion.FatherSurname = "";
-            transcribtion.FatherNameSuffix = "";
-            transcribtion.FatherGivenNameAlias = "";
-            transcribtion.FatherSurnameAlias = "";
-            transcribtion.MotherNamePrefix = "";
-            transcribtion.MotherGivenName = "";
-            transcribtion.MotherSurname = "";
-            transcribtion.MotherNameSuffix = "";
-            transcribtion.MotherMaidenName = "";
-            transcribtion.MotherGivenNameAlias = "";
-            transcribtion.MotherSurnameAlias = "";
-            transcribtion.MotherResidenceAge = "";
-            transcribtion.SpouseNamePrefix = "";
-            transcribtion.SpouseGivenName = "";
-            transcribtion.SpouseSurname = "";
-            transcribtion.SpouseNameSuffix = "";
-            transcribtion.SpouseMaidenName = "";
-            transcribtion.SpouseGivenNameAlias = "";
-            transcribtion.SpouseSurnameAlias = "";
-            transcribtion.SpouseGender = "";
-            transcribtion.SpouseMarriageAge = "";
-            transcribtion.SpouseBirthDay = "";
-            transcribtion.SpouseBirthMonth = "";
-            transcribtion.SpouseBirthYear = "";
-            transcribtion.SpouseBirthPlace = "";
-            transcribtion.FatherInLawGivenName = "";
-            transcribtion.FatherInLawSurname = "";
-            transcribtion.FatherInLawNameSuffix = "";
-            transcribtion.FatherInLawGivenNameAlias = "";
-            transcribtion.FatherInLawSurnameAlias = "";
-            transcribtion.MotherInLawNamePrefix = "";
-            transcribtion.MotherInLawGivenName = "";
-            transcribtion.MotherInLawSurname = "";
-            transcribtion.MotherInLawNameSuffix = "";
-            transcribtion.MotherInLawMaidenName = "";
-            transcribtion.MotherInLawGivenNameAlias = "";
-            transcribtion.MotherInLawSurnameAlias = "";
-            transcribtion.image_id = "197";
-            transcribtion.folder_id = "0";
-            transcribtion.image_appearance = "4.0";
-            transcribtion.event_type = "burial";
-            transcribtion.role = "main";
-            transcribtion.event_persons = "1";
-            #endregion
-            var transcribed = new TranscribedPA(transcribtion, source.Source_id);
-            var finishedPa = BasePA.Create(source, standard, transcribed);
 
-            //TODO: These asserts are based on the values found in the testing sheet, but looking at them i am not confident that that are correct to the mapping defined in the mapping sheet and consequently this test is unlikely to provide much value in its current form.
+            // Standardized burial: LL_data_v1.0\LL_data\standardized_sources\PR\burial\burial.csv
+            var standardBurialStr = "4,christa magdalene jensen krage,krista magdalene jensen krag,,jensen,krista krag,,jensen,krista krag,magdalene,f,,3.0,1903-10-24,1903,10,24,1906-02-02,1906,2,2,,,,,,,,,,tversted,,,hjørring,,,,deceased,burial,0,0,1";
+            var standardizedPA = StandardPA.FromCommaSeparatedString(standardBurialStr);
+
+            // Transcribed burial: transcribed_data_v1.0\transcribed_sources\PR\by_event\burial.csv
+            var transcribedBurialHeaderStr = "pa_id,event_id,ImageFileName,ImageFolder,unique_identifier,SequenceNumber,SourceCollectionID,SourceDescription,SourceReferenceNumber,SourceComments,SourceYearRange,BrowseLevel,BrowseLevel1,BrowseLevel2,KeyedParish,Notes,NamePrefix,GivenName,Surname,NameSuffix,GivenNameAlias,SurnameAlias,MaidenName,Gender,BirthDay,BirthMonth,BirthYear,BirthPlace,BirthParish,BirthMunicipality,BirthState,BaptismAge,BaptismDay,BaptismMonth,BaptismYear,BaptismPlace,BaptismParish,BaptismMunicipality,BaptismCounty,BaptismState,BaptismCountry,ConfirmationDay,ConfirmationMonth,ConfirmationYear,ConfirmationPlace,ConfirmationParish,ConfirmationMunicipality,ConfirmationCounty,ConfirmationState,ConfirmationCountry,ArrivalDay,ArrivalMonth,ArrivalYear,ArrivalAge,ArrivalPlace,DeparturePlace,ArrivalParish,ArrivalMunicipality,ArrivalCounty,ArrivalState,ArrivalCountry,DepartureDay,DepartureMonth,DepartureYear,DepartureAge,DepartureParish,DepartureMunicipality,DepartureCounty,DepartureState,DepartureCountry,MarriageDay,MarriageMonth,MarriageYear,MarriageAge,MarriagePlace,MarriageParish,MarriageMunicipality,MarriageCounty,MarriageState,MarriageCountry,DeathDay,DeathMonth,DeathYear,DeathAge,DeathPlace,DeathParish,DeathMunicipality,DeathState,BurialDay,BurialMonth,BurialYear,BurialAge,BurialPlace,BurialParish,BurialMunicipality,BurialCounty,BurialState,BurialCountry,ResidenceAge,ResidenceParish,ResidenceMunicipality,ResidenceCounty,ReligiousDay,ReligiousMonth,ReligiousYear,ReligiousAge,ReligiousParish,ReligiousMunicipality,ReligiousState,VitalDay,VitalMonth,VitalYear,VitalAge,VitalPlace,VitalParish,VitalMunicipality,VitalState,VitalCountry,VitalCounty,VitalTownship,ArrivalCity,BaptismCity,BirthCountry,BurialCity,ConfirmationAge,ConfirmationCity,DepartureCity,MarriageCity,VitalCity,FatherGivenName,FatherSurname,FatherNameSuffix,FatherGivenNameAlias,FatherSurnameAlias,MotherNamePrefix,MotherGivenName,MotherSurname,MotherNameSuffix,MotherMaidenName,MotherGivenNameAlias,MotherSurnameAlias,MotherResidenceAge,SpouseNamePrefix,SpouseGivenName,SpouseSurname,SpouseNameSuffix,SpouseMaidenName,SpouseGivenNameAlias,SpouseSurnameAlias,SpouseGender,SpouseMarriageAge,SpouseBirthDay,SpouseBirthMonth,SpouseBirthYear,SpouseBirthPlace,FatherInLawGivenName,FatherInLawSurname,FatherInLawNameSuffix,FatherInLawGivenNameAlias,FatherInLawSurnameAlias,MotherInLawNamePrefix,MotherInLawGivenName,MotherInLawSurname,MotherInLawNameSuffix,MotherInLawMaidenName,MotherInLawGivenNameAlias,MotherInLawSurnameAlias,image_id,folder_id,image_appearance,event_type,role,event_persons";
+            var transcribedBurialStr = "4,1,0211A-DK,48491_b411239,2809047.0,1010.0,,,AOdata01\\Kirkeboeger1892\\C050B\\G\\002,,1906-1921,Hjørring Amt,Tversted Sogn,1906-1921,Tversted Kirkegaard,,,Christa Magdalene,Jensen Krage,,,,,Kvinde,24.0,okt,1903.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,28.0,jan,1906.0,,Vester Tversted Tversted Sogn Horns Herred,,,,2.0,febr,1906.0,2,\"Tversted Kirkegaard; Denmark\",Tversted,,Hjørring,Hjørring Amt,Danmark,,,,,,,,,,,,2.0,febr,1906,2,,Tversted Sogn,,Hjørring Amt,,Hjørring,,,,,,,,,,,Christian,Jensen Krage,,,,,Martine,Larsen,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,1.0,burial,main,3";
+
+            var transcribedPA = GetTranscriptionExpandoObjectFromCommaSeparatedStrings(transcribedBurialHeaderStr, transcribedBurialStr);
+
+            #endregion
+
+            var transcribed = new TranscribedPA(transcribedPA, source.Source_id);
+            var finishedPa = BasePA.Create(source, standardizedPA, transcribed);
+
+
+            
             Assert.AreEqual(finishedPa.Pa_id, 4);
 
-            Assert.AreEqual(finishedPa.Name_searchable, "christa magdalene jensen krage");
-            Assert.AreEqual(finishedPa.Name_searchable_fz, "christa magdalene jensen krage krista magdalene jensen krag");
-            Assert.AreEqual(finishedPa.Lastname_searchable, "jensen");
-            Assert.AreEqual(finishedPa.Lastname_searchable_fz, "jensen krista krag");
-            Assert.AreEqual(finishedPa.Firstnames_searchable, null);
-            Assert.AreEqual(finishedPa.Firstnames_searchable_fz, null);
-            Assert.AreEqual(finishedPa.Birthyear_searchable, "1903");
-            Assert.AreEqual(finishedPa.Birthyear_searchable_fz, "1900 1901 1902 1903 1904 1905 1906");
-            Assert.AreEqual(finishedPa.Birthplace_searchable, null);
-            Assert.AreEqual(finishedPa.Sourceyear_searchable, "1909");
-            Assert.AreEqual(finishedPa.Sourceyear_searchable_fz, "");
-            Assert.AreEqual(finishedPa.Sourceplace_searchable, "tversted hjørring");
-            Assert.AreEqual(finishedPa.Deathyear_searchable, "1906");
-            Assert.AreEqual(finishedPa.Deathyear_searchable_fz, "1903 1904 1905 1906 1907 1908 1909");
-            Assert.AreEqual(finishedPa.Gender_searchable, "kvinde");
-            Assert.AreEqual(finishedPa.Birthname_searchable, null);
-            Assert.AreEqual(finishedPa.Occupation_searchable, null);
+            Assert.AreEqual("christa magdalene jensen krage", finishedPa.Name_searchable);
+            Assert.AreEqual("christa magdalene jensen krage krista magdalene jensen krag", finishedPa.Name_searchable_fz);
+            Assert.AreEqual("krage", finishedPa.Lastname_searchable);
+            Assert.AreEqual("krage jensen krista krag", finishedPa.Lastname_searchable_fz);
+            Assert.AreEqual("christa magdalene jensen", finishedPa.Firstnames_searchable);
+            Assert.AreEqual("christa magdalene jensen", finishedPa.Firstnames_searchable_fz);
+            Assert.AreEqual(1903, finishedPa.Birthyear_searchable);
+            Assert.AreEqual("1900 1901 1902 1903 1904 1905 1906", finishedPa.Birthyear_searchable_fz);
+            Assert.AreEqual(null, finishedPa.Birthplace_searchable);
+            Assert.AreEqual(1906, finishedPa.Sourceyear_searchable);
+            Assert.AreEqual("1903 1904 1905 1906 1907 1908 1909", finishedPa.Sourceyear_searchable_fz);
+            Assert.AreEqual("tversted hjørring", finishedPa.Sourceplace_searchable);
+            Assert.AreEqual(1906,finishedPa.Deathyear_searchable);
+            Assert.AreEqual("1903 1904 1905 1906 1907 1908 1909", finishedPa.Deathyear_searchable_fz);
+            Assert.AreEqual("kvinde", finishedPa.Gender_searchable);
+            Assert.AreEqual(null, finishedPa.Birthname_searchable);
+            Assert.AreEqual(null, finishedPa.Occupation_searchable);
             //TODO: The test values sheet list a couple of extra fields that are neither implemented in BasePa nor present in the mapping sheet.
 
-            Assert.AreEqual(finishedPa.First_names_sortable, null);
-            Assert.AreEqual(finishedPa.Family_names_sortable, "jensen");
-            Assert.AreEqual(finishedPa.Birthyear_sortable, "1903");
+            Assert.AreEqual("christa magdalene jensen", finishedPa.First_names_sortable);
+            Assert.AreEqual("krage", finishedPa.Family_names_sortable);
+            Assert.AreEqual(1903, finishedPa.Birthyear_sortable);
 
             //TODO: I dont believe these values are correct, but in the test values sheet they were all blank
             Assert.AreEqual(finishedPa.Pa_entry_permalink_wp4, "");
-            Assert.AreEqual(finishedPa.Last_updated_wp4, "");
-            Assert.AreEqual(finishedPa.Source_type_wp4, "");
+            Assert.AreEqual(typeof(DateTime), finishedPa.Last_updated_wp4.GetType());
+            Assert.AreEqual("parish_register", finishedPa.Source_type_wp4);
 
-            Assert.AreEqual(finishedPa.Name_display, "Christa Magdalene Jensen Krage");
-            Assert.AreEqual(finishedPa.Birthyear_display, null);
-            Assert.AreEqual(finishedPa.Role_display, "Afdøde");
-            Assert.AreEqual(finishedPa.Birthplace_display, null);
-            Assert.AreEqual(finishedPa.Occupation_display, null);
-            Assert.AreEqual(finishedPa.Sourceplace_display, "Tversted sogn, Hjørring amt");
-            Assert.AreEqual(finishedPa.Event_type_display, "Begravelse");
-            Assert.AreEqual(finishedPa.Sourceyear_display, "1906-1921");
-            Assert.AreEqual(finishedPa.Event_year_display, "1906");
-            Assert.AreEqual(finishedPa.Deathyear_display, "1906");
-            Assert.AreEqual(finishedPa.Source_type_display, "Kirkebog");
-            Assert.AreEqual(finishedPa.Source_archive_display, "Rigsarkivet");
-
-
+            Assert.AreEqual("Christa Magdalene Jensen Krage", finishedPa.Name_display);
+            Assert.AreEqual(1903, finishedPa.Birthyear_display);
+            Assert.AreEqual("Afdøde", finishedPa.Role_display);
+            Assert.AreEqual(null, finishedPa.Birthplace_display);
+            Assert.AreEqual(null, finishedPa.Occupation_display);
+            Assert.AreEqual("Tversted Sogn, Hjørring Amt", finishedPa.Sourceplace_display);
+            Assert.AreEqual("Begravelse", finishedPa.Event_type_display);
+            Assert.AreEqual("1906-1921", finishedPa.Sourceyear_display);
+            Assert.AreEqual("1906", finishedPa.Event_year_display);
+            Assert.AreEqual(1906, finishedPa.Deathyear_display);
+            Assert.AreEqual("Kirkebog", finishedPa.Source_type_display);
+            Assert.AreEqual("Rigsarkivet", finishedPa.Source_archive_display);
         }
     }
 }

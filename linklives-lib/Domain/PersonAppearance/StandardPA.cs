@@ -92,5 +92,62 @@ namespace Linklives.Domain
         public string Image_id { get; set; }
         [Name("image_appearance")]
         public string Image_appearance { get; set; }
+
+        public static StandardPA FromCommaSeparatedString(string str)
+        {
+            var properties = str.Split(",");
+            if(properties.Length != 42)
+            {
+                throw new ArgumentException("Input string must have 42 values");
+            }
+
+            var standard = new StandardPA
+            {
+                Pa_id = Int32.Parse(properties[0]),
+                Name_cl = properties[1],
+                Name = properties[2],
+                First_names = properties[3],
+                Patronyms = properties[4],
+                Family_names = properties[5],
+                Maiden_names = properties[6],
+                All_patronyms = properties[7],
+                All_family_names = properties[8],
+                Uncat_names = properties[9],
+                Sex = properties[10],
+                Marital_status = properties[11],
+                Age = properties[12],
+                Birth_date = properties[13],
+                Birth_year = properties[14],
+                Birth_month = properties[15],
+                Birth_day = properties[16],
+                Event_date = properties[17],
+                Event_year = properties[18],
+                Event_month = properties[19],
+                Event_day = properties[20],
+                Birth_place_cl = properties[21],
+                Birth_place = properties[22],
+                Birth_location = properties[23],
+                Birth_parish = properties[24],
+                Birth_town = properties[25],
+                Birth_county = properties[26],
+                Birth_foreign_place = properties[27],
+                Birth_country = properties[28],
+                Event_location = properties[29],
+                Event_parish = properties[30],
+                Event_district = properties[31],
+                Event_town =properties[32],
+                Event_county = properties[33],
+                Event_country = properties[34],
+                Household_id = properties[35],
+                Household_position = properties[36],
+                Role = properties[37],
+                Event_type = properties[38],
+                Book_id = properties[39],
+                Image_id = properties[40],
+                Image_appearance = properties[41]
+            };
+
+            return standard;
+        }
     }
 }
