@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Nest;
 
 namespace Linklives.Domain
 {
+    [ElasticsearchType(IdProperty = nameof(Life_course_id))]
     public partial class LifeCourse : KeyedItem
     {
         public LifeCourse()
@@ -25,6 +27,7 @@ namespace Linklives.Domain
         public ICollection<Link> Links { get; set; }
         [CsvHelper.Configuration.Attributes.Ignore]
         [NotMapped] //Tells entity framework to ignore this property since we are adding it from another source
+        [Nest.PropertyName("person_appearance")]
         public List<BasePA> PersonAppearances { get; set; }
 
         public override void InitKey()
