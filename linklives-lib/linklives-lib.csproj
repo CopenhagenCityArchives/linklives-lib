@@ -12,7 +12,7 @@
     <VersionPrefix>1.0.$([System.Convert]::ToInt32($([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2000/01/01"))).TotalDays))).$([System.Convert]::ToInt32($([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds),2))))</VersionPrefix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Version>1.0.7986.15318</Version>
+    <Version>2.0.7986.15318</Version>
   </PropertyGroup>
 
   <ItemGroup>
