@@ -3,14 +3,16 @@ using System;
 using Linklives.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Linklives.Migrations
 {
     [DbContext(typeof(LinklivesContext))]
-    partial class LinklivesContextModelSnapshot : ModelSnapshot
+    [Migration("20211108145541_update-database-structure")]
+    partial class updatedatabasestructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
