@@ -10,7 +10,8 @@ namespace Linklives.Domain
     /// <summary>
     /// Represents a generic Person Appearance
     /// </summary>
-    public abstract class BasePA : KeyedItem
+    [ElasticsearchType(IdProperty = nameof(Key))]
+    public class BasePA : KeyedItem
     {
         private object source_type_wp4;
 
@@ -173,7 +174,7 @@ namespace Linklives.Domain
             Source_archive_display = null; //To be filled by derived class
 
         }
-        protected abstract void InitSourceSpecificFields();
+        protected virtual void InitSourceSpecificFields() { }
         public override void InitKey()
         {
             Key = $"{Source_id}-{Pa_id}";
