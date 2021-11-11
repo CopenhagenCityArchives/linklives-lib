@@ -37,12 +37,9 @@ namespace Linklives.DAL
             .From(0)
             .Size(1000)
             .Query(q => q
-                    .Nested(n => n
-                    .Path("person_appearance")
-                    .Query(nq => nq
-                        .Terms(t => t
-                            .Field("person_appearance.id")
-                            .Terms(Ids))))));
+                .Terms(t => t
+                    .Field("key")
+                    .Terms(Ids))));
             //var pass = pasSearchResponse.Documents.Select(x => x["person_appearance"]).ToList();
             //var sourceids = pass.Select(p => (int)p["source_id"]).ToList();
             //var sources = sourceRepository.GetByIds(sourceids);
