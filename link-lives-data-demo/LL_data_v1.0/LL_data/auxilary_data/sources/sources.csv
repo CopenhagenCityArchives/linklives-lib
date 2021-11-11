@@ -1,0 +1,3 @@
+source_id,source_name,file_reference,original_data_reference,institution_origin,link
+4,census-1845,standardized_sources/census/1845/census.csv,transcribed_sources/census/1845_20190000.csv,Rigsarkivet,https://www.sa.dk/ao-soegesider/da/rif/rif-collection/7
+5,census-1850,standardized_sources/census/1850/census.csv,transcribed_sources/census/1850_20190000.csv,Rigsarkivet,https://www.sa.dk/ao-soegesider/da/rif/rif-collection/7
