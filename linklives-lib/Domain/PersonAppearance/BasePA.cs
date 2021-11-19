@@ -82,7 +82,13 @@ namespace Linklives.Domain
                 return IntToRangeAsStringHelper.GetRangePlusMinus3(Birthyear_searchable);
             }
         }
-        public virtual string Birthplace_searchable { get; }
+        public virtual string Birthplace_searchable
+        {
+            get
+            {
+                return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim();
+            }
+        }
         public int? Sourceyear_searchable {
             get
             {

@@ -8,13 +8,6 @@ namespace Linklives.Domain
     /// </summary>
     public class ParishPA : BasePA
     {
-        public override string Birthplace_searchable 
-        {
-            get
-            {
-                return string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace, Transcribed.Transcription.BirthParish, Transcribed.Transcription.BirthMunicipality, Transcribed.Transcription.BirthState });
-            }
-        }
         public override int? Deathyear_searchable
         {
             get

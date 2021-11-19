@@ -80,6 +80,13 @@ namespace Linklives.Domain
                 return "Københavns Stadsarkiv";
             }
         }
+        public override string Birthplace_searchable
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         public BurialPA()
         {

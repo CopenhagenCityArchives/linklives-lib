@@ -7,12 +7,6 @@ namespace Linklives.Domain
     /// </summary>
     public class CensusPA : BasePA
     {
-        public override string Birthplace_searchable
-        {
-            get {
-                return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim();
-            }
-        }
         public override string Source_type_wp4
         {
             get

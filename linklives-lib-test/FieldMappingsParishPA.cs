@@ -22,26 +22,6 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("place", "parish", "town", "state", "place parish town state")]
-        public void GetBirthPlaceSearchable_ReturnBirthPlaceBirthParishBirthTownBirthState(string place, string parish, string town, string state, string expected)
-        {
-
-            dynamic transcriped = new System.Dynamic.ExpandoObject();
-
-            transcriped.pa_id = 1;
-            transcriped.BirthPlace = place;
-            transcriped.BirthParish = parish;
-            transcriped.BirthMunicipality = town;
-            transcriped.BirthState = state;
-
-            var transcribedPA = new TranscribedPA(transcriped, source.Source_id);
-
-            var pa = (ParishPA)BasePA.Create(source, standardPA, transcribedPA);
-
-            Assert.AreEqual(expected, pa.Birthplace_searchable);
-        }
-
-        [Test]
         [TestCase("1886", "burial", 1886)]
         [TestCase("1886", "anothertype", null)]
         public void GetDeathYearSearchable_ReturnEventYearIfTypeBurial(string eventYear, string eventType, int? expected)

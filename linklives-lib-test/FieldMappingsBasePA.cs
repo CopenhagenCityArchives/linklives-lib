@@ -284,6 +284,23 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("place", "location", "parish", "town", "county", "country", "foreignplace", "place location parish town county country foreignplace")]
+        public void GetBirthPlaceSearchable_ReturnBirthPlaceBirthLocationBirthParishBirthTownBirthCountyBirthCountryBirthForeignPlace(string place, string location, string parish, string town, string county, string country, string foreignplace, string expected)
+        {
+            standardPA.Birth_place = place;
+            standardPA.Birth_location = location;
+            standardPA.Birth_parish = parish;
+            standardPA.Birth_town = town;
+            standardPA.Birth_county = county;
+            standardPA.Birth_country = country;
+            standardPA.Birth_foreign_place = foreignplace;
+
+            var parishPA = (CensusPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual(expected, parishPA.Birthplace_searchable);
+        }
+
+        [Test]
         [TestCase("county", "country", "county country")]
         [TestCase("county", null, "county")]
         public void GetBirthPlaceDisplay_SomeFieldsHaveValues_ReturnTrimmedBirthPlaceDisplay(string birthCounty, string birthCountry, string expected)
