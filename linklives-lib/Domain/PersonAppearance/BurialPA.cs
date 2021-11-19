@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Linklives.Domain.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +10,77 @@ namespace Linklives.Domain
     /// </summary>
     public class BurialPA : BasePA
     {
+        public override string Sourceplace_searchable
+        {
+            get
+            {
+                return "København";
+            }
+        }
+        public override string Deathplace_searchable
+        {
+            get
+            {
+                return Sourceplace_searchable;
+            }
+        }
+        public override string First_names_sortable
+        {
+            get
+            {
+                return Standard.First_names;
+            }
+        }
+        public override string Pa_entry_permalink_wp4
+        {
+            get
+            {
+                return $"https://kbharkiv.dk/permalink/post/1-{Standard.Pa_id}";
+            }
+        }
+        public override string Source_type_wp4 
+        {
+            get
+            {
+                return "burial_protocol";
+            } 
+        }
+        public override int? Deathyear_searchable
+        {
+            get
+            {
+                return Int32.TryParse(Standard.Event_year, out var tempInt) ? tempInt : (int?)null;
+            }
+        }
+        public override string Deathyear_searchable_fz
+        {
+            get
+            {
+                return IntToRangeAsStringHelper.GetRangePlusMinus3(Deathyear_searchable);
+            }
+        }
+        public override int? Deathyear_display
+        {
+            get
+            {
+                return Deathyear_searchable;
+            }
+        }
+        public override string Source_type_display
+        {
+            get
+            {
+                return "Begravelsesprotokol";
+            }
+        }
+        public override string Source_archive_display
+        {
+            get
+            {
+                return "Københavns Stadsarkiv";
+            }
+        }
+
         public BurialPA()
         {
             
@@ -16,51 +88,6 @@ namespace Linklives.Domain
         public BurialPA(StandardPA standardPA, TranscribedPA transcribedPA, Source source) : base(standardPA, transcribedPA, source)
         {
             Type = SourceType.burial_protocol;
-        }
-        protected override void InitSourceSpecificFields()
-        {
-            //TODO: Implement burial mapping
-            if (string.IsNullOrEmpty(Sourceplace_searchable))
-            {
-                Sourceplace_searchable = "København";
-            }
-
-            int deathYear;
-            if (Int32.TryParse(Standard.Event_year, out deathYear)) { 
-                Deathyear_searchable = deathYear; 
-            
-                Deathyear_searchable_fz = string.Join(' ', new int[]
-                {
-                        Deathyear_searchable.Value -3,
-                        Deathyear_searchable.Value -2,
-                        Deathyear_searchable.Value -1,
-                        Deathyear_searchable.Value,
-                        Deathyear_searchable.Value +1,
-                        Deathyear_searchable.Value +2,
-                        Deathyear_searchable.Value +3
-                });
-            }
-
-            Occupation_searchable = null; //TODO: figure out what this is supposed to map to (mapping sheet doesnt give field name)
-
-            var occupations = new List<string>();
-            occupations.AddRange(Transcribed.Transcription.positions.Replace("\"", "").Split(","));
-            var relationtypes = new List<string>();
-            relationtypes.AddRange(Transcribed.Transcription.relationtypes.Replace("\"", "").Split(","));
-
-            for (int i = 0; i < occupations.Count; i++)
-            {
-                Occupation_display = Occupation_display + relationtypes[i].Trim() + " " + occupations[i].Trim() + ", ";
-            }
-            Occupation_display = Occupation_display.Substring(0, Occupation_display.Length - 2);
-            //Occupation_display = Transcribed.Transcription.positions; //TODO: figure out what this is supposed to map to (mapping sheet doesnt give field name)
-            Sourceplace_display = "København";
-            //Sourceyear_display = Transcribed.Transcription.Source; //TODO: figure out what this is supposed to map to (mapping sheet says source_year but that field doesnt exist anywhere)
-            //Event_year_display = null; //TODO: figure out what this is supposed to map to (mapping sheet says source_year but that field doesnt exist anywhere)
-            Deathyear_display = Deathyear_searchable;
-            Source_type_display = "Begravelsesprotokol";
-            Source_archive_display = "Københavns Stadsarkiv";
-
         }
     }
 }

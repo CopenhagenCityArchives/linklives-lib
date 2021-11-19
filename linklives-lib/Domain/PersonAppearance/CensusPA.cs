@@ -7,6 +7,47 @@ namespace Linklives.Domain
     /// </summary>
     public class CensusPA : BasePA
     {
+        public override string Birthplace_searchable
+        {
+            get {
+                return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim();
+            }
+        }
+        public override string Source_type_wp4
+        {
+            get
+            {
+                return "census";
+            }
+        }
+        public override string Role_display
+        {
+            get
+            {
+                return Standard.Household_position;
+            }
+        }
+        public override string Source_type_display
+        {
+            get
+            {
+                return "Folketælling";
+            }
+        }
+        public override string Source_archive_display
+        {
+            get
+            {
+                return "Rigsarkivet";
+            }
+        }
+        public override string Role_searchable
+        {
+            get
+            {
+                return Standard.Household_position;
+            }
+        }
         public CensusPA()
         {
 
@@ -14,22 +55,6 @@ namespace Linklives.Domain
         public CensusPA(StandardPA standardPA, TranscribedPA transcribedPA, Source source) : base(standardPA, transcribedPA, source)
         {
             Type = SourceType.census;
-        }
-        protected override void InitSourceSpecificFields()
-        {
-            if (string.IsNullOrEmpty(Sourceplace_searchable))
-            {
-                Sourceplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.Sogn, Transcribed.Transcription.Herred, Transcribed.Transcription.Amt });
-            }
-            Occupation_searchable = Transcribed.Transcription.Stilling_i_husstanden;
-            Role_display = Standard.Household_position;
-            Occupation_display = Occupation_searchable;
-            Sourceplace_display = Sourceplace_searchable.Replace(' ', ',');
-            Sourceyear_display = Standard.Event_year;
-            Event_year_display = Standard.Event_year;
-            Source_type_display = "Folketælling";
-            Source_archive_display = "Rigsarkivet";
-
         }
     }
 }

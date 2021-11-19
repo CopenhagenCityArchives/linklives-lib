@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Linklives.Domain.Utilities;
+using System;
 
 namespace Linklives.Domain
 {
@@ -7,6 +8,69 @@ namespace Linklives.Domain
     /// </summary>
     public class ParishPA : BasePA
     {
+        public override string Birthplace_searchable 
+        {
+            get
+            {
+                return string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace, Transcribed.Transcription.BirthParish, Transcribed.Transcription.BirthMunicipality, Transcribed.Transcription.BirthState });
+            }
+        }
+        public override int? Deathyear_searchable
+        {
+            get
+            {
+                int deathyearSearchable;
+                if (Standard.Event_type.Equals("burial") && Int32.TryParse(Standard.Event_year, out deathyearSearchable))
+                {
+                    return deathyearSearchable;
+                }
+
+                return null;
+            }
+        }
+        public override string Deathyear_searchable_fz
+        {
+            get
+            {
+                if(!Standard.Event_type.Equals("burial")) { return null; }
+                return IntToRangeAsStringHelper.GetRangePlusMinus3(Standard.Event_year);
+            }
+        }
+        public override string Deathplace_searchable
+        {
+            get
+            {
+                return Standard.Event_type.Equals("burial") ? Sourceplace_searchable : null;
+            }
+        }
+        public override string Source_type_wp4
+        {
+            get
+            {
+                return "parish_register";
+            }
+        }
+        public override int? Deathyear_display
+        {
+            get
+            {
+                return Deathyear_searchable;
+            }
+        }
+        public override string Source_type_display
+        {
+            get
+            {
+                return "Kirkebog";
+            }
+        }
+        public override string Source_archive_display
+        {
+            get
+            {
+                return "Rigsarkivet";
+            }
+        }
         public ParishPA()
         {
 
@@ -14,53 +78,6 @@ namespace Linklives.Domain
         public ParishPA(StandardPA standardPA, TranscribedPA transcribedPA, Source source) : base(standardPA, transcribedPA, source)
         {
             Type = SourceType.parish_register;
-        }
-        protected override void InitSourceSpecificFields()
-        {
-            if (string.IsNullOrEmpty(Birthplace_searchable))
-            {
-                Birthplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace, Transcribed.Transcription.BirthParish, Transcribed.Transcription.BirthMunicipality, Transcribed.Transcription.BirthState });
-            }
-            if (string.IsNullOrEmpty(Birthplace_searchable)) { Birthplace_searchable = null; }
-            if (string.IsNullOrEmpty(Sourceplace_searchable))
-            {
-                Sourceplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BrowseLevel, Transcribed.Transcription.BrowseLevel1 }).Trim();
-            }
-
-            if (Standard.Event_type == "burial")
-            {
-                int event_year = 0;
-                if(Int32.TryParse(Standard.Event_year, out event_year))
-                {
-                    Deathyear_searchable =  event_year;
-                    Deathyear_searchable_fz = string.Join(' ', new int[]
-                    {
-                        Deathyear_searchable.Value -3,
-                        Deathyear_searchable.Value -2,
-                        Deathyear_searchable.Value -1,
-                        Deathyear_searchable.Value,
-                        Deathyear_searchable.Value +1,
-                        Deathyear_searchable.Value +2,
-                        Deathyear_searchable.Value +3
-                    });
-                }
-                else
-                {
-                    Deathyear_searchable = null;
-                    Deathyear_searchable_fz = null;
-                }
-            }
-            if (string.IsNullOrEmpty(Birthplace_display))
-            {
-                Birthplace_searchable = string.Join(' ', new string[] { Transcribed.Transcription.BirthPlace, string.IsNullOrEmpty(Transcribed.Transcription.BirthParish) ? null : Transcribed.Transcription.BirthParish + " sogn", Transcribed.Transcription.BirthMunicipality, Transcribed.Transcription.BirthState }).Trim().Replace(' ', ','); //trim and replace so we dont end up with strings of just commas
-            }
-            Birthplace_searchable = string.IsNullOrEmpty(Birthplace_searchable) ? null : Birthplace_searchable;
-            Sourceplace_display = string.Join(", ", new string[] { Transcribed.Transcription.BrowseLevel1, Transcribed.Transcription.BrowseLevel }).Trim();  //trim and replace so we dont end up with strings of just commas
-            Sourceyear_display = Transcribed.Transcription.BrowseLevel2;
-            Event_year_display = Standard.Event_year;
-            Deathyear_display = Deathyear_searchable;
-            Source_type_display = "Kirkebog";
-            Source_archive_display = "Rigsarkivet";
         }
     }
 }
