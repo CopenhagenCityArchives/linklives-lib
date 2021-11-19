@@ -22,7 +22,7 @@ To create and run migrations when using Visual Studio:
 * Set linkliveslib-dummy as startup project
 * Chose linkliveslib
 * Run ``add-migration A-MIGRATION-NAME-OF-YOUR-CHOOSING``
-* To remove a migration run ``remove-migration`` (fjerner seneste migration)
+* To remove a migration run ``remove-migration``
 * To update the database run ``update-database``
 
 You can also follow this [guide on EF migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).
