@@ -37,22 +37,6 @@ namespace linklives_lib_test
         }
 
         [Test]
-        public void GetDeathYearSearchable_ReturnNull()
-        {
-            var burialPA = (BurialPA)BasePA.Create(source, standardPA, null);
-
-            Assert.AreEqual(null, burialPA.Deathyear_searchable);
-        }
-
-        [Test]
-        public void GetDeathYearSearchableFz_ReturnNull()
-        {
-            var burialPA = (BurialPA)BasePA.Create(source, standardPA, null);
-
-            Assert.AreEqual(null, burialPA.Deathyear_searchable_fz);
-        }
-
-        [Test]
         public void GetDeathplaceSearchable_ReturnKoebenhavn()
         {
             var pa = (BurialPA)BasePA.Create(source, standardPA, null);
@@ -98,6 +82,18 @@ namespace linklives_lib_test
             var pa = (BurialPA)BasePA.Create(source, standardPA, null);
 
             Assert.AreEqual(expected, pa.Deathyear_searchable_fz);
+        }
+
+        [Test]
+        [TestCase("1886", 1886)]
+        [TestCase("",  null)]
+        public void GetDeathYearSearchable_ReturnEventYear(string eventYear, int? expected)
+        {
+            standardPA.Event_year = eventYear;
+
+            var pa = (BurialPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual(expected, pa.Deathyear_searchable);
         }
 
         [Test]
