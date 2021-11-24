@@ -45,6 +45,7 @@ namespace Linklives.Domain
         [Name("event_date")]
         public string Event_date { get; set; }
         [Name("event_year")]
+        [Nest.Keyword]
         public string Event_year { get; set; }
         [Name("event_month")]
         public string Event_month { get; set; }
@@ -85,6 +86,7 @@ namespace Linklives.Domain
         [Name("role")]
         public string Role { get; set; }
         [Name("event_type")]
+        [Nest.Keyword]
         public string Event_type { get; set; }
         [Name("book_id")]
         public string Book_id { get; set; }

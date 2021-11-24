@@ -69,6 +69,7 @@ namespace Linklives.Domain
                 .Distinct()).Trim();
             }
         }
+        [Nest.Keyword]
         public int? Birthyear_searchable {
             get
             {
@@ -89,6 +90,7 @@ namespace Linklives.Domain
                 return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim();
             }
         }
+        [Nest.Keyword]
         public int? Sourceyear_searchable {
             get
             {
@@ -110,6 +112,7 @@ namespace Linklives.Domain
                 .Distinct()).Trim();
             }
         }
+        [Nest.Keyword]
         public virtual int? Deathyear_searchable { get; }
 
         public virtual string Deathyear_searchable_fz { get; }
@@ -160,6 +163,7 @@ namespace Linklives.Domain
                 return DateTime.Now;
             }
         }
+        [Nest.Keyword]
         public virtual string Source_type_wp4 { get;  }
 
         //Display
@@ -171,6 +175,7 @@ namespace Linklives.Domain
                 return Regex.Replace(uppercaseWords, @"\s+", " ");
             }
         }
+        [Nest.Keyword]
         public int? Birthyear_display
         {
             get
@@ -194,6 +199,7 @@ namespace Linklives.Domain
         }
         public string Occupation_display { get; set; }
         public string Sourceplace_display { get; set; }
+        [Nest.Keyword]
         public string Event_type_display
         {
             get
@@ -201,10 +207,14 @@ namespace Linklives.Domain
                 return PAStrings.ResourceManager.GetString(Standard.Event_type.ToLower()) ?? Standard.Event_type;
             }
         }
+        [Nest.Keyword]
         public string Sourceyear_display { get; set; }
+        [Nest.Keyword]
         public string Event_year_display { get; set; }
+        [Nest.Keyword]
         public virtual int? Deathyear_display { get; }
         public  virtual string Deathplace_searchable { get; }
+        [Nest.Keyword]
         public virtual string Source_type_display { get; }
         public virtual string Source_archive_display { get; }
         public virtual string Role_searchable
