@@ -198,7 +198,15 @@ namespace Linklives.Domain
             }
         }
         public string Occupation_display { get; set; }
-        public string Sourceplace_display { get; set; }
+        public virtual string Sourceplace_display
+        {
+            get
+            {
+                return string.Join(' ', new string[]
+                { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }
+                .Distinct().Where(s => !string.IsNullOrEmpty(s))).Trim();
+            }
+        }
         [Nest.Keyword]
         public string Event_type_display
         {

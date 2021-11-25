@@ -88,6 +88,14 @@ namespace Linklives.Domain
             }
         }
 
+        public override string Sourceplace_display
+        {
+            get
+            {
+                return "København";
+            }
+        }
+
         public BurialPA()
         {
             

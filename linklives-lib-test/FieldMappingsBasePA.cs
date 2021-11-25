@@ -157,6 +157,24 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("", "", "", "", "", "", "")]
+        [TestCase("location", "", "district", "town", "county", "country", "location district town county country")]
+        [TestCase("location", "parish", "district", "town", "county", "country", "location parish district town county country")]
+        public void GetSourcePlaceDisplay_ReturnUniqueValuesFromEventLocationEventParishEventDistrictEventTownEventCountyAndEventCountry(string location, string parish, string district, string town, string county, string country, string expected)
+        {
+            standardPA.Event_location = location;
+            standardPA.Event_parish = parish;
+            standardPA.Event_district = district;
+            standardPA.Event_town = town;
+            standardPA.Event_county = county;
+            standardPA.Event_country = country;
+
+            var basePA = new BasePA(standardPA, null, source);
+
+            Assert.AreEqual(expected, basePA.Sourceplace_display);
+        }
+
+        [Test]
         [TestCase("m")]
         [TestCase("f")]
         public void GetGenderSearchableWithKnownValue_ReturnMatchingPAString(string sex)

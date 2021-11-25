@@ -46,6 +46,24 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("", "", "", "", "", "", "")]
+        [TestCase("location", "", "district", "town", "county", "country", "location district town county country")]
+        [TestCase("location", "parish", "district", "town", "county", "country", "location parish sogn district town county country")]
+        public void GetSourcePlaceDisplay_ReturnUniqueValuesFromEventLocationEventParishEventDistrictEventTownEventCountyAndEventCountry(string location, string parish, string district, string town, string county, string country, string expected)
+        {
+            standardPA.Event_location = location;
+            standardPA.Event_parish = parish;
+            standardPA.Event_district = district;
+            standardPA.Event_town = town;
+            standardPA.Event_county = county;
+            standardPA.Event_country = country;
+
+            var pa = (CensusPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual(expected, pa.Sourceplace_display);
+        }
+
+        [Test]
         [TestCase("father", "father")]
         public void GetRoleDisplay_ReturnHouseholdPosition(string householdPosition, string expected)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Linklives.Domain
 {
@@ -40,6 +41,14 @@ namespace Linklives.Domain
             get
             {
                 return Standard.Household_position;
+            }
+        }
+        //TODO: If BasePA also adds "sogn" to paris, this override is not necessary
+        public override string Sourceplace_display
+        {
+            get
+            {
+                return string.Join(' ', new string[] { Standard.Event_location, string.IsNullOrEmpty(Standard.Event_parish) ? null : Standard.Event_parish + " sogn", Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }.Where(s => !string.IsNullOrEmpty(s))).Trim();  //trim and replace so we dont end up with strings of just commas
             }
         }
         public CensusPA()

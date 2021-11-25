@@ -121,5 +121,13 @@ namespace linklives_lib_test
 
             Assert.AreEqual("Københavns Stadsarkiv", pa.Source_archive_display);
         }
+
+        [Test]
+        public void GetSourcePlaceDisplay_ReturnKoebenhavn()
+        {
+            var pa = (BurialPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual("København", pa.Sourceplace_display);
+        }
     }
 }
