@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Nest;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Linklives.Domain
 {
+    [ElasticsearchType(IdProperty = nameof(Key))]
     public class TranscribedPA : KeyedItem
     {
         public int Pa_id { get; set; }
