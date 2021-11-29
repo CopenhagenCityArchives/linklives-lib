@@ -23,9 +23,7 @@ namespace Linklives.DAL
         public BasePA GetById(string id)
         {
             var searchResponse = client.Get<BasePA>(id, g => g.Index("pas"));
-            //dynamic pas = searchResponse.Source["person_appearance"];
-            //pas.Add("source", sourceRepository.GetById((int)pas["source_id"]));
-
+            searchResponse.Source.Source = sourceRepository.GetById(searchResponse.Source.Source_id);
             return searchResponse.Source;
         }
 
