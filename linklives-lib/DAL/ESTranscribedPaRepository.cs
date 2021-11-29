@@ -15,6 +15,11 @@ namespace Linklives.DAL
         {
             this.client = client;
         }
+        public TranscribedPA GetById(string id)
+        {
+            var searchResponse = client.Get<TranscribedPA>(id, g => g.Index("transcribed"));
+            return searchResponse.Source;
+        }
 
         public IList<TranscribedPA> GetBySource(int sourceId)
         {
