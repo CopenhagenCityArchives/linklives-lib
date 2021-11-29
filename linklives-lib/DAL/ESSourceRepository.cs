@@ -1,4 +1,5 @@
-﻿using Nest;
+﻿using Linklives.Domain;
+using Nest;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,20 +24,11 @@ namespace Linklives.DAL
             return searchResponse.Documents.Select(x => x["source"]);
         }
 
-        public dynamic GetById(int id)
+        public Source GetById(int id)
         {
-            var searchResponse = client.Search<dynamic>(s => s
-            .Index("sources")
-            .From(0)
-            .Size(1)
-            .Query(q => q
-                    .Nested(n => n
-                    .Path("source")
-                    .Query(nq => nq
-                        .Terms(t => t
-                            .Field("source.source_id")
-                            .Terms(id))))));
-            return searchResponse.Documents.Single()["source"];
+            var searchResponse = client.Get<Source>(id, g => g.Index("source"));
+
+            return searchResponse.Source;
         }
 
         public IEnumerable<dynamic> GetByIds(IList<int> ids)
