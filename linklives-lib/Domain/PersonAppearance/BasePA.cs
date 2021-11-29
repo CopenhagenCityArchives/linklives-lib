@@ -103,7 +103,6 @@ namespace Linklives.Domain
                 return IntToRangeAsStringHelper.GetRangePlusMinus3(Sourceyear_searchable);
             }
         }
-        [Nest.Number]
         public int? Sourceyear_sortable
         {
             get
@@ -227,7 +226,6 @@ namespace Linklives.Domain
         public string Sourceyear_display { get; set; }
         [Nest.Keyword]
         public string Event_year_display { get; set; }
-        [Nest.Number]
         public int? Event_year_sortable
         {
             get
@@ -237,7 +235,6 @@ namespace Linklives.Domain
         }
         [Nest.Keyword]
         public virtual int? Deathyear_display { get; }
-        [Nest.Number]
         public int? Deathyear_sortable {
             get
             {
