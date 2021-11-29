@@ -35,6 +35,19 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("1886", "burial", 1886)]
+        [TestCase("1886", "anothertype", null)]
+        public void GetDeathYearSortable_ReturnEventYearIfTypeBurial(string eventYear, string eventType, int? expected)
+        {
+            standardPA.Event_year = eventYear;
+            standardPA.Event_type = eventType;
+
+            var pa = (ParishPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual(expected, pa.Deathyear_sortable);
+        }
+
+        [Test]
         [TestCase("3", "burial", "0 1 2 3 4 5 6")]
         [TestCase("3", "anothertype", null)]
         public void GetDeathYearSearchableFz_ReturnEventYearPlusMinus3IfTypeBurial(string eventYear, string eventType, string? expected)

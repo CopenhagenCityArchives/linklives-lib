@@ -97,6 +97,18 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("1886", 1886)]
+        [TestCase("", null)]
+        public void GetDeathYearSortable_ReturnEventYear(string eventYear, int? expected)
+        {
+            standardPA.Event_year = eventYear;
+
+            var pa = (BurialPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual(expected, pa.Deathyear_sortable);
+        }
+
+        [Test]
         [TestCase("1886",1886)]
         public void GetDeathYearDisplay_ReturnEventYear(string eventYear, int? expected)
         {

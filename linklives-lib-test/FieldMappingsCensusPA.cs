@@ -38,6 +38,14 @@ namespace linklives_lib_test
         }
 
         [Test]
+        public void GetDeathYearSortable_ReturnNull()
+        {
+            var pa = (CensusPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual(null, pa.Deathyear_sortable);
+        }
+
+        [Test]
         public void GetSourceTypeWP4_ReturnCensus()
         {
             var pa = (CensusPA)BasePA.Create(source, standardPA, null);

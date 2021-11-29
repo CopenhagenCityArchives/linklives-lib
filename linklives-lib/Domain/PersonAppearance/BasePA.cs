@@ -103,6 +103,14 @@ namespace Linklives.Domain
                 return IntToRangeAsStringHelper.GetRangePlusMinus3(Sourceyear_searchable);
             }
         }
+        [Nest.Number]
+        public int? Sourceyear_sortable
+        {
+            get
+            {
+                return Sourceyear_searchable;
+            }
+        }
         public virtual string Sourceplace_searchable
         {
             get
@@ -219,8 +227,23 @@ namespace Linklives.Domain
         public string Sourceyear_display { get; set; }
         [Nest.Keyword]
         public string Event_year_display { get; set; }
+        [Nest.Number]
+        public int? Event_year_sortable
+        {
+            get
+            {
+                return Int32.TryParse(Standard.Event_year, out var tempSourceYear) ? tempSourceYear : (int?)null;
+            }
+        }
         [Nest.Keyword]
         public virtual int? Deathyear_display { get; }
+        [Nest.Number]
+        public int? Deathyear_sortable {
+            get
+            {
+                return Deathyear_searchable;
+            }
+        }
         public  virtual string Deathplace_searchable { get; }
         [Nest.Keyword]
         public virtual string Source_type_display { get; }

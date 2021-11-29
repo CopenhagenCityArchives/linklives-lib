@@ -130,6 +130,30 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("1886", 1886)]
+        [TestCase("", null)]
+        public void GetEventYearSortable_ReturnEventYear(string eventYear, int? expected)
+        {
+            standardPA.Event_year = eventYear;
+
+            var basePA = new BasePA(standardPA, null, source);
+
+            Assert.AreEqual(expected, basePA.Event_year_sortable);
+        }
+
+        [Test]
+        [TestCase("1886", 1886)]
+        [TestCase("", null)]
+        public void GetSourceYearSortable_ReturnEventYear(string eventYear, int? expected)
+        {
+            standardPA.Event_year = eventYear;
+
+            var basePA = new BasePA(standardPA, null, source);
+
+            Assert.AreEqual(expected, basePA.Sourceyear_sortable);
+        }
+
+        [Test]
         [TestCase("3", "0 1 2 3 4 5 6")]
         public void GetSourceYearSearchableFz_ReturnEventYearPlusMinus3(string eventYear, string expected)
         {
