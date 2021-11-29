@@ -26,7 +26,7 @@ namespace Linklives.DAL
 
         public Source GetById(int id)
         {
-            var searchResponse = client.Get<Source>(id, g => g.Index("source"));
+            var searchResponse = client.Get<Source>(id, g => g.Index("sources"));
 
             return searchResponse.Source;
         }
