@@ -13,6 +13,7 @@ namespace Linklives.Domain
         census = 2,
         burial_protocol = 3
     }
+    [ElasticsearchType(IdProperty = nameof(Source_id))]
     public class Source
     {
         [Name("source_id")]
