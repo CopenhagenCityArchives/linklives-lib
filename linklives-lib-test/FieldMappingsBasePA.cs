@@ -385,15 +385,15 @@ namespace linklives_lib_test
             Assert.AreEqual(PAStrings.ResourceManager.GetString(eventTypeDisplay) ?? eventTypeDisplay, basePA.Event_type_display);
         }
 
+
         [Test]
-        [TestCase("role", "role")]
-        [TestCase(null, null)]
-        public void GetRoleSearchable_ReturnRole(string role, string expected)
+        [TestCase("father")]
+        public void GetRoleSearchable_ReturnMatchingPAString(string role)
         {
             standardPA.Role = role;
-            var pa = new BasePA(standardPA, null, source);
+            var basePA = new BasePA(standardPA, null, source);
 
-            Assert.AreEqual(expected, pa.Role_searchable);
+            Assert.AreEqual(PAStrings.ResourceManager.GetString(role), basePA.Role_display);
         }
     }
 }

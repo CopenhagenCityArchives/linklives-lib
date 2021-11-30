@@ -249,7 +249,7 @@ namespace Linklives.Domain
         {
             get
             {
-                return Standard.Role;
+                return PAStrings.ResourceManager.GetString(Standard.Role.ToLower()) ?? null;
             }
         }
 
