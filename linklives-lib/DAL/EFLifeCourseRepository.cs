@@ -26,5 +26,61 @@ namespace Linklives.DAL
 
             context.Entry(lc).Collection(b => b.Links).Load();
         }
+
+        public void UpsertLifeCoursesMarkOldOnes(IEnumerable<LifeCourse> lifecourses)
+        {
+            context.ChangeTracker.AutoDetectChangesEnabled = false;
+
+            // Select ids from lifecourses
+            var newLifeCourseIDs = lifecourses.Select(u => u.Key).Distinct().ToDictionary(x => x, x => true);
+
+            // Select ids from lifecourses which are in the database
+            var lifeCoursesInDb = context.LifeCourse
+                                        .Where(u => newLifeCourseIDs.ContainsKey(u.Key))
+                                        .ToArray();
+
+            // Update lifecourses already in the database
+            foreach (LifeCourse lc in lifeCoursesInDb)
+            {
+                //Skip links, they are to be saved another place
+                lc.Links = null;
+
+                //These lifecourses are not historic
+                lc.Is_historic = false;
+                
+                context.Add(lc);
+            }
+
+            context.SaveChanges();
+
+            // Get dictionary of lifecourse Key values
+            var lifeCoursesInDbIDs = lifeCoursesInDb.Select(lc => lc.Key).Distinct().ToDictionary(x => x, x => true);
+            
+            // Select lifecourses not in the database
+            var lifeCoursesNotInDb = context.LifeCourse.Where(u => !lifeCoursesInDbIDs.ContainsKey(u.Key));
+
+            // Add lifecourses not in the database
+            foreach (LifeCourse lc in lifeCoursesNotInDb)
+            {
+                lc.Links = null;
+                lc.Is_historic = false;
+                context.Add(lc);
+            }
+
+            context.SaveChanges();
+
+            // Get list of life courses in the DB that is not present in the list
+            var lifecoursesInDbNotInNewLifeCourses = context.LifeCourse.Where(lc => !newLifeCourseIDs.ContainsKey(lc.Key)).ToArray();
+            
+            // Update old lifecourses to be historic
+            foreach (LifeCourse lc in lifecoursesInDbNotInNewLifeCourses)
+            {
+                lc.Links = null;
+                lc.Is_historic = true;
+                context.Add(lc);
+            }
+
+            context.SaveChanges();
+        }
     }
 }
