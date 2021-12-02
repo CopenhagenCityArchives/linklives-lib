@@ -225,7 +225,7 @@ namespace Linklives.Domain
         [Nest.Keyword]
         public string Sourceyear_display { get; set; }
         [Nest.Keyword]
-        public string Event_year_display { get; set; }
+        public string Event_year_display { get { return Standard.Event_year; } }
         public int? Event_year_sortable
         {
             get
