@@ -35,7 +35,7 @@ namespace Linklives.DAL
             var newLifeCourseIDs = lifecourses.Select(u => u.Key).Distinct().ToDictionary(x => x, x => true);
 
             // Select ids from lifecourses which are in the database
-            var lifeCoursesInDb = context.LifeCourse
+            var lifeCoursesInDb = context.LifeCourses
                                         .Where(u => newLifeCourseIDs.ContainsKey(u.Key))
                                         .ToArray();
 
@@ -57,7 +57,7 @@ namespace Linklives.DAL
             var lifeCoursesInDbIDs = lifeCoursesInDb.Select(lc => lc.Key).Distinct().ToDictionary(x => x, x => true);
             
             // Select lifecourses not in the database
-            var lifeCoursesNotInDb = context.LifeCourse.Where(u => !lifeCoursesInDbIDs.ContainsKey(u.Key));
+            var lifeCoursesNotInDb = context.LifeCourses.Where(u => !lifeCoursesInDbIDs.ContainsKey(u.Key));
 
             // Add lifecourses not in the database
             foreach (LifeCourse lc in lifeCoursesNotInDb)
@@ -70,7 +70,7 @@ namespace Linklives.DAL
             context.SaveChanges();
 
             // Get list of life courses in the DB that is not present in the list
-            var lifecoursesInDbNotInNewLifeCourses = context.LifeCourse.Where(lc => !newLifeCourseIDs.ContainsKey(lc.Key)).ToArray();
+            var lifecoursesInDbNotInNewLifeCourses = context.LifeCourses.Where(lc => !newLifeCourseIDs.ContainsKey(lc.Key)).ToArray();
             
             // Update old lifecourses to be historic
             foreach (LifeCourse lc in lifecoursesInDbNotInNewLifeCourses)
