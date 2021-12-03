@@ -33,6 +33,10 @@ namespace Linklives.DAL
 
         public IEnumerable<BasePA> GetByIds(List<string> Ids)
         {
+            if(Ids.Count == 0)
+            {
+                return null;
+            }
             //TODO: Fix this up and tag on the transcribed source before returning
             var pasSearchResponse = client.Search<BasePA>(s => s
             .Index("pas")
