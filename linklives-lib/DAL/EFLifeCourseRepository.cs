@@ -31,7 +31,7 @@ namespace Linklives.DAL
         {
             context.ChangeTracker.AutoDetectChangesEnabled = false;
 
-            var IDsInTheDatabase = context.LifeCourses.AsEnumerable().Select(lc => lc.Key).ToDictionary(x => x, x => true);
+            var IDsInTheDatabase = context.LifeCourses.AsNoTracking().AsEnumerable().Select(lc => lc.Key).ToDictionary(x => x, x => true);
 
             // Select ids from lifecourses which are in the database
             var lifecoursesAlreadyInDb = lifecourses.Where(lc => IDsInTheDatabase.ContainsKey(lc.Key));
@@ -41,6 +41,7 @@ namespace Linklives.DAL
             {
                 //These lifecourses are not historic
                 lc.Is_historic = false;
+                lc.Links = null;
                 context.Update(lc);
             }
 
@@ -62,14 +63,14 @@ namespace Linklives.DAL
             var newLifeCourseIDs = lifecourses.Select(lc => lc.Key).ToDictionary(x => x, x => true);
 
             // Get list of life courses in the DB that is not present in the list
-            var lifecoursesInDbNotInNewLifeCourses = context.LifeCourses.Where(lc => !newLifeCourseIDs.ContainsKey(lc.Key)).ToArray();
+            var lifecoursesInDbNotInNewLifeCourses = context.LifeCourses.AsEnumerable().Where(lc => !newLifeCourseIDs.ContainsKey(lc.Key)).ToArray();
 
             // Update old lifecourses to be historic
             foreach (LifeCourse lc in lifecoursesInDbNotInNewLifeCourses)
             {
                 lc.Links = null;
                 lc.Is_historic = true;
-                context.Add(lc);
+                context.Update(lc);
             }
 
             context.SaveChanges();
