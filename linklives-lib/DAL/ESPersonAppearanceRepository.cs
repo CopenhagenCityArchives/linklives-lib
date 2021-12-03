@@ -13,6 +13,7 @@ namespace Linklives.DAL
     {
         private readonly ElasticClient client;
         private readonly ISourceRepository sourceRepository;
+        private readonly ITranscribedPARepository transcribedRepository;
 
         public ESPersonAppearanceRepository(ElasticClient client, ISourceRepository sourceRepository)
         {
@@ -22,9 +23,11 @@ namespace Linklives.DAL
 
         public BasePA GetById(string id)
         {
-            var searchResponse = client.Get<BasePA>(id, g => g.Index("pas"));
-            searchResponse.Source.Source = sourceRepository.GetById(searchResponse.Source.Source_id);
-            return searchResponse.Source;
+            var basePADoc = client.Get<BasePA>(id, g => g.Index("pas"));
+            var source = sourceRepository.GetById(basePADoc.Source.Source_id);
+            var transcribedPA = transcribedRepository.GetById(id);
+            var pa = BasePA.Create(source, basePADoc.Source.Standard, transcribedPA);
+            return pa;
         }
 
         public IEnumerable<BasePA> GetByIds(List<string> Ids)
