@@ -15,10 +15,11 @@ namespace Linklives.DAL
         private readonly ISourceRepository sourceRepository;
         private readonly ITranscribedPARepository transcribedRepository;
 
-        public ESPersonAppearanceRepository(ElasticClient client, ISourceRepository sourceRepository)
+        public ESPersonAppearanceRepository(ElasticClient client, ISourceRepository sourceRepository, ITranscribedPARepository transcribedPARepository)
         {
             this.client = client;
             this.sourceRepository = sourceRepository;
+            this.transcribedRepository = transcribedPARepository;
         }
 
         public BasePA GetById(string id)
