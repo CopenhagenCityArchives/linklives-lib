@@ -35,29 +35,23 @@ namespace Linklives.DAL
             var newLifeCourseIDs = lifecourses.Select(u => u.Key).Distinct().ToDictionary(x => x, x => true);
 
             // Select ids from lifecourses which are in the database
-            var lifeCoursesInDb = context.LifeCourses
-                                        .Where(u => newLifeCourseIDs.ContainsKey(u.Key))
+            var lifecoursesAlreadyInDb = context.LifeCourses.AsEnumerable().Where(lc => newLifeCourseIDs.ContainsKey(lc.Key))
                                         .ToArray();
 
             // Update lifecourses already in the database
-            foreach (LifeCourse lc in lifeCoursesInDb)
+            foreach (LifeCourse lc in lifecoursesAlreadyInDb)
             {
-                //Skip links, they are to be saved another place
-                lc.Links = null;
-
                 //These lifecourses are not historic
-                lc.Is_historic = false;
-                
-                context.Add(lc);
+                lc.Is_historic = true;
             }
 
             context.SaveChanges();
 
             // Get dictionary of lifecourse Key values
-            var lifeCoursesInDbIDs = lifeCoursesInDb.Select(lc => lc.Key).Distinct().ToDictionary(x => x, x => true);
-            
+            var lifeCoursesInDbIDs = lifecoursesAlreadyInDb.Select(lc => lc.Key).Distinct().ToDictionary(x => x, x => true);
+
             // Select lifecourses not in the database
-            var lifeCoursesNotInDb = context.LifeCourses.Where(u => !lifeCoursesInDbIDs.ContainsKey(u.Key));
+            var lifeCoursesNotInDb = context.LifeCourses.AsEnumerable().Where(u => !lifeCoursesInDbIDs.ContainsKey(u.Key));
 
             // Add lifecourses not in the database
             foreach (LifeCourse lc in lifeCoursesNotInDb)
@@ -71,7 +65,7 @@ namespace Linklives.DAL
 
             // Get list of life courses in the DB that is not present in the list
             var lifecoursesInDbNotInNewLifeCourses = context.LifeCourses.Where(lc => !newLifeCourseIDs.ContainsKey(lc.Key)).ToArray();
-            
+
             // Update old lifecourses to be historic
             foreach (LifeCourse lc in lifecoursesInDbNotInNewLifeCourses)
             {
