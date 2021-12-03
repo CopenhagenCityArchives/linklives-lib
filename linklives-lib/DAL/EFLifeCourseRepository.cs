@@ -31,27 +31,23 @@ namespace Linklives.DAL
         {
             context.ChangeTracker.AutoDetectChangesEnabled = false;
 
-            // Select ids from lifecourses
-            var newLifeCourseIDs = lifecourses.Select(u => u.Key).Distinct().ToDictionary(x => x, x => true);
+            var IDsInTheDatabase = context.LifeCourses.AsEnumerable().Select(lc => lc.Key).ToDictionary(x => x, x => true);
 
             // Select ids from lifecourses which are in the database
-            var lifecoursesAlreadyInDb = context.LifeCourses.AsEnumerable().Where(lc => newLifeCourseIDs.ContainsKey(lc.Key))
-                                        .ToArray();
+            var lifecoursesAlreadyInDb = lifecourses.Where(lc => IDsInTheDatabase.ContainsKey(lc.Key));
 
             // Update lifecourses already in the database
             foreach (LifeCourse lc in lifecoursesAlreadyInDb)
             {
                 //These lifecourses are not historic
-                lc.Is_historic = true;
+                lc.Is_historic = false;
+                context.Update(lc);
             }
 
             context.SaveChanges();
 
-            // Get dictionary of lifecourse Key values
-            var lifeCoursesInDbIDs = lifecoursesAlreadyInDb.Select(lc => lc.Key).Distinct().ToDictionary(x => x, x => true);
-
-            // Select lifecourses not in the database
-            var lifeCoursesNotInDb = context.LifeCourses.AsEnumerable().Where(u => !lifeCoursesInDbIDs.ContainsKey(u.Key));
+            // Lifecourses not in the database
+            var lifeCoursesNotInDb = lifecourses.Where(lc => !IDsInTheDatabase.ContainsKey(lc.Key));
 
             // Add lifecourses not in the database
             foreach (LifeCourse lc in lifeCoursesNotInDb)
@@ -62,6 +58,8 @@ namespace Linklives.DAL
             }
 
             context.SaveChanges();
+
+            var newLifeCourseIDs = lifecourses.Select(lc => lc.Key).ToDictionary(x => x, x => true);
 
             // Get list of life courses in the DB that is not present in the list
             var lifecoursesInDbNotInNewLifeCourses = context.LifeCourses.Where(lc => !newLifeCourseIDs.ContainsKey(lc.Key)).ToArray();
