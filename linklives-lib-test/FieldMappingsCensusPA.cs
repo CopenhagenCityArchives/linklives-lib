@@ -133,7 +133,7 @@ namespace linklives_lib_test
         {
             var transcription = new ExpandoObject();
             transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("stilling_i_husstanden", stillingIHusstanden);
+            transcription.TryAdd("Stilling_i_husstanden", stillingIHusstanden);
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
 
@@ -147,7 +147,7 @@ namespace linklives_lib_test
         {
             var transcription = new ExpandoObject();
             transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("stilling_i_husstanden", stillingIHusstanden);
+            transcription.TryAdd("Stilling_i_husstanden", stillingIHusstanden);
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
 
