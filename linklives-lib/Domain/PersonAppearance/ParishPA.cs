@@ -43,6 +43,13 @@ namespace Linklives.Domain
                 return "parish_register";
             }
         }
+        public override string Pa_grouping_id_wp4
+        {
+            get
+            {
+                return Transcribed.Transcription.event_id;
+            }
+        }
         public override int? Deathyear_display
         {
             get

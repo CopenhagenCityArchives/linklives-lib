@@ -95,6 +95,20 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("1","1")]
+        [TestCase(null, null)]
+        public void GetPaGroupingIdWp4_ReturnTranscripedEventId(string event_id, string expected)
+        {
+            var transcription = new ExpandoObject();
+            transcription.TryAdd("pa_id", 1);
+            transcription.TryAdd("event_id",event_id);
+            var transPA = new TranscribedPA(transcription, 1);
+            var pa = (ParishPA)BasePA.Create(source, standardPA, transPA);
+
+            Assert.AreEqual(expected, pa.Pa_grouping_id_wp4);
+        }
+
+        [Test]
         [TestCase("1886", 1886)]
         public void GetDeathYearDisplay_WithEventTypeBurial_ReturnEventYear(string eventYear, int? expected)
         {

@@ -15,6 +15,13 @@ namespace Linklives.Domain
                 return "census";
             }
         }
+        public override string Pa_grouping_id_wp4
+        {
+            get
+            {
+                return Standard.Household_id;
+            }
+        }
         public override string Role_display
         {
             get

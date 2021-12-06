@@ -54,6 +54,19 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("1", "1")]
+        [TestCase(null, null)]
+        public void GetPaGroupingIdWp4_ReturnHouseHoldId(string household_id, string expected)
+        {
+            standardPA.Household_id = household_id;
+            var pa = (CensusPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual(null, pa.Deathyear_sortable);
+
+            Assert.AreEqual(expected, pa.Pa_grouping_id_wp4);
+        }
+
+        [Test]
         [TestCase("", "", "", "", "", "", "")]
         [TestCase("location", "", "district", "town", "county", "country", "location district town county country")]
         [TestCase("location", "parish", "district", "town", "county", "country", "location parish sogn district town county country")]

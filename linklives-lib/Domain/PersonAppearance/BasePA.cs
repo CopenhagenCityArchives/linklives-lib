@@ -172,6 +172,7 @@ namespace Linklives.Domain
         }
         [Nest.Keyword]
         public virtual string Source_type_wp4 { get;  }
+        public virtual string Pa_grouping_id_wp4 { get; }
 
         //Display
         public string Name_display
