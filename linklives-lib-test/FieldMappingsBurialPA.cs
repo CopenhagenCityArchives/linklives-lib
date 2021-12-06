@@ -56,10 +56,13 @@ namespace linklives_lib_test
 
         [Test]
         [TestCase(1, @"https://kbharkiv.dk/permalink/post/1-1")]
-        public void GetPAEntryPermaLinkWP4_ReturnURLToSpecificPost(int id, string expected)
+        public void GetPAEntryPermaLinkWP4_ReturnURLToSpecificPostBasedOnTranscribedId(int id, string expected)
         {
-            standardPA.Pa_id = id;
-            var pa = (BurialPA)BasePA.Create(source, standardPA, null);
+            var transcription = new ExpandoObject();
+            transcription.TryAdd("pa_id", 1);
+            transcription.TryAdd("id",id);
+            var transcribed = new TranscribedPA(transcription, 1);
+            var pa = (BurialPA)BasePA.Create(source, standardPA, transcribed);
 
             Assert.AreEqual(expected, pa.Pa_entry_permalink_wp4);
         }

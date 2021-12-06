@@ -35,7 +35,7 @@ namespace Linklives.Domain
         {
             get
             {
-                return $"https://kbharkiv.dk/permalink/post/1-{Standard.Pa_id}";
+                return $"https://kbharkiv.dk/permalink/post/1-{Transcribed.Transcription.id}";
             }
         }
         public override string Source_type_wp4 
