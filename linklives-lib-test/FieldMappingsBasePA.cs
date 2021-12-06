@@ -130,6 +130,17 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("1886", "1886")]
+        [TestCase(null, null)]
+        public void GetSourceYearDisplay_ReturnEventYear(string event_year, string expected)
+        {
+            standardPA.Event_year = event_year;
+            var basePA = new BasePA(standardPA, null, source);
+
+            Assert.AreEqual(expected, basePA.Sourceyear_display);
+        }
+
+        [Test]
         [TestCase("1886", 1886)]
         [TestCase("", null)]
         public void GetEventYearSortable_ReturnEventYear(string eventYear, int? expected)

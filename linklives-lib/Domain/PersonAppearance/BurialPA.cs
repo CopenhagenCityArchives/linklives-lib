@@ -96,6 +96,43 @@ namespace Linklives.Domain
             }
         }
 
+        public override string Occupation_display
+        {
+            get
+            {
+                string[] occupations = Transcribed.Transcription.relationtypes.Split(",");
+                string[] positions = Transcribed.Transcription.positions.Split(",");
+                int i = 0;
+                string relationTypesAndPositions = "";
+                foreach(var oc in occupations)
+                {
+                    relationTypesAndPositions += $"{positions[i]} ({oc}), ";
+                    i++;
+                }
+                return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length-2);
+            }
+        }
+
+        public override string Occupation_searchable
+        {
+            get
+            {
+                string[] occupations = Transcribed.Transcription.relationtypes.Split(",");
+                string[] positions = Transcribed.Transcription.positions.Split(",");
+                int i = 0;
+                string relationTypesAndPositions = "";
+                foreach (var oc in occupations)
+                {
+                    if(oc.Contains("eget erhverv", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        relationTypesAndPositions += $"{positions[i]}, ";
+                        i++;
+                    }
+                }
+                return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length - 2);
+            }
+        }
+
         public BurialPA()
         {
             

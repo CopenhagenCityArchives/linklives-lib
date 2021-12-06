@@ -1,5 +1,7 @@
 ﻿using Linklives.Domain.Utilities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Linklives.Domain
 {
@@ -25,7 +27,7 @@ namespace Linklives.Domain
         {
             get
             {
-                if(!Standard.Event_type.Equals("burial")) { return null; }
+                if (!Standard.Event_type.Equals("burial")) { return null; }
                 return IntToRangeAsStringHelper.GetRangePlusMinus3(Standard.Event_year);
             }
         }
@@ -41,6 +43,15 @@ namespace Linklives.Domain
             get
             {
                 return "parish_register";
+            }
+        }
+        public override string Sourceplace_display
+        {
+            get
+            {
+                var strList = new List<string>() { Transcribed.Transcription.browselevel, Transcribed.Transcription.browselevel1 };
+
+                return string.Join(", ", strList.Where(sl => !string.IsNullOrEmpty(sl)));
             }
         }
         public override string Pa_grouping_id_wp4
@@ -71,6 +82,13 @@ namespace Linklives.Domain
                 return "Rigsarkivet";
             }
         }
+        public override string Sourceyear_display
+        {
+            get
+            {
+                return Transcribed.Transcription.browselevel2;
+            }
+        } 
         public ParishPA()
         {
 

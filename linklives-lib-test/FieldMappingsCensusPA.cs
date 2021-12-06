@@ -61,8 +61,6 @@ namespace linklives_lib_test
             standardPA.Household_id = household_id;
             var pa = (CensusPA)BasePA.Create(source, standardPA, null);
 
-            Assert.AreEqual(null, pa.Deathyear_sortable);
-
             Assert.AreEqual(expected, pa.Pa_grouping_id_wp4);
         }
 
@@ -126,6 +124,34 @@ namespace linklives_lib_test
             var pa = (CensusPA)BasePA.Create(source, standardPA, null);
 
             Assert.AreEqual(expected, pa.Role_searchable);
+        }
+
+        [Test]
+        [TestCase("role", "role")]
+        [TestCase(null, null)]
+        public void GetOccupationDisplay_ReturnTranscribedStillingIHusstanden(string stillingIHusstanden, string expected)
+        {
+            var transcription = new ExpandoObject();
+            transcription.TryAdd("pa_id", 1);
+            transcription.TryAdd("stilling_i_husstanden", stillingIHusstanden);
+            var transcribed = new TranscribedPA(transcription, 1);
+            var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
+
+            Assert.AreEqual(expected, pa.Occupation_display);
+        }
+
+        [Test]
+        [TestCase("role", "role")]
+        [TestCase(null, null)]
+        public void GetOccupationSearcable_ReturnTranscribedStillingIHusstanden(string stillingIHusstanden, string expected)
+        {
+            var transcription = new ExpandoObject();
+            transcription.TryAdd("pa_id", 1);
+            transcription.TryAdd("stilling_i_husstanden", stillingIHusstanden);
+            var transcribed = new TranscribedPA(transcription, 1);
+            var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
+
+            Assert.AreEqual(expected, pa.Occupation_display);
         }
     }
 }

@@ -50,6 +50,21 @@ namespace Linklives.Domain
                 return Standard.Household_position;
             }
         }
+        public override string Occupation_display
+        {
+            get
+            {
+                return Transcribed.Transcription.stilling_i_husstanden;
+            }
+        }
+
+        public override string Occupation_searchable
+        {
+            get
+            {
+                return Transcribed.Transcription.stilling_i_husstanden;
+            }
+        }
         //TODO: If BasePA also adds "sogn" to paris, this override is not necessary
         public override string Sourceplace_display
         {

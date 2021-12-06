@@ -68,6 +68,37 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("relation", "erhverv", @"erhverv (relation)")]
+        [TestCase("relation1,relation2", "erhverv1,erhverv2", @"erhverv1 (relation1), erhverv2 (relation2)")]
+        public void GetOccupationDisplay_ReturnTranscribedRelationTilErhvervAndErhverv(string relationstypes, string positions, string expected)
+        {
+            var transcription = new ExpandoObject();
+            transcription.TryAdd("pa_id", 1);
+            transcription.TryAdd("relationtypes", relationstypes);
+            transcription.TryAdd("positions", positions);
+            var transcribed = new TranscribedPA(transcription, 1);
+            var pa = (BurialPA)BasePA.Create(source, standardPA, transcribed);
+
+            Assert.AreEqual(expected, pa.Occupation_display);
+        }
+
+        [Test]
+        [TestCase("eget erhverv", "erhverv", @"erhverv")]
+        [TestCase("EGET ERHVERV", "erhverv", @"erhverv")]
+        [TestCase("eget erhverv, fars erhverv", "erhverv1,erhverv2", @"erhverv1")]
+        public void GetOccupationSearchable_WithRelationTypeEgetErhverv_ReturnTranscribedErhverv(string relationstypes, string positions, string expected)
+        {
+            var transcription = new ExpandoObject();
+            transcription.TryAdd("pa_id", 1);
+            transcription.TryAdd("relationtypes", relationstypes);
+            transcription.TryAdd("positions", positions);
+            var transcribed = new TranscribedPA(transcription, 1);
+            var pa = (BurialPA)BasePA.Create(source, standardPA, transcribed);
+
+            Assert.AreEqual(expected, pa.Occupation_searchable);
+        }
+
+        [Test]
         public void GetSourceTypeWP4_ReturnBurialProtocol()
         {
             var pa = (BurialPA)BasePA.Create(source, standardPA, null);

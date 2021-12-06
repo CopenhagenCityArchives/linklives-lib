@@ -138,7 +138,7 @@ namespace Linklives.Domain
                 return Standard.Maiden_names != "" ? Standard.Maiden_names : null;
             }
         }
-        public string Occupation_searchable { get; set; }
+        public virtual string Occupation_searchable { get; set; }
         
         //Sortables
         public virtual string First_names_sortable
@@ -172,6 +172,7 @@ namespace Linklives.Domain
         }
         [Nest.Keyword]
         public virtual string Source_type_wp4 { get;  }
+        [Nest.Keyword]
         public virtual string Pa_grouping_id_wp4 { get; }
 
         //Display
@@ -205,7 +206,7 @@ namespace Linklives.Domain
                 return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, string.IsNullOrEmpty(Standard.Birth_parish) ? null : Standard.Birth_parish + " sogn", Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim();  //trim and replace so we dont end up with strings of just commas
             }
         }
-        public string Occupation_display { get; set; }
+        public virtual string Occupation_display { get; }
         public virtual string Sourceplace_display
         {
             get
@@ -224,7 +225,13 @@ namespace Linklives.Domain
             }
         }
         [Nest.Keyword]
-        public string Sourceyear_display { get; set; }
+        public virtual string Sourceyear_display
+        {
+            get
+            {
+                return Standard.Event_year;
+            }
+        }
         [Nest.Keyword]
         public string Event_year_display { get { return Standard.Event_year; } }
         public int? Event_year_sortable

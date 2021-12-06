@@ -138,6 +138,36 @@ namespace linklives_lib_test
 
             Assert.AreEqual("Kirkebog", pa.Source_type_display);
         }
+        [Test]
+        [TestCase("", "", "")]
+        [TestCase("browselevel", "browselevel1", "browselevel, browselevel1")]
+        [TestCase("browselevel", "", "browselevel")]
+        public void GetSourcePlaceDisplay_ReturnTranscribedBrowselevel1Browselevel(string browselevel, string browselevel1, string expected)
+        {
+            var transcription = new ExpandoObject();
+            transcription.TryAdd("pa_id", 1);
+            transcription.TryAdd("browselevel", browselevel);
+            transcription.TryAdd("browselevel1", browselevel1);
+            var transPA = new TranscribedPA(transcription, 1);
+            var pa = (ParishPA)BasePA.Create(source, standardPA, transPA);
+
+            Assert.AreEqual(expected, pa.Sourceplace_display);
+        }
+
+        [Test]
+        [TestCase("",  "")]
+        [TestCase("1886-1887", "1886-1887")]
+        [TestCase(null, null)]
+        public void GetSourceYearDisplay_ReturnTranscribedBrowselevel2(string browselevel2, string expected)
+        {
+            var transcription = new ExpandoObject();
+            transcription.TryAdd("pa_id", 1);
+            transcription.TryAdd("browselevel2", browselevel2);
+            var transPA = new TranscribedPA(transcription, 1);
+            var pa = (ParishPA)BasePA.Create(source, standardPA, transPA);
+
+            Assert.AreEqual(expected, pa.Sourceyear_display);
+        }
 
         [Test]
         public void GetSourceArchiveDisplay_ReturnRigsarkivet()
