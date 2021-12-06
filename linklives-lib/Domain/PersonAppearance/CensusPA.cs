@@ -54,7 +54,7 @@ namespace Linklives.Domain
         {
             get
             {
-                return Transcribed.Transcription.stilling_i_husstanden;
+                return Transcribed.Transcription?.stilling_i_husstanden ?? null;
             }
         }
 
@@ -62,7 +62,7 @@ namespace Linklives.Domain
         {
             get
             {
-                return Transcribed.Transcription.stilling_i_husstanden;
+                return Transcribed.Transcription?.stilling_i_husstanden ?? null;
             }
         }
         //TODO: If BasePA also adds "sogn" to paris, this override is not necessary
