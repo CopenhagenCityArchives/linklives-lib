@@ -79,7 +79,7 @@ namespace linklives_lib_test
             {
                 var lc = GetLifeCourses()[0];
 
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { lc };
                 rep.AddNewItems(newItems, "new_version");
 
@@ -102,7 +102,7 @@ namespace linklives_lib_test
                 var newLcNewAndExistingLinks = GetLifeCourses()[1];
                 var newLink = GetLinks()[2];
                 newLcNewAndExistingLinks.Links.Add(newLink);
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { newLcNewAndExistingLinks };
                 rep.AddNewItems(newItems, "new_version");
 
@@ -124,7 +124,7 @@ namespace linklives_lib_test
                 var newLcExistingLinks = GetLifeCourses()[1];
                 newLcExistingLinks.Links.Clear();
                 newLcExistingLinks.Links.Add(lc.Links.First());
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { newLcExistingLinks };
                 rep.AddNewItems(newItems, "new_version");
 
@@ -143,7 +143,7 @@ namespace linklives_lib_test
                 context.LifeCourses.Add(lc);
                 context.SaveChanges();
 
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { lc };
                 rep.AddNewItems(newItems, "new_version");
 
@@ -164,7 +164,7 @@ namespace linklives_lib_test
                 context.LifeCourses.Add(lc);
                 context.SaveChanges();
 
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var existingItems = new List<LifeCourse>() { lc };
                 rep.UpdateExistingItems(existingItems, "new_version");
 
@@ -185,7 +185,7 @@ namespace linklives_lib_test
                 context.LifeCourses.Add(lcs[0]);
                 context.SaveChanges();
 
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { lcs[0] };
                 rep.UpdateExistingItems(newItems, "existing_version");
 
@@ -206,7 +206,7 @@ namespace linklives_lib_test
                 context.LifeCourses.Add(lcs[0]);
                 context.SaveChanges();
 
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { lcs[1] };
                 rep.UpdateExistingItems(newItems, "existing_version");
 
@@ -228,7 +228,7 @@ namespace linklives_lib_test
                 context.LifeCourses.Add(lcs[0]);
                 context.SaveChanges();
 
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var items = new List<LifeCourse>() { lcs[1] };
                 rep.MarkOldItems(items);
 
@@ -250,7 +250,7 @@ namespace linklives_lib_test
                 context.LifeCourses.Add(lcs[0]);
                 context.SaveChanges();
 
-                var rep = new EFLifeCourseRepository(context);
+                var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var items = new List<LifeCourse>() { lcs[0] };
                 rep.MarkOldItems(items);
 

@@ -6,7 +6,7 @@ namespace Linklives.DAL
 {
     public abstract class DBRepository<T> where T : class
     {
-        protected readonly LinklivesContext context;
+        protected LinklivesContext context;
 
         protected DBRepository(LinklivesContext context)
         {

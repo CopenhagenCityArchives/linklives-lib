@@ -7,8 +7,10 @@ namespace Linklives.DAL
 {
     public class EFLifeCourseRepository : EFKeyedRepository<LifeCourse>, ILifeCourseRepository
     {
-        public EFLifeCourseRepository(LinklivesContext context) : base(context)
+        private readonly DbContextOptions<LinklivesContext> contextOptions;
+        public EFLifeCourseRepository(LinklivesContext context, DbContextOptions<LinklivesContext> options) : base(context)
         {
+            contextOptions = options;
         }
 
         public IEnumerable<LifeCourse> GetByUserRatings(string userId)
@@ -57,6 +59,7 @@ namespace Linklives.DAL
             var linkIdsToAdd = linksInNewItems.Except(existingLinks);*/
 
             // Add items not in the database
+            int inserts = 0;
             foreach (LifeCourse lc in itemsNotInDb)
             {
                 // These items are not historic
@@ -69,8 +72,16 @@ namespace Linklives.DAL
                 //lc.Links = lc.Links.Where(link => linkIdsToAdd.Contains(link.Key)).ToList();
 
                 context.Set<LifeCourse>().Add(lc);
-            }
 
+                inserts++;
+
+                if (inserts%1000 == 0)
+                {
+                    context.SaveChanges();
+                    context = null;
+                    context = new LinklivesContext(contextOptions);
+                }
+            }
             context.SaveChanges();
         }
 
