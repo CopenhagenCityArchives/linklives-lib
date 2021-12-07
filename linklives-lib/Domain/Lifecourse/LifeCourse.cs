@@ -48,7 +48,7 @@ namespace Linklives.Domain
                 sb.Append(link.Key);
                 sb.Append("..");
             }
-            Key = sb.ToString(0, sb.Length - 3); //Exclude the extra .. that always gets tagged on the end.
+            Key = sb.ToString(0, sb.Length - 2); //Exclude the extra .. that always gets tagged on the end.
         }
 
         public IEnumerable<string> GetPAKeys()
