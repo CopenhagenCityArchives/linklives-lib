@@ -23,10 +23,6 @@ namespace Linklives.Domain
         public string Link_ids { get; set; }
         [Name("n_sources")]
         public string N_sources { get; set; }
-        [Name("is_historic")]
-        [Nest.Keyword]
-        [CsvHelper.Configuration.Attributes.Ignore]
-        public bool Is_historic { get; set; }
         [CsvHelper.Configuration.Attributes.Ignore]
         public ICollection<Link> Links { get; set; }
         [CsvHelper.Configuration.Attributes.Ignore]
