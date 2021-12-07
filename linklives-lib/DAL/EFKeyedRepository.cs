@@ -57,7 +57,7 @@ namespace Linklives.DAL
             var IDsInTheDatabase = context.Set<U>().AsNoTracking().AsEnumerable().Select(lc => lc.Key).ToDictionary(x => x, x => true);
 
             // Select ids from items which are in the database
-            var itemsAlreadyInDb = upsertItems.Where(lc => IDsInTheDatabase.ContainsKey(lc.Key));
+            var itemsAlreadyInDb = upsertItems.Where(lc => IDsInTheDatabase.ContainsKey(lc.Key) && !lc.Data_version.Equals(dataVersion));
 
             // Update items already in the database
             foreach (U lc in itemsAlreadyInDb)

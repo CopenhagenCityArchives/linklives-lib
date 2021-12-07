@@ -60,7 +60,7 @@ namespace linklives_lib_test
             }
         }
         [Test]
-        public void UpsertKeyedItemsMarkOldOnes_WithNewItem_AddIt()
+        public void InsertItemsUpdateExistingItems_WithNewItem_AddIt()
         {
             using (var context = new LinklivesContext(dbContextOptions))
             {
@@ -77,7 +77,7 @@ namespace linklives_lib_test
             }
         }
         [Test]
-        public void UpsertKeyedItemsMarkOldOnes_WithAnExistingItem_UpdateIt()
+        public void InsertItemsUpdateExistingItems_WithAnExistingItemWithNewVersion_UpdateIt()
         {
             using (var context = new LinklivesContext(dbContextOptions))
             {
@@ -99,7 +99,7 @@ namespace linklives_lib_test
         }
 
         [Test]
-        public void UpsertKeyedItemsMarkOldOnes_WithAnExistingItemAndANewItem_MarkExistingHistoricUpdateDataVersionAddNewItem()
+        public void InsertItemsUpdateExistingItems_WithAnExistingItemAndANewItem_MarkExistingHistoricUpdateDataVersionAddNewItem()
         {
             using (var context = new LinklivesContext(dbContextOptions))
             {
@@ -121,6 +121,27 @@ namespace linklives_lib_test
 
                 Assert.AreEqual("new_version", dbItems[1].Data_version);
                 Assert.IsFalse(dbItems[1].Is_historic);
+            }
+        }
+        [Test]
+        public void InsertItemsUpdateExistingItems_WithExistingItemWithSameDataVersion_LeaveAsIs()
+        {
+            using (var context = new LinklivesContext(dbContextOptions))
+            {
+                var lcs = GetLifeCourses();
+                lcs[0].Data_version = "existing_version";
+
+                context.LifeCourses.Add(lcs[0]);
+                context.SaveChanges();
+
+                var rep = new EFLifeCourseRepository(context);
+                var newItems = new List<LifeCourse>() { lcs[0] };
+                rep.InsertItemsUpdateExistingItems(newItems, "existing_version");
+
+                var dbItems = context.LifeCourses.ToList();
+                Assert.AreEqual(1, dbItems.Count());
+                Assert.AreEqual("existing_version", dbItems[0].Data_version);
+                Assert.IsFalse(dbItems[0].Is_historic);
             }
         }
     }
