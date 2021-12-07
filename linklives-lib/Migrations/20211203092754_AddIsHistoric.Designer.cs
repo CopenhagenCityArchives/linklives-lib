@@ -3,14 +3,16 @@ using System;
 using Linklives.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Linklives.Migrations
 {
     [DbContext(typeof(LinklivesContext))]
-    partial class LinklivesContextModelSnapshot : ModelSnapshot
+    [Migration("20211203092754_AddIsHistoric")]
+    partial class AddIsHistoric
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,9 +38,6 @@ namespace Linklives.Migrations
                 {
                     b.Property<string>("Key")
                         .HasColumnType("Varchar(350)");
-
-                    b.Property<string>("Data_version")
-                        .HasColumnType("text");
 
                     b.Property<bool>("Is_historic")
                         .HasColumnType("tinyint(1)");
@@ -68,14 +67,8 @@ namespace Linklives.Migrations
                     b.Property<string>("Key")
                         .HasColumnType("Varchar(350)");
 
-                    b.Property<string>("Data_version")
-                        .HasColumnType("text");
-
                     b.Property<int>("Duplicates")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Is_historic")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Iteration")
                         .HasColumnType("text");
