@@ -116,7 +116,7 @@ namespace Linklives.DAL
             var IDsInTheDatabase = context.Set<LifeCourse>().AsNoTracking().AsEnumerable().Select(lc => lc.Key).ToDictionary(x => x, x => true);
 
             // Select ids from items which are in the database
-            var itemsAlreadyInDb = newItems.Where(lc => IDsInTheDatabase.ContainsKey(lc.Key) && !lc.Data_version.Equals(dataVersion));
+            var itemsAlreadyInDb = newItems.Where(lc => IDsInTheDatabase.ContainsKey(lc.Key) && lc.Data_version != null && !lc.Data_version.Equals(dataVersion));
 
             // Update items already in the database
             foreach (LifeCourse lc in itemsAlreadyInDb)
