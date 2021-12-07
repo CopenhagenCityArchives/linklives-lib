@@ -1,6 +1,7 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
 using Nest;
 
@@ -40,6 +41,10 @@ namespace Linklives.Domain
             }
             Key = sb.ToString(0, sb.Length - 3); //Exclude the extra .. that always gets tagged on the end.
         }
+
+        public IEnumerable<string> GetPAKeys()
+        {
+            return Source_ids.Split(",").Zip(Pa_ids.Split(","), (first, second) => first + "-" + second);
         }
     }
 }
