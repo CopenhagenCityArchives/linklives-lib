@@ -146,8 +146,8 @@ namespace linklives_lib_test
         {
             var transcription = new ExpandoObject();
             transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("browselevel", browselevel);
-            transcription.TryAdd("browselevel1", browselevel1);
+            transcription.TryAdd("BrowseLevel", browselevel);
+            transcription.TryAdd("BrowseLevel1", browselevel1);
             var transPA = new TranscribedPA(transcription, 1);
             var pa = (ParishPA)BasePA.Create(source, standardPA, transPA);
 
@@ -162,7 +162,7 @@ namespace linklives_lib_test
         {
             var transcription = new ExpandoObject();
             transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("browselevel2", browselevel2);
+            transcription.TryAdd("BrowseLevel2", browselevel2);
             var transPA = new TranscribedPA(transcription, 1);
             var pa = (ParishPA)BasePA.Create(source, standardPA, transPA);
 

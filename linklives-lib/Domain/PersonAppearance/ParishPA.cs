@@ -49,7 +49,7 @@ namespace Linklives.Domain
         {
             get
             {
-                var strList = new List<string>() { Transcribed.Transcription.browselevel, Transcribed.Transcription.browselevel1 };
+                var strList = new List<string>() { Transcribed.Transcription.BrowseLevel, Transcribed.Transcription.BrowseLevel1 };
 
                 return string.Join(", ", strList.Where(sl => !string.IsNullOrEmpty(sl)));
             }
@@ -86,7 +86,7 @@ namespace Linklives.Domain
         {
             get
             {
-                return Transcribed.Transcription.browselevel2;
+                return Transcribed.Transcription.BrowseLevel2;
             }
         } 
         public ParishPA()
