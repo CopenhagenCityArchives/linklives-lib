@@ -7,7 +7,7 @@ using Nest;
 
 namespace Linklives.Domain
 {
-    [ElasticsearchType(IdProperty = nameof(Life_course_id))]
+    [ElasticsearchType(IdProperty = nameof(Key))]
     public partial class LifeCourse : SortableItem
     {
         public LifeCourse()
