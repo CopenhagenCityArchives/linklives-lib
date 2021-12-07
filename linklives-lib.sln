@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "linklives-lib", "linklives-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "linklives-lib-test", "linklives-lib-test\linklives-lib-test.csproj", "{553BA83A-9C83-48C5-AC3C-DDBEC3C5774E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "linklives-lib-dummy", "linklives-dummy\linklives-lib-dummy.csproj", "{977C3438-A40B-4925-8948-08D3F0FCC66F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "linklives-lib-database-migrations", "linklives-lib-database-migrations\linklives-lib-database-migrations.csproj", "{977C3438-A40B-4925-8948-08D3F0FCC66F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

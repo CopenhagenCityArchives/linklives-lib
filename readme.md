@@ -17,12 +17,9 @@ When running it for the first time, follow the database migration guide below to
 When changes are made to the entities in this library, it may have impact on the expected database structure.
 When database-changing changes are run, use the commands below to create a new migration.
 
-To create and run migrations when using Visual Studio:
-* Go to the Package-manager-console
-* Set linkliveslib-dummy as startup project
-* Chose linkliveslib
-* Run ``add-migration A-MIGRATION-NAME-OF-YOUR-CHOOSING``
-* To remove a migration run ``remove-migration``
-* To update the database run ``update-database``
+* Note that the migrations are made on the database described in the linklives-dummy project
+* Install the ef migration tool: ``dotnet tool install --global dotnet-ef``
+* Add a migration: ``dotnet ef migrations add "MIGRATION_NAME" --project linklives-lib --startup-project linklives-lib-database-migrations``
+* Update the database with the migration: ``dotnet ef database update --project linklives-dummy --startup-project linklives-dummy``
 
 You can also follow this [guide on EF migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).
