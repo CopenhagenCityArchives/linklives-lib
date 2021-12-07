@@ -13,7 +13,7 @@ namespace Linklives.Domain
     /// Represents a generic Person Appearance
     /// </summary>
     [ElasticsearchType(IdProperty = nameof(Key))]
-    public class BasePA : KeyedItem
+    public class BasePA : SortableItem
     {
         public int Source_id { get; set; }
         public int Pa_id { get; set; }
@@ -103,7 +103,7 @@ namespace Linklives.Domain
                 return IntToRangeAsStringHelper.GetRangePlusMinus3(Sourceyear_searchable);
             }
         }
-        public int? Sourceyear_sortable
+        public override int? Sourceyear_sortable
         {
             get
             {
@@ -141,21 +141,21 @@ namespace Linklives.Domain
         public virtual string Occupation_searchable { get; set; }
         
         //Sortables
-        public virtual string First_names_sortable
+        public override string First_names_sortable
         {
             get
             {
                 return string.Join(" ", Standard.Name_cl.Split(" ").SkipLast(1));
             }
         }
-        public string Family_names_sortable
+        public override string Family_names_sortable
         {
             get
             {
                 return Lastname_searchable;
             }
         }
-        public int? Birthyear_sortable
+        public override int? Birthyear_sortable
         {
             get {
                 return Birthyear_searchable;
@@ -234,7 +234,7 @@ namespace Linklives.Domain
         }
         [Nest.Keyword]
         public string Event_year_display { get { return Standard.Event_year; } }
-        public int? Event_year_sortable
+        public override int? Event_year_sortable
         {
             get
             {
@@ -243,7 +243,7 @@ namespace Linklives.Domain
         }
         [Nest.Keyword]
         public virtual int? Deathyear_display { get; }
-        public int? Deathyear_sortable {
+        public override int? Deathyear_sortable {
             get
             {
                 return Deathyear_searchable;

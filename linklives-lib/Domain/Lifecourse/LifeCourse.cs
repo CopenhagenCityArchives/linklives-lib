@@ -8,7 +8,7 @@ using Nest;
 namespace Linklives.Domain
 {
     [ElasticsearchType(IdProperty = nameof(Life_course_id))]
-    public partial class LifeCourse : KeyedItem
+    public partial class LifeCourse : SortableItem
     {
         public LifeCourse()
         {
@@ -24,13 +24,22 @@ namespace Linklives.Domain
         public string Link_ids { get; set; }
         [Name("n_sources")]
         public string N_sources { get; set; }
+
         [CsvHelper.Configuration.Attributes.Ignore]
         public ICollection<Link> Links { get; set; }
         [CsvHelper.Configuration.Attributes.Ignore]
         [NotMapped] //Tells entity framework to ignore this property since we are adding it from another source
         [Nest.PropertyName("person_appearance")]
         public List<BasePA> PersonAppearances { get; set; }
-
+        
+        #region sortables - not given in CSV files
+        public override int? Sourceyear_sortable { get { return 0; } }
+        public override string First_names_sortable { get { return ""; } }
+        public override string Family_names_sortable { get { return ""; } }
+        public override int? Birthyear_sortable { get { return 0; } }
+        public override int? Event_year_sortable { get { return 0; } }
+        public override int? Deathyear_sortable { get { return 0; } }
+        #endregion
         public override void InitKey()
         {
             var sb = new StringBuilder();
