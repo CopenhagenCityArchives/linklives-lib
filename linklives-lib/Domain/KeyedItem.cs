@@ -8,7 +8,7 @@ namespace Linklives.Domain
         [Column(TypeName ="Varchar(350)")] //If we dont specify the field size we cant use composite keys because they become too big
         [Nest.Keyword]
         public string Key { get; protected set; }
-        [Nest.Keyword]
+        [Nest.Boolean]
         [CsvHelper.Configuration.Attributes.Ignore]
         public bool Is_historic { get; set; }
         [Nest.Keyword]
