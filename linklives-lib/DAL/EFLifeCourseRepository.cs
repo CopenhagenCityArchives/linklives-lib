@@ -42,8 +42,8 @@ namespace Linklives.DAL
 
             // items not in the database
             var itemsNotInDb = newItems.Where(lc => !IDsInTheDatabase.ContainsKey(lc.Key));
-
-            /*var existingLinks = context.Set<Link>().AsNoTracking().AsEnumerable().Select(link => link.Key).ToHashSet();
+/*
+            var existingLinks = context.Set<Link>().AsNoTracking().AsEnumerable().Select(link => link.Key).ToHashSet();
             var linksInNewItems = new HashSet<string>();
 
             // Get existing links in new LifeCourses
@@ -56,8 +56,8 @@ namespace Linklives.DAL
             }
 
             // Get id of links in new items which does not exist
-            var linkIdsToAdd = linksInNewItems.Except(existingLinks);*/
-
+            var linkIdsToAdd = linksInNewItems.Except(existingLinks);
+*/
             // Add items not in the database
             int inserts = 0;
             foreach (LifeCourse lc in itemsNotInDb)
@@ -70,9 +70,7 @@ namespace Linklives.DAL
 
                 // Only add links that are needed
                 //lc.Links = lc.Links.Where(link => linkIdsToAdd.Contains(link.Key)).ToList();
-
                 context.Set<LifeCourse>().Add(lc);
-
                 inserts++;
 
                 if (inserts%1000 == 0)
