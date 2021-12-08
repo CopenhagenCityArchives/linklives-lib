@@ -87,6 +87,7 @@ namespace linklives_lib_test
         [TestCase("", "", "")]
         [TestCase("eget erhverv", "erhverv", "erhverv")]
         [TestCase("EGET ERHVERV", "erhverv", "erhverv")]
+        [TestCase("ægtefælles erhverv", "erhverv", "")]
         [TestCase("eget erhverv, fars erhverv", "erhverv1,erhverv2", "erhverv1")]
         public void GetOccupationSearchable_WithRelationTypeEgetErhverv_ReturnTranscribedErhverv(string relationstypes, string positions, string expected)
         {

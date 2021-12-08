@@ -141,7 +141,7 @@ namespace Linklives.Domain
                         i++;
                     }
                 }
-
+                if(relationTypesAndPositions.Length<2) { return ""; }
                 return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length - 2);
             }
         }
