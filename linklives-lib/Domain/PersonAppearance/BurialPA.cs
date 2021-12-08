@@ -95,13 +95,18 @@ namespace Linklives.Domain
                 return "København";
             }
         }
-
         public override string Occupation_display
         {
             get
             {
+                if(string.IsNullOrEmpty(Transcribed.Transcription.positions))
+                {
+                    return "";
+                }
+
                 string[] occupations = Transcribed.Transcription.relationtypes.Split(",");
                 string[] positions = Transcribed.Transcription.positions.Split(",");
+               
                 int i = 0;
                 string relationTypesAndPositions = "";
                 foreach(var oc in occupations)
@@ -109,7 +114,8 @@ namespace Linklives.Domain
                     relationTypesAndPositions += $"{positions[i]} ({oc}), ";
                     i++;
                 }
-                return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length-2);
+                
+                return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length - 2);
             }
         }
 
@@ -117,8 +123,14 @@ namespace Linklives.Domain
         {
             get
             {
+                if (string.IsNullOrEmpty(Transcribed.Transcription.positions))
+                {
+                    return "";
+                }
+
                 string[] occupations = Transcribed.Transcription.relationtypes.Split(",");
                 string[] positions = Transcribed.Transcription.positions.Split(",");
+
                 int i = 0;
                 string relationTypesAndPositions = "";
                 foreach (var oc in occupations)
@@ -129,6 +141,7 @@ namespace Linklives.Domain
                         i++;
                     }
                 }
+
                 return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length - 2);
             }
         }
