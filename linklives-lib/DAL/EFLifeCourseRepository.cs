@@ -29,6 +29,12 @@ namespace Linklives.DAL
             context.Entry(lc).Collection(b => b.Links).Load();
         }
 
+        public void ResetContext()
+        {
+            context = null;
+            context = new LinklivesContext(contextOptions);
+        }
+
         /// Adds items to the DB that are not already present.
         /// All other items are ignored.
         /// </summary>
