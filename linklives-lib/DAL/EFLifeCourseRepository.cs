@@ -1,5 +1,6 @@
 ﻿using Linklives.Domain;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,27 +45,13 @@ namespace Linklives.DAL
         {
             context.ChangeTracker.AutoDetectChangesEnabled = false;
 
-            var IDsInTheDatabase = context.Set<LifeCourse>().AsNoTracking().AsEnumerable().Select(lc => lc.Key).ToDictionary(x => x, x => true);
+            var IDsInTheDatabase = context.Set<LifeCourse>().AsNoTracking().AsEnumerable().Select(lc => lc.Key).ToHashSet();
 
             // items not in the database
-            var itemsNotInDb = newItems.Where(lc => !IDsInTheDatabase.ContainsKey(lc.Key));
+            var itemsNotInDb = newItems.Where(lc => !IDsInTheDatabase.Contains(lc.Key));
 
-            var existingLinks = context.Set<Link>().AsNoTracking().AsEnumerable().Select(link => link.Key);
-            
-            /*         var linksInNewItems = new HashSet<string>();
+            var existingLinks = context.Set<Link>().AsNoTracking().AsEnumerable().Select(link => link.Key).ToHashSet();
 
-                     // Get existing links in new LifeCourses
-                     foreach (var lc in itemsNotInDb)
-                     {
-                         foreach(var link in lc.Links)
-                         {
-                             linksInNewItems.Add(link.Key);
-                         }
-                     }
-
-                     // Get id of links in new items which does not exist
-                     var linkIdsToAdd = linksInNewItems.Except(existingLinks);
-         */
             // Add items not in the database
             int inserts = 0;
             var linksToAdd = new List<Link>();
@@ -78,59 +65,46 @@ namespace Linklives.DAL
 
                 foreach (Link link in lc.Links)
                 {
-                    // Only add links that are needed
                     if (!existingLinks.Contains(link.Key))
                     {
-                        linksToAdd.Add(link);
+                        context.Links.Add(link);
+                        existingLinks.Add(link.Key);
                     }
                 }
 
-                context.LifeCourses.Add(lc);
+                if (!IDsInTheDatabase.Contains(lc.Key))
+                {
+                    context.LifeCourses.Add(lc);
+                }
 
                 inserts++;
 
                 if (inserts % 1000 == 0)
                 {
-                    context.SaveChanges();
+                    try
+                    {
+                        context.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        System.Console.WriteLine(e.Message);
+                    }
                     ResetContext();
                 }
             }
 
-            foreach(Link l in linksToAdd)
-            {
-                l.LifeCourses = null;
-                l.Ratings = null;
-            }
-
-            context.AddRange(linksToAdd);
-            context.SaveChanges();
-            
-            ResetContext();
-
-            var LifeCourseLinksToAdd = new List<LifeCourseLink>();
-
-            foreach(LifeCourse lc in itemsNotInDb)
-            {
-                foreach(Link link in lc.Links)
-                {
-                    if (linksToAdd.Contains(link))
-                    {
-                        LifeCourseLinksToAdd.Add(new LifeCourseLink() { LifeCoursesKey = lc.Key, LinksKey = link.Key });
-                    }
-                }
-            }
-
-            context.AddRange(LifeCourseLinksToAdd);
-            context.SaveChanges();
             ResetContext();
         }
 
-        public void InsertNewLifeCourseLinks(IEnumerable<LifeCourseLink> lcls)
+        public void InsertNewLifeCourseLinks(IEnumerable<LifeCourse> lcs)
         {
             int inserts = 0;
-            foreach(LifeCourseLink lcl in lcls)
+            foreach (LifeCourse lc in lcs)
             {
-                context.LifeCoursesLinks.Add(lcl);
+                foreach (Link l in lc.Links)
+                {
+                    //        context.LifeCourseLink.Add(new LifeCourseLink() { LifeCoursesKey = lc.Key, LinksKey = l.Key });
+                }
 
                 inserts++;
 
@@ -151,7 +125,7 @@ namespace Linklives.DAL
             var existingItems = context.Set<U>().AsNoTracking().AsEnumerable().Select(item => item.Key).ToHashSet();
             var itemsToAdd = new List<U>();
             var itemsToUpsert = new List<U>();
-            foreach(U l in items)
+            foreach (U l in items)
             {
                 if (!existingItems.Contains(l.Key))
                 {
