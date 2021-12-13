@@ -48,24 +48,26 @@ namespace Linklives.DAL
 
             // items not in the database
             var itemsNotInDb = newItems.Where(lc => !IDsInTheDatabase.ContainsKey(lc.Key));
-/*
-            var existingLinks = context.Set<Link>().AsNoTracking().AsEnumerable().Select(link => link.Key).ToHashSet();
-            var linksInNewItems = new HashSet<string>();
 
-            // Get existing links in new LifeCourses
-            foreach (var lc in itemsNotInDb)
-            {
-                foreach(var link in lc.Links)
-                {
-                    linksInNewItems.Add(link.Key);
-                }
-            }
+            var existingLinks = context.Set<Link>().AsNoTracking().AsEnumerable().Select(link => link.Key);
+            
+            /*         var linksInNewItems = new HashSet<string>();
 
-            // Get id of links in new items which does not exist
-            var linkIdsToAdd = linksInNewItems.Except(existingLinks);
-*/
+                     // Get existing links in new LifeCourses
+                     foreach (var lc in itemsNotInDb)
+                     {
+                         foreach(var link in lc.Links)
+                         {
+                             linksInNewItems.Add(link.Key);
+                         }
+                     }
+
+                     // Get id of links in new items which does not exist
+                     var linkIdsToAdd = linksInNewItems.Except(existingLinks);
+         */
             // Add items not in the database
             int inserts = 0;
+            var linksToAdd = new List<Link>();
             foreach (LifeCourse lc in itemsNotInDb)
             {
                 // These items are not historic
@@ -74,19 +76,102 @@ namespace Linklives.DAL
                 // Set the data version to the newest
                 lc.Data_version = dataVersion;
 
-                // Only add links that are needed
-                //lc.Links = lc.Links.Where(link => linkIdsToAdd.Contains(link.Key)).ToList();
-                context.Set<LifeCourse>().Add(lc);
+                foreach (Link link in lc.Links)
+                {
+                    // Only add links that are needed
+                    if (!existingLinks.Contains(link.Key))
+                    {
+                        linksToAdd.Add(link);
+                    }
+                }
+
+                context.LifeCourses.Add(lc);
+
                 inserts++;
 
-                if (inserts%1000 == 0)
+                if (inserts % 1000 == 0)
                 {
                     context.SaveChanges();
-                    context = null;
-                    context = new LinklivesContext(contextOptions);
+                    ResetContext();
                 }
             }
+
+            foreach(Link l in linksToAdd)
+            {
+                l.LifeCourses = null;
+                l.Ratings = null;
+            }
+
+            context.AddRange(linksToAdd);
             context.SaveChanges();
+            
+            ResetContext();
+
+            var LifeCourseLinksToAdd = new List<LifeCourseLink>();
+
+            foreach(LifeCourse lc in itemsNotInDb)
+            {
+                foreach(Link link in lc.Links)
+                {
+                    if (linksToAdd.Contains(link))
+                    {
+                        LifeCourseLinksToAdd.Add(new LifeCourseLink() { LifeCoursesKey = lc.Key, LinksKey = link.Key });
+                    }
+                }
+            }
+
+            context.AddRange(LifeCourseLinksToAdd);
+            context.SaveChanges();
+            ResetContext();
+        }
+
+        public void InsertNewLifeCourseLinks(IEnumerable<LifeCourseLink> lcls)
+        {
+            int inserts = 0;
+            foreach(LifeCourseLink lcl in lcls)
+            {
+                context.LifeCoursesLinks.Add(lcl);
+
+                inserts++;
+
+                if (inserts % 1000 == 0)
+                {
+                    context.SaveChanges();
+                    ResetContext();
+                }
+            }
+
+            context.SaveChanges();
+        }
+
+        public void UpsertKeyedItems<U>(IEnumerable<U> items, string dataVersion) where U : KeyedItem
+        {
+            context.ChangeTracker.AutoDetectChangesEnabled = false;
+
+            var existingItems = context.Set<U>().AsNoTracking().AsEnumerable().Select(item => item.Key).ToHashSet();
+            var itemsToAdd = new List<U>();
+            var itemsToUpsert = new List<U>();
+            foreach(U l in items)
+            {
+                if (!existingItems.Contains(l.Key))
+                {
+                    itemsToAdd.Add(l);
+                }
+                else
+                {
+                    l.Is_historic = false;
+                    l.Data_version = dataVersion;
+                    itemsToUpsert.Add(l);
+                }
+            }
+
+            context.AddRange(itemsToAdd);
+            context.SaveChanges();
+            ResetContext();
+
+            context.AddRange(itemsToUpsert);
+            context.SaveChanges();
+            ResetContext();
         }
 
         /// <summary>
@@ -94,17 +179,17 @@ namespace Linklives.DAL
         /// All other items are ignored.
         /// </summary>
         /// <param name="newItems">Items that reflect the current state of data</param>
-        public void MarkOldItems(IEnumerable<LifeCourse> newItems)
+        public void MarkOldItems<U>(IEnumerable<U> newItems) where U : KeyedItem
         {
             context.ChangeTracker.AutoDetectChangesEnabled = false;
 
             var newItemIDs = newItems.Select(lc => lc.Key).ToDictionary(x => x, x => true);
 
             // Get list of life courses in the DB that is not present in the list
-            var itemsInDbNotInNewItems = context.Set<LifeCourse>().AsEnumerable().Where(lc => !newItemIDs.ContainsKey(lc.Key));
+            var itemsInDbNotInNewItems = context.Set<U>().AsEnumerable().Where(lc => !newItemIDs.ContainsKey(lc.Key));
 
             // Update old items to be historic
-            foreach (LifeCourse lc in itemsInDbNotInNewItems)
+            foreach (U lc in itemsInDbNotInNewItems)
             {
                 // Dont save related entities, these must be added individually
                 context.Entry(lc).State = EntityState.Detached;
@@ -112,40 +197,7 @@ namespace Linklives.DAL
                 // These items are historic
                 lc.Is_historic = true;
 
-                context.Set<LifeCourse>().Attach(lc);
-            }
-
-            context.SaveChanges();
-        }
-
-        /// <summary>
-        /// Updates existing items in DB with a new DataVersion based on the upsertItems list
-        /// All other items are ignored.
-        /// </summary>
-        /// <param name="newItems">Items that reflect the current state of data</param>
-        /// <param name="dataVersion">The new DataVersion</param>
-        public void UpdateExistingItems(IEnumerable<LifeCourse> newItems, string dataVersion)
-        {
-            context.ChangeTracker.AutoDetectChangesEnabled = false;
-
-            var IDsInTheDatabase = context.Set<LifeCourse>().AsNoTracking().AsEnumerable().Select(lc => lc.Key).ToDictionary(x => x, x => true);
-
-            // Select ids from items which are in the database
-            var itemsAlreadyInDb = newItems.Where(lc => IDsInTheDatabase.ContainsKey(lc.Key) && lc.Data_version != null && !lc.Data_version.Equals(dataVersion));
-
-            // Update items already in the database
-            foreach (LifeCourse lc in itemsAlreadyInDb)
-            {
-                // These items are not historic
-                lc.Is_historic = false;
-
-                // Set the data version to the newest
-                lc.Data_version = dataVersion;
-
-                // Dont save related entities, these must be updated individually
-                context.Entry(lc).State = EntityState.Detached;
-
-                context.Set<LifeCourse>().Attach(lc);
+                context.Set<U>().Attach(lc);
             }
 
             context.SaveChanges();
