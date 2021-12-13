@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Linklives.Domain
 {
@@ -11,8 +12,11 @@ namespace Linklives.Domain
         public DbSet<RatingOption> RatingOptions { get; set; }
         public LinklivesContext(DbContextOptions<LinklivesContext> options) : base(options)
         {
-
         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.LogTo(Console.WriteLine)
+                .EnableSensitiveDataLogging();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,7 +26,7 @@ namespace Linklives.Domain
                 entity.HasKey(x => x.Key);
                 entity.HasMany(x => x.Links).WithMany(x => x.LifeCourses);
             });
-
+            
             modelBuilder.Entity<Link>(entity =>
             {
                 entity.HasKey(x => x.Key);
