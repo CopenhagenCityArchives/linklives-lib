@@ -36,12 +36,14 @@ namespace Linklives.DAL
             context = new LinklivesContext(contextOptions);
         }
 
-        /// Adds items to the DB that are not already present.
-        /// All other items are ignored.
+        /// Upserts LifeCourses and Links
+        /// Lifecourses that already exists is updated with the given dataVersion.
+        /// Note that this method is often used in conjunction with
+        /// MarkOldItems, whichs updates old items in the database to Is_historic
         /// </summary>
         /// <param name="newItems">Items that reflect the current state of data</param>
         /// <param name="dataVersion">The new DataVersion</param>
-        public void AddNewItems(IEnumerable<LifeCourse> newItems, string dataVersion)
+        public void Upsert(IEnumerable<LifeCourse> newItems, string dataVersion)
         {
             context.ChangeTracker.AutoDetectChangesEnabled = false;
 
@@ -92,7 +94,6 @@ namespace Linklives.DAL
                 
             }
 
-
             Flush(0, true);
 
             var itemsAlreadyInDb = newItems.Where(lc => IDsInTheDatabase.Contains(lc.Key));
@@ -103,8 +104,9 @@ namespace Linklives.DAL
                 if (context.LifeCourses.Contains(lifecourse))
                 {
                     context.LifeCourses.Remove(lifecourse);
-                    context.LifeCourses.Update(lifecourse);
                 }
+                context.LifeCourses.Update(lifecourse);
+
                 updates++;
                 Flush(updates, false);
             }
@@ -122,7 +124,7 @@ namespace Linklives.DAL
                 }
                 catch (Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    throw e;
                 }
                 ResetContext();
             }

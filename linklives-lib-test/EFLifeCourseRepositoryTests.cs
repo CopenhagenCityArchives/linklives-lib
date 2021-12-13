@@ -82,7 +82,7 @@ namespace linklives_lib_test
 
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { lc };
-                rep.AddNewItems(newItems, "new_version");
+                rep.Upsert(newItems, "new_version");
 
                 var dbItems = context.LifeCourses.ToList();
                 Assert.AreEqual(1, dbItems.Count());
@@ -109,7 +109,7 @@ namespace linklives_lib_test
                 newLc.Links.Add(newLink);
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { newLc };
-                rep.AddNewItems(newItems, "new_version");
+                rep.Upsert(newItems, "new_version");
 
                 var dbItems = context.LifeCourses.ToList();
                 Assert.AreEqual(2, dbItems.Count());
@@ -131,7 +131,7 @@ namespace linklives_lib_test
                 newLcExistingLinks.Links.Add(lc.Links.First());
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { newLcExistingLinks };
-                rep.AddNewItems(newItems, "new_version");
+                rep.Upsert(newItems, "new_version");
 
                 context.LifeCourses.Load();
                 var dbItems = context.LifeCourses.ToList();
@@ -151,7 +151,7 @@ namespace linklives_lib_test
 
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { lc };
-                rep.AddNewItems(newItems, "new_version");
+                rep.Upsert(newItems, "new_version");
 
                 var dbItems = context.LifeCourses.ToList();
                 Assert.AreEqual(1, dbItems.Count());
@@ -173,7 +173,7 @@ namespace linklives_lib_test
 
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var existingItems = new List<LifeCourse>() { lc };
-                rep.AddNewItems(existingItems, "new_version");
+                rep.Upsert(existingItems, "new_version");
 
                 var dbItems = context.LifeCourses.ToList();
                 Assert.AreEqual(1, dbItems.Count());
@@ -194,7 +194,7 @@ namespace linklives_lib_test
 
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { lcs[0] };
-                rep.AddNewItems(newItems, "new_version");
+                rep.Upsert(newItems, "new_version");
 
                 var dbItems = context.LifeCourses.ToList();
                 Assert.AreEqual(1, dbItems.Count());
