@@ -6,7 +6,7 @@ namespace Linklives.Domain
     {
         public DbSet<LifeCourse> LifeCourses { get; set; }
         public DbSet<Link> Links { get; set; }
-        public DbSet<LifeCourseLink> LifeCoursesLinks { get; set; }
+        public DbSet<LifeCourseLink> LifeCourseLink { get; set; }
         public DbSet<LinkRating> LinkRatings { get; set; }
         public DbSet<RatingOption> RatingOptions { get; set; }
         public LinklivesContext(DbContextOptions<LinklivesContext> options) : base(options)
