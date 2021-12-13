@@ -6,7 +6,6 @@ namespace Linklives.Domain
     {
         public DbSet<LifeCourse> LifeCourses { get; set; }
         public DbSet<Link> Links { get; set; }
-        public DbSet<LifeCourseLink> LifeCourseLink { get; set; }
         public DbSet<LinkRating> LinkRatings { get; set; }
         public DbSet<RatingOption> RatingOptions { get; set; }
         public LinklivesContext(DbContextOptions<LinklivesContext> options) : base(options)
@@ -27,13 +26,6 @@ namespace Linklives.Domain
             {
                 entity.HasKey(x => x.Key);
                 entity.HasMany(x => x.Ratings).WithOne(x => x.Link).HasForeignKey(x => x.LinkKey);
-            });
-
-            modelBuilder.Entity<LifeCourseLink>(entity =>
-            {
-                entity.HasKey(x => new { x.LifeCoursesKey, x.LinksKey });
-                entity.HasOne(x => x.Link);
-                entity.HasOne(x => x.LifeCourse);
             });
 
             modelBuilder.Entity<LinkRating>(entity =>
