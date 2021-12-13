@@ -11,9 +11,7 @@ namespace linklives_lib_test
     public class EFLifeCourseRepositoryTests
     {
         private DbContextOptions<LinklivesContext> dbContextOptions =
-            new DbContextOptionsBuilder<LinklivesContext>()
-            .UseInMemoryDatabase(databaseName: "LinkLivesDB")
-            .Options;
+            new DbContextOptionsBuilder<LinklivesContext>().UseMySQL(@"server=127.0.0.1;uid=root;pwd=123456;database=linklives_data_test").Options;
 
         private List<LifeCourse> GetLifeCourses()
         {
@@ -54,7 +52,10 @@ namespace linklives_lib_test
         {
             using (var context = new LinklivesContext(dbContextOptions))
             {
-                context.Database.EnsureDeleted();
+                if (!context.Database.EnsureDeleted())
+                {
+                    throw new System.Exception("Could not clear the database. Tests are not run.");
+                }
                 context.Database.EnsureCreated();
             }
         }
@@ -98,12 +99,16 @@ namespace linklives_lib_test
                 var lc = GetLifeCourses()[0];
                 context.LifeCourses.Add(lc);
                 context.SaveChanges();
+                context.ChangeTracker.Clear();
 
-                var newLcNewAndExistingLinks = GetLifeCourses()[1];
+                var newLc = GetLifeCourses()[1];
+                var existingLink = GetLinks()[0];
                 var newLink = GetLinks()[2];
-                newLcNewAndExistingLinks.Links.Add(newLink);
+                newLc.Links.Clear();
+                newLc.Links.Add(existingLink);
+                newLc.Links.Add(newLink);
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
-                var newItems = new List<LifeCourse>() { newLcNewAndExistingLinks };
+                var newItems = new List<LifeCourse>() { newLc };
                 rep.AddNewItems(newItems, "new_version");
 
                 var dbItems = context.LifeCourses.ToList();
@@ -128,6 +133,7 @@ namespace linklives_lib_test
                 var newItems = new List<LifeCourse>() { newLcExistingLinks };
                 rep.AddNewItems(newItems, "new_version");
 
+                context.LifeCourses.Load();
                 var dbItems = context.LifeCourses.ToList();
                 Assert.AreEqual(2, dbItems.Count());
                 Assert.AreEqual(1, dbItems[1].Links.Count());
@@ -155,7 +161,7 @@ namespace linklives_lib_test
         }
 
         [Test]
-        public void UpdateExistingItems_WithExistingItemWithNewVersion_UpdateIt()
+        public void AddNewItems_WithExistingItemWithNewVersion_UpdateIt()
         {
             using (var context = new LinklivesContext(dbContextOptions))
             {
@@ -163,10 +169,11 @@ namespace linklives_lib_test
                 lc.Data_version = "old_version";
                 context.LifeCourses.Add(lc);
                 context.SaveChanges();
+                context.ChangeTracker.Clear();
 
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var existingItems = new List<LifeCourse>() { lc };
-                rep.UpdateExistingItems(existingItems, "new_version");
+                rep.AddNewItems(existingItems, "new_version");
 
                 var dbItems = context.LifeCourses.ToList();
                 Assert.AreEqual(1, dbItems.Count());
@@ -176,7 +183,7 @@ namespace linklives_lib_test
         }
 
         [Test]
-        public void UpdateExistingItems_WithExistingItemWithSameDataVersion_IgnoreIt()
+        public void AddNewItems_WithExistingItemWithSameDataVersion_UpdateIt()
         {
             using (var context = new LinklivesContext(dbContextOptions))
             {
@@ -187,32 +194,11 @@ namespace linklives_lib_test
 
                 var rep = new EFLifeCourseRepository(context, dbContextOptions);
                 var newItems = new List<LifeCourse>() { lcs[0] };
-                rep.UpdateExistingItems(newItems, "existing_version");
+                rep.AddNewItems(newItems, "new_version");
 
                 var dbItems = context.LifeCourses.ToList();
                 Assert.AreEqual(1, dbItems.Count());
-                Assert.AreEqual("existing_version", dbItems[0].Data_version);
-                Assert.IsFalse(dbItems[0].Is_historic);
-            }
-        }
-
-        [Test]
-        public void UpdateExistingItems_WithNewItem_IgnoreIt()
-        {
-            using (var context = new LinklivesContext(dbContextOptions))
-            {
-                var lcs = GetLifeCourses();
-                lcs[0].Data_version = "existing_version";
-                context.LifeCourses.Add(lcs[0]);
-                context.SaveChanges();
-
-                var rep = new EFLifeCourseRepository(context, dbContextOptions);
-                var newItems = new List<LifeCourse>() { lcs[1] };
-                rep.UpdateExistingItems(newItems, "existing_version");
-
-                var dbItems = context.LifeCourses.ToList();
-                Assert.AreEqual(1, dbItems.Count());
-                Assert.AreEqual("existing_version", dbItems[0].Data_version);
+                Assert.AreEqual("new_version", dbItems[0].Data_version);
                 Assert.IsFalse(dbItems[0].Is_historic);
             }
         }

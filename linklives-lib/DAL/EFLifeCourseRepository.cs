@@ -53,8 +53,8 @@ namespace Linklives.DAL
             var existingLinks = context.Set<Link>().AsNoTracking().AsEnumerable().Select(link => link.Key).ToHashSet();
 
             // Add items not in the database
+            var linksToUpdate = new List<Link>();
             int inserts = 0;
-            var linksToAdd = new List<Link>();
             foreach (LifeCourse lc in itemsNotInDb)
             {
                 // These items are not historic
@@ -70,82 +70,62 @@ namespace Linklives.DAL
                         context.Links.Add(link);
                         existingLinks.Add(link.Key);
                     }
+                    else
+                    {
+                        link.Data_version = dataVersion;
+                        context.Links.Update(link);
+                    }
                 }
 
                 if (!IDsInTheDatabase.Contains(lc.Key))
                 {
                     context.LifeCourses.Add(lc);
-                }
-
-                inserts++;
-
-                if (inserts % 1000 == 0)
-                {
-                    try
-                    {
-                        context.SaveChanges();
-                    }
-                    catch (Exception e)
-                    {
-                        System.Console.WriteLine(e.Message);
-                    }
-                    ResetContext();
-                }
-            }
-
-            ResetContext();
-        }
-
-        public void InsertNewLifeCourseLinks(IEnumerable<LifeCourse> lcs)
-        {
-            int inserts = 0;
-            foreach (LifeCourse lc in lcs)
-            {
-                foreach (Link l in lc.Links)
-                {
-                    //        context.LifeCourseLink.Add(new LifeCourseLink() { LifeCoursesKey = lc.Key, LinksKey = l.Key });
-                }
-
-                inserts++;
-
-                if (inserts % 1000 == 0)
-                {
-                    context.SaveChanges();
-                    ResetContext();
-                }
-            }
-
-            context.SaveChanges();
-        }
-
-        public void UpsertKeyedItems<U>(IEnumerable<U> items, string dataVersion) where U : KeyedItem
-        {
-            context.ChangeTracker.AutoDetectChangesEnabled = false;
-
-            var existingItems = context.Set<U>().AsNoTracking().AsEnumerable().Select(item => item.Key).ToHashSet();
-            var itemsToAdd = new List<U>();
-            var itemsToUpsert = new List<U>();
-            foreach (U l in items)
-            {
-                if (!existingItems.Contains(l.Key))
-                {
-                    itemsToAdd.Add(l);
+                    IDsInTheDatabase.Add(lc.Key);
                 }
                 else
                 {
-                    l.Is_historic = false;
-                    l.Data_version = dataVersion;
-                    itemsToUpsert.Add(l);
+                    context.LifeCourses.Update(lc);
                 }
+
+                inserts++;
+                Flush(inserts, false);
+                
             }
 
-            context.AddRange(itemsToAdd);
-            context.SaveChanges();
-            ResetContext();
 
-            context.AddRange(itemsToUpsert);
-            context.SaveChanges();
-            ResetContext();
+            Flush(0, true);
+
+            var itemsAlreadyInDb = newItems.Where(lc => IDsInTheDatabase.Contains(lc.Key));
+            int updates = 0;
+            foreach(var lifecourse in itemsAlreadyInDb)
+            {
+                lifecourse.Data_version = dataVersion;
+                if (context.LifeCourses.Contains(lifecourse))
+                {
+                    context.LifeCourses.Remove(lifecourse);
+                    context.LifeCourses.Update(lifecourse);
+                }
+                updates++;
+                Flush(updates, false);
+            }
+
+            Flush(0, true);
+        }
+
+        private void Flush(int inserts, bool force)
+        {
+            if (inserts % 1000 == 0 || force == true)
+            {
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine(e.Message);
+                }
+                ResetContext();
+            }
         }
 
         /// <summary>
