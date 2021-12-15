@@ -19,29 +19,33 @@ namespace Linklives.Migrations
 
             modelBuilder.Entity("LifeCourseLink", b =>
                 {
-                    b.Property<string>("LifeCoursesKey")
-                        .HasColumnType("Varchar(350)");
+                    b.Property<int>("LifeCoursesId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("LinksKey")
-                        .HasColumnType("Varchar(350)");
+                    b.Property<int>("LinksId")
+                        .HasColumnType("int");
 
-                    b.HasKey("LifeCoursesKey", "LinksKey");
+                    b.HasKey("LifeCoursesId", "LinksId");
 
-                    b.HasIndex("LinksKey");
+                    b.HasIndex("LinksId");
 
                     b.ToTable("LifeCourseLink");
                 });
 
             modelBuilder.Entity("Linklives.Domain.LifeCourse", b =>
                 {
-                    b.Property<string>("Key")
-                        .HasColumnType("Varchar(350)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<string>("Data_version")
                         .HasColumnType("text");
 
                     b.Property<bool>("Is_historic")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Key")
+                        .HasColumnType("Varchar(350)");
 
                     b.Property<int>("Life_course_id")
                         .HasColumnType("int");
@@ -58,15 +62,21 @@ namespace Linklives.Migrations
                     b.Property<string>("Source_ids")
                         .HasColumnType("text");
 
-                    b.HasKey("Key");
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
 
                     b.ToTable("LifeCourses");
                 });
 
             modelBuilder.Entity("Linklives.Domain.Link", b =>
                 {
-                    b.Property<string>("Key")
-                        .HasColumnType("Varchar(350)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<string>("Data_version")
                         .HasColumnType("text");
@@ -82,6 +92,9 @@ namespace Linklives.Migrations
 
                     b.Property<string>("Iteration_inner")
                         .HasColumnType("text");
+
+                    b.Property<string>("Key")
+                        .HasColumnType("Varchar(350)");
 
                     b.Property<string>("Link_id")
                         .HasColumnType("text");
@@ -104,7 +117,12 @@ namespace Linklives.Migrations
                     b.Property<int>("Source_id2")
                         .HasColumnType("int");
 
-                    b.HasKey("Key");
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
 
                     b.ToTable("Links");
                 });
@@ -115,9 +133,8 @@ namespace Linklives.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("LinkKey")
-                        .IsRequired()
-                        .HasColumnType("Varchar(350)");
+                    b.Property<int>("LinkId")
+                        .HasColumnType("int");
 
                     b.Property<int>("RatingId")
                         .HasColumnType("int");
@@ -128,7 +145,7 @@ namespace Linklives.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LinkKey");
+                    b.HasIndex("LinkId");
 
                     b.HasIndex("RatingId");
 
@@ -156,13 +173,13 @@ namespace Linklives.Migrations
                 {
                     b.HasOne("Linklives.Domain.LifeCourse", null)
                         .WithMany()
-                        .HasForeignKey("LifeCoursesKey")
+                        .HasForeignKey("LifeCoursesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Linklives.Domain.Link", null)
                         .WithMany()
-                        .HasForeignKey("LinksKey")
+                        .HasForeignKey("LinksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -171,7 +188,7 @@ namespace Linklives.Migrations
                 {
                     b.HasOne("Linklives.Domain.Link", "Link")
                         .WithMany("Ratings")
-                        .HasForeignKey("LinkKey")
+                        .HasForeignKey("LinkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
