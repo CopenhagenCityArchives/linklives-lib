@@ -33,7 +33,7 @@ namespace Linklives.DAL
 
         private void ResetContext()
         {
-            context.Dispose();
+            context = null;
             context = new LinklivesContext(contextOptions);
         }
 
@@ -45,6 +45,7 @@ namespace Linklives.DAL
                 {
                     System.Console.WriteLine($"Upserting, {inserts} inserts");
                     context.SaveChanges();
+                    ResetContext();
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -61,7 +62,6 @@ namespace Linklives.DAL
                 {
                     System.Console.WriteLine("Could not insert data");
                 }
-                ResetContext();
             }
         }
         /// Upserts LifeCourses and Links
@@ -98,6 +98,8 @@ namespace Linklives.DAL
                 inserts++;
                 Flush(inserts, false);
             }
+
+            Flush(0, true);
         }
 
         /// <summary>
