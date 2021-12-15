@@ -9,6 +9,7 @@ namespace Linklives.DAL
     public class EFLifeCourseRepository : EFKeyedRepository<LifeCourse>, ILifeCourseRepository
     {
         private readonly DbContextOptions<LinklivesContext> contextOptions;
+        private readonly int batchSize = 1000;
         public EFLifeCourseRepository(LinklivesContext context, DbContextOptions<LinklivesContext> options) : base(context)
         {
             contextOptions = options;
@@ -30,103 +31,72 @@ namespace Linklives.DAL
             context.Entry(lc).Collection(b => b.Links).Load();
         }
 
-        public void ResetContext()
+        private void ResetContext()
         {
-            context = null;
+            context.Dispose();
             context = new LinklivesContext(contextOptions);
-        }
-
-        /// Upserts LifeCourses and Links
-        /// Lifecourses that already exists is updated with the given dataVersion.
-        /// Note that this method is often used in conjunction with
-        /// MarkOldItems, whichs updates old items in the database to Is_historic
-        /// </summary>
-        /// <param name="newItems">Items that reflect the current state of data</param>
-        /// <param name="dataVersion">The new DataVersion</param>
-        public void Upsert(IEnumerable<LifeCourse> newItems, string dataVersion)
-        {
-            context.ChangeTracker.AutoDetectChangesEnabled = false;
-
-            var IDsInTheDatabase = context.Set<LifeCourse>().AsNoTracking().AsEnumerable().Select(lc => lc.Key).ToHashSet();
-
-            // items not in the database
-            var itemsNotInDb = newItems.Where(lc => !IDsInTheDatabase.Contains(lc.Key));
-
-            var existingLinks = context.Set<Link>().AsNoTracking().AsEnumerable().Select(link => link.Key).ToHashSet();
-
-            // Add items not in the database
-            var linksToUpdate = new List<Link>();
-            int inserts = 0;
-            foreach (LifeCourse lc in itemsNotInDb)
-            {
-                // These items are not historic
-                lc.Is_historic = false;
-
-                // Set the data version to the newest
-                lc.Data_version = dataVersion;
-
-                foreach (Link link in lc.Links)
-                {
-                    if (!existingLinks.Contains(link.Key))
-                    {
-                        context.Links.Add(link);
-                        existingLinks.Add(link.Key);
-                    }
-                    else
-                    {
-                        link.Data_version = dataVersion;
-                        context.Links.Update(link);
-                    }
-                }
-
-                if (!IDsInTheDatabase.Contains(lc.Key))
-                {
-                    context.LifeCourses.Add(lc);
-                    IDsInTheDatabase.Add(lc.Key);
-                }
-                else
-                {
-                    context.LifeCourses.Update(lc);
-                }
-
-                inserts++;
-                Flush(inserts, false);
-                
-            }
-
-            Flush(0, true);
-
-            var itemsAlreadyInDb = newItems.Where(lc => IDsInTheDatabase.Contains(lc.Key));
-            int updates = 0;
-            foreach(var lifecourse in itemsAlreadyInDb)
-            {
-                lifecourse.Data_version = dataVersion;
-                if (context.LifeCourses.Contains(lifecourse))
-                {
-                    context.LifeCourses.Remove(lifecourse);
-                }
-                context.LifeCourses.Update(lifecourse);
-
-                updates++;
-                Flush(updates, false);
-            }
-
-            Flush(0, true);
         }
 
         private void Flush(int inserts, bool force)
         {
-            if (inserts % 1000 == 0 || force == true)
+            if (inserts % batchSize == 0 || force == true)
             {
                 try
                 {
+                    System.Console.WriteLine($"Upserting, {inserts} inserts");
                     context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var entry = ex.Entries.Single();
+                    var databaseValues = entry.GetDatabaseValues();
+                    var databaseValuesAsBlog = (Link)databaseValues.ToObject();
+                    System.Console.WriteLine(ex.Message);
+                }
+                catch(DbUpdateException e)
+                {
+                    System.Console.WriteLine();
                 }
                 catch (Exception e)
                 {
-                    throw e;
+                    System.Console.WriteLine("Could not insert data");
                 }
                 ResetContext();
+            }
+        }
+        /// Upserts LifeCourses and Links
+        /// Lifecourses that already exists is updated with the given dataVersion.
+        /// Note that this method is often used in conjunction with
+        /// MarkOldItems, whichs updates old items in the database to Is_historic
+        /// Note that it is assumed that the keys in items are unique!
+        /// </summary>
+        /// <param name="items">Items that reflect the current state of data</param>
+        /// <param name="dataVersion">The new DataVersion</param>
+        public void Upsert(IEnumerable<LifeCourse> items, string dataVersion)
+        {
+            //context.ChangeTracker.AutoDetectChangesEnabled = false;
+            var existingLifeCourses = context.LifeCourses.AsNoTracking().AsEnumerable().Select(lc => new { Key = lc.Key, Id = lc.Id }).ToDictionary(keyId => keyId.Key, keyId => keyId.Id);
+            var existingLinks = context.Links.AsNoTracking().AsEnumerable().Select(lc => new { Key = lc.Key, Id = lc.Id }).ToDictionary(keyId => keyId.Key, keyId => keyId.Id);
+            
+            int inserts = 0;
+            foreach(var lc in items)
+            {
+                lc.Data_version = dataVersion;
+
+                if (existingLifeCourses.ContainsKey(lc.Key))
+                {
+                    lc.Id = existingLifeCourses[lc.Key];
+                }
+                foreach(var link in lc.Links)
+                {
+                    if (existingLinks.ContainsKey(link.Key))
+                    {
+                        link.Id = existingLinks[link.Key];
+                    }
+                }
+                context.Attach(lc);
+                inserts++;
+                Flush(inserts, false);
             }
         }
 

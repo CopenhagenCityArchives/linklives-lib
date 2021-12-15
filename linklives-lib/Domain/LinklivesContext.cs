@@ -18,14 +18,14 @@ namespace Linklives.Domain
 
             modelBuilder.Entity<LifeCourse>(entity =>
             {
-                entity.HasKey(x => x.Key);
+                entity.HasKey(x => x.Id);
                 entity.HasMany(x => x.Links).WithMany(x => x.LifeCourses);
             });
 
             modelBuilder.Entity<Link>(entity =>
             {
-                entity.HasKey(x => x.Key);
-                entity.HasMany(x => x.Ratings).WithOne(x => x.Link).HasForeignKey(x => x.LinkKey);
+                entity.HasKey(x => x.Id);
+                entity.HasMany(x => x.Ratings).WithOne(x => x.Link).HasForeignKey(x => x.LinkId);
             });
 
             modelBuilder.Entity<LinkRating>(entity =>
