@@ -8,7 +8,7 @@ namespace Linklives.DAL
         int Count();
         IEnumerable<LinkRating> GetAll();
         LinkRating GetById(int id);
-        List<LinkRating> GetbyLinkKey(string linkKey);
+        List<LinkRating> GetbyLinkId(int linkId);
         void Insert(LinkRating linkRating);
         void Insert(IEnumerable<LinkRating> linkRatings);
         void Delete(int id);

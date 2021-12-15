@@ -11,9 +11,9 @@ namespace Linklives.DAL
         public EFLinkRatingRepository(LinklivesContext context) : base(context)
         {
         }
-        public List<LinkRating> GetbyLinkKey(string linkKey)
+        public List<LinkRating> GetbyLinkId(int linkId)
         {
-            return context.LinkRatings.IncludeAll().Where(x => x.LinkKey == linkKey).ToList();
+            return context.LinkRatings.IncludeAll().Where(x => x.LinkId == linkId).ToList();
         }
         public void Delete(int id)
         {

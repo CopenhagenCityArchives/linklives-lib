@@ -10,10 +10,10 @@ namespace Linklives.Domain
         [DataMember, Required(AllowEmptyStrings = false, ErrorMessage = "Must have valid rating id")]
         public int RatingId { get; set; }
         [DataMember, Required(AllowEmptyStrings = false, ErrorMessage = "Must have valid link key")]
-        public string LinkKey { get; set; }
+        public int LinkId { get; set; }
         public LinkRating ToLinkRating(string User)
         {
-            return new LinkRating { LinkKey = LinkKey, RatingId = RatingId, User = User };
+            return new LinkRating { LinkId = LinkId, RatingId = RatingId, User = User };
         }
     }
     public class LinkRating : PostLinkRating
