@@ -71,6 +71,7 @@ namespace linklives_lib_test
         [TestCase("", "", "")]
         [TestCase("relation", "erhverv", @"erhverv (relation)")]
         [TestCase("relation1,relation2", "erhverv1,erhverv2", @"erhverv1 (relation1), erhverv2 (relation2)")]
+        [TestCase("Forhenværende/pensioneret,Eget erhverv","Forvalter", @"Forvalter (Forhenværende/pensioneret), Forvalter (Eget erhverv)")]
         public void GetOccupationDisplay_ReturnTranscribedRelationTilErhvervAndErhverv(string relationstypes, string positions, string expected)
         {
             var transcription = new ExpandoObject();
@@ -89,6 +90,7 @@ namespace linklives_lib_test
         [TestCase("EGET ERHVERV", "erhverv", "erhverv")]
         [TestCase("ægtefælles erhverv", "erhverv", "")]
         [TestCase("eget erhverv, fars erhverv", "erhverv1,erhverv2", "erhverv1")]
+        [TestCase("Forhenværende/pensioneret,Eget erhverv","Forvalter", @"Forvalter")]
         public void GetOccupationSearchable_WithRelationTypeEgetErhverv_ReturnTranscribedErhverv(string relationstypes, string positions, string expected)
         {
             var transcription = new ExpandoObject();

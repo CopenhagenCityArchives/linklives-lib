@@ -104,13 +104,14 @@ namespace Linklives.Domain
                     return "";
                 }
 
-                string[] occupations = Transcribed.Transcription.relationtypes.Split(",");
+                string[] relationstypes = Transcribed.Transcription.relationtypes.Split(",");
                 string[] positions = Transcribed.Transcription.positions.Split(",");
                
                 int i = 0;
                 string relationTypesAndPositions = "";
-                foreach(var oc in occupations)
+                foreach(var oc in relationstypes)
                 {
+                    if (i >= positions.Length) { i--; }
                     relationTypesAndPositions += $"{positions[i]} ({oc}), ";
                     i++;
                 }
