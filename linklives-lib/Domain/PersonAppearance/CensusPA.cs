@@ -54,15 +54,28 @@ namespace Linklives.Domain
         {
             get
             {
-                return Transcribed.Transcription?.Stilling_i_husstanden ?? null;
+                try
+                {
+                    return (string)Transcribed.Transcription?.Stilling_i_husstanden ?? null;
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
             }
         }
-
         public override string Occupation_searchable
         {
             get
             {
-                return Transcribed.Transcription?.Stilling_i_husstanden ?? null;
+                try
+                {
+                    return (string)Transcribed.Transcription?.Stilling_i_husstanden ?? null;
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
             }
         }
         //TODO: If BasePA also adds "sogn" to paris, this override is not necessary
