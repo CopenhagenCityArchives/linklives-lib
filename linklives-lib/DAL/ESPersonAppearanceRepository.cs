@@ -33,19 +33,19 @@ namespace Linklives.DAL
 
         public IEnumerable<BasePA> GetByIds(List<string> Ids)
         {
-            if(Ids.Count == 0)
+            if (Ids.Count == 0)
             {
                 return null;
             }
-            //TODO: Fix this up and tag on the transcribed source before returning
+            //TODO: Fix this up and tag on the transcribed pa before returning
             var pasSearchResponse = client.Search<BasePA>(s => s
-            .Index("pas")
-            .From(0)
-            .Size(1000)
-            .Query(q => q
-                .Terms(t => t
-                    .Field("key")
-                    .Terms(Ids))));
+                .Index("pas")
+                .Query(q => q
+                    .Ids(i => i
+                        .Values(Ids)
+                    )
+                )
+            );
             //var pass = pasSearchResponse.Documents.Select(x => x["person_appearance"]).ToList();
             //var sourceids = pass.Select(p => (int)p["source_id"]).ToList();
             //var sources = sourceRepository.GetByIds(sourceids);
