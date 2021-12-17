@@ -35,7 +35,14 @@ namespace Linklives.Domain
         {
             get
             {
-                return $"https://kbharkiv.dk/permalink/post/1-{Transcribed.Transcription.id}";
+                try
+                {
+                    return $"https://kbharkiv.dk/permalink/post/1-{Transcribed.Transcription.id}";
+                }
+                catch (Exception e)
+                {
+                    return "";
+                }
             }
         }
         public override string Source_type_wp4 
@@ -99,24 +106,31 @@ namespace Linklives.Domain
         {
             get
             {
-                if(string.IsNullOrEmpty(Transcribed.Transcription.positions))
+                try
+                {
+                    if (string.IsNullOrEmpty(Transcribed.Transcription.positions))
+                    {
+                        return "";
+                    }
+
+                    string[] relationstypes = Transcribed.Transcription.relationtypes.Split(",");
+                    string[] positions = Transcribed.Transcription.positions.Split(",");
+
+                    int i = 0;
+                    string relationTypesAndPositions = "";
+                    foreach (var oc in relationstypes)
+                    {
+                        if (i >= positions.Length) { i--; }
+                        relationTypesAndPositions += $"{positions[i]} ({oc}), ";
+                        i++;
+                    }
+
+                    return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length - 2);
+                }
+                catch(Exception e)
                 {
                     return "";
                 }
-
-                string[] relationstypes = Transcribed.Transcription.relationtypes.Split(",");
-                string[] positions = Transcribed.Transcription.positions.Split(",");
-               
-                int i = 0;
-                string relationTypesAndPositions = "";
-                foreach(var oc in relationstypes)
-                {
-                    if (i >= positions.Length) { i--; }
-                    relationTypesAndPositions += $"{positions[i]} ({oc}), ";
-                    i++;
-                }
-                
-                return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length - 2);
             }
         }
 
@@ -124,26 +138,33 @@ namespace Linklives.Domain
         {
             get
             {
-                if (string.IsNullOrEmpty(Transcribed.Transcription.positions))
+                try
+                {
+                    if (string.IsNullOrEmpty(Transcribed.Transcription.positions))
+                    {
+                        return "";
+                    }
+
+                    string[] occupations = Transcribed.Transcription.relationtypes.Split(",");
+                    string[] positions = Transcribed.Transcription.positions.Split(",");
+
+                    int i = 0;
+                    string relationTypesAndPositions = "";
+                    foreach (var oc in occupations)
+                    {
+                        if (oc.Contains("eget erhverv", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            relationTypesAndPositions += $"{positions[i]}, ";
+                            i++;
+                        }
+                    }
+                    if (relationTypesAndPositions.Length < 2) { return ""; }
+                    return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length - 2);
+                }
+                catch(Exception e)
                 {
                     return "";
                 }
-
-                string[] occupations = Transcribed.Transcription.relationtypes.Split(",");
-                string[] positions = Transcribed.Transcription.positions.Split(",");
-
-                int i = 0;
-                string relationTypesAndPositions = "";
-                foreach (var oc in occupations)
-                {
-                    if(oc.Contains("eget erhverv", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        relationTypesAndPositions += $"{positions[i]}, ";
-                        i++;
-                    }
-                }
-                if(relationTypesAndPositions.Length<2) { return ""; }
-                return relationTypesAndPositions.Substring(0, relationTypesAndPositions.Length - 2);
             }
         }
 
