@@ -56,7 +56,7 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    return (string)Transcribed.Transcription?.Stilling_i_husstanden ?? null;
+                    return (string)Transcribed.Transcription?["Stilling_i_husstanden"] ?? null;
                 }
                 catch (Exception e)
                 {
@@ -70,7 +70,7 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    return (string)Transcribed.Transcription?.Stilling_i_husstanden ?? null;
+                    return (string)Transcribed.Transcription?["Stilling_i_husstanden"] ?? null;
                 }
                 catch (Exception e)
                 {

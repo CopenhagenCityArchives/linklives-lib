@@ -37,7 +37,7 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    return $"https://kbharkiv.dk/permalink/post/1-{Transcribed.Transcription.id}";
+                    return Transcribed.Transcription?["id"] == null ?  $"https://kbharkiv.dk/permalink/post/1-{Transcribed.Transcription.id}" : null;
                 }
                 catch (Exception e)
                 {
@@ -108,13 +108,13 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(Transcribed.Transcription.positions))
+                    if (string.IsNullOrEmpty(Transcribed.Transcription?["positions"]))
                     {
                         return "";
                     }
 
-                    string[] relationstypes = Transcribed.Transcription.relationtypes.Split(",");
-                    string[] positions = Transcribed.Transcription.positions.Split(",");
+                    string[] relationstypes = Transcribed.Transcription?["relationtypes"].Split(", ");
+                    string[] positions = Transcribed.Transcription?["positions"].Split(", ");
 
                     int i = 0;
                     string relationTypesAndPositions = "";
@@ -140,13 +140,13 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(Transcribed.Transcription.positions))
+                    if (string.IsNullOrEmpty(Transcribed.Transcription?["positions"]))
                     {
                         return "";
                     }
 
-                    string[] occupations = Transcribed.Transcription.relationtypes.Split(",");
-                    string[] positions = Transcribed.Transcription.positions.Split(",");
+                    string[] occupations = Transcribed.Transcription?["relationtypes"].Split(", ");
+                    string[] positions = Transcribed.Transcription?["positions"].Split(", ");
 
                     int i = 0;
                     string relationTypesAndPositions = "";
