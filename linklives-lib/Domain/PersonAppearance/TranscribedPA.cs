@@ -16,6 +16,10 @@ namespace Linklives.Domain
         {
 
         }
+        //TODO: Simplify TranscribedPA support of dynamic
+        //TranscribedPa has to suport 3 scenarios:
+        // * dynamic object from CSVHelper when reading transcriptions for indexation (and in tests)
+        // * dictionary when reading single PAs from elastic search in the API
         public TranscribedPA(dynamic transcription, int sourceId)
         {
             Transcription = transcription;
@@ -33,9 +37,16 @@ namespace Linklives.Domain
         {
             try
             {
-                return (string)Transcription.GetType().GetProperty(propertyName).GetValue(Transcription) ?? null;
+                if (Transcription.GetType() == typeof(Dictionary<string, object>))
+                {
+                    return (string)Transcription?[propertyName];
+                }
+                else
+                {
+                    return (string)Transcription.GetType().GetProperty(propertyName).GetValue(Transcription) ?? null;
+                }
             }
-            catch
+            catch (Exception e)
             {
                 return null;
             }
