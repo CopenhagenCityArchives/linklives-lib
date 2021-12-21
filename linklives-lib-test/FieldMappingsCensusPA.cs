@@ -131,9 +131,8 @@ namespace linklives_lib_test
         [TestCase(null, null)]
         public void GetOccupationDisplay_ReturnTranscribedStillingIHusstanden(string stillingIHusstanden, string expected)
         {
-            var transcription = new ExpandoObject();
-            transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("Stilling_i_husstanden", stillingIHusstanden);
+            dynamic transcription = new { pa_id = "1", Stilling_i_husstanden = stillingIHusstanden };
+
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
 
@@ -145,9 +144,8 @@ namespace linklives_lib_test
         [TestCase(null, null)]
         public void GetOccupationSearcable_ReturnTranscribedStillingIHusstanden(string stillingIHusstanden, string expected)
         {
-            var transcription = new ExpandoObject();
-            transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("Stilling_i_husstanden", stillingIHusstanden);
+            dynamic transcription = new { pa_id = "1", Stilling_i_husstanden = stillingIHusstanden };
+
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
 

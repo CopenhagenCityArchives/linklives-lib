@@ -50,7 +50,7 @@ namespace Linklives.Domain
             get
             {
                 try { 
-                    var strList = new List<string>() { Transcribed.Transcription?["BrowseLevel"], Transcribed.Transcription?["BrowseLevel1"] };
+                    var strList = new List<string>() { Transcribed.GetTranscriptionPropertyValue("BrowseLevel"), Transcribed.GetTranscriptionPropertyValue("BrowseLevel1") };
 
                     return string.Join(", ", strList.Where(sl => !string.IsNullOrEmpty(sl)));
                 }
@@ -64,7 +64,7 @@ namespace Linklives.Domain
         {
             get
             {
-                return Transcribed.Transcription?["event_id"];
+                return Transcribed.GetTranscriptionPropertyValue("event_id");
             }
         }
         public override int? Deathyear_display
@@ -93,7 +93,7 @@ namespace Linklives.Domain
             get
             {
 
-                return Transcribed.Transcription?["BrowseLevel2"];
+                return Transcribed.GetTranscriptionPropertyValue("BrowseLevel2");
             }
         } 
         public ParishPA()

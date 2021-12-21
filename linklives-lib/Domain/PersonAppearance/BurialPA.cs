@@ -35,14 +35,7 @@ namespace Linklives.Domain
         {
             get
             {
-                try
-                {
-                    return Transcribed.Transcription?["id"] == null ?  $"https://kbharkiv.dk/permalink/post/1-{Transcribed.Transcription.id}" : null;
-                }
-                catch (Exception e)
-                {
-                    return "";
-                }
+                return Transcribed.GetTranscriptionPropertyValue("id") == null ? null : $"https://kbharkiv.dk/permalink/post/1-{Transcribed.GetTranscriptionPropertyValue("id") }";
             }
         }
         public override string Source_type_wp4 
@@ -108,13 +101,12 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(Transcribed.Transcription?["positions"]))
+                    if (string.IsNullOrEmpty(Transcribed.GetTranscriptionPropertyValue("positions")))
                     {
                         return "";
                     }
-
-                    string[] relationstypes = Transcribed.Transcription?["relationtypes"].Split(", ");
-                    string[] positions = Transcribed.Transcription?["positions"].Split(", ");
+                    string[] relationstypes = Transcribed.GetTranscriptionPropertyValue("relationtypes").Split(",");
+                    string[] positions = Transcribed.GetTranscriptionPropertyValue("positions").Split(",");
 
                     int i = 0;
                     string relationTypesAndPositions = "";
@@ -140,13 +132,13 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(Transcribed.Transcription?["positions"]))
+                    if (string.IsNullOrEmpty(Transcribed.GetTranscriptionPropertyValue("positions")))
                     {
                         return "";
                     }
 
-                    string[] occupations = Transcribed.Transcription?["relationtypes"].Split(", ");
-                    string[] positions = Transcribed.Transcription?["positions"].Split(", ");
+                    string[] occupations = Transcribed.GetTranscriptionPropertyValue("relationtypes").Split(",");
+                    string[] positions = Transcribed.GetTranscriptionPropertyValue("positions").Split(",");
 
                     int i = 0;
                     string relationTypesAndPositions = "";

@@ -55,12 +55,10 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase(1, @"https://kbharkiv.dk/permalink/post/1-1")]
-        public void GetPAEntryPermaLinkWP4_ReturnURLToSpecificPostBasedOnTranscribedId(int id, string expected)
+        [TestCase("1", @"https://kbharkiv.dk/permalink/post/1-1")]
+        public void GetPAEntryPermaLinkWP4_ReturnURLToSpecificPostBasedOnTranscribedId(string id, string expected)
         {
-            var transcription = new ExpandoObject();
-            transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("id",id);
+            dynamic transcription = new { pa_id = "1", id = id };
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (BurialPA)BasePA.Create(source, standardPA, transcribed);
 
@@ -74,10 +72,8 @@ namespace linklives_lib_test
         [TestCase("Forhenværende/pensioneret,Eget erhverv","Forvalter", @"Forvalter (Forhenværende/pensioneret), Forvalter (Eget erhverv)")]
         public void GetOccupationDisplay_ReturnTranscribedRelationTilErhvervAndErhverv(string relationstypes, string positions, string expected)
         {
-            var transcription = new ExpandoObject();
-            transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("relationtypes", relationstypes);
-            transcription.TryAdd("positions", positions);
+            dynamic transcription = new { pa_id = "1", relationtypes = relationstypes, positions = positions };
+
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (BurialPA)BasePA.Create(source, standardPA, transcribed);
 
@@ -93,10 +89,8 @@ namespace linklives_lib_test
         [TestCase("Forhenværende/pensioneret,Eget erhverv","Forvalter", @"Forvalter")]
         public void GetOccupationSearchable_WithRelationTypeEgetErhverv_ReturnTranscribedErhverv(string relationstypes, string positions, string expected)
         {
-            var transcription = new ExpandoObject();
-            transcription.TryAdd("pa_id", 1);
-            transcription.TryAdd("relationtypes", relationstypes);
-            transcription.TryAdd("positions", positions);
+            dynamic transcription = new { pa_id = "1", relationtypes = relationstypes, positions = positions };
+
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (BurialPA)BasePA.Create(source, standardPA, transcribed);
 

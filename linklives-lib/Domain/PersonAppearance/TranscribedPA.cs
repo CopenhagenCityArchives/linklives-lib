@@ -1,6 +1,7 @@
 ﻿using Nest;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Text;
 
 namespace Linklives.Domain
@@ -17,9 +18,27 @@ namespace Linklives.Domain
         }
         public TranscribedPA(dynamic transcription, int sourceId)
         {
-            Pa_id = Convert.ToInt32(transcription.pa_id);
-            Source_id = sourceId;
             Transcription = transcription;
+            var type = Transcription.GetType();
+            Pa_id = Convert.ToInt32(GetTranscriptionPropertyValue("pa_id"));
+            Source_id = sourceId;
+        }
+        /// <summary>
+        /// Returns a value for the given property of the Transcription property,
+        /// or null if the property does not exists
+        /// </summary>
+        /// <param name="propertyName">The name of the property</param>
+        /// <returns>A string containing the value of the property or null if it is not set</returns>
+        public string GetTranscriptionPropertyValue(string propertyName)
+        {
+            try
+            {
+                return (string)Transcription.GetType().GetProperty(propertyName).GetValue(Transcription) ?? null;
+            }
+            catch
+            {
+                return null;
+            }
         }
         public override void InitKey()
         {

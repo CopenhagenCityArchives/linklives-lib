@@ -56,7 +56,7 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    return (string)Transcribed.Transcription?["Stilling_i_husstanden"] ?? null;
+                    return Transcribed.GetTranscriptionPropertyValue("Stilling_i_husstanden");
                 }
                 catch (Exception e)
                 {
@@ -68,14 +68,7 @@ namespace Linklives.Domain
         {
             get
             {
-                try
-                {
-                    return (string)Transcribed.Transcription?["Stilling_i_husstanden"] ?? null;
-                }
-                catch (Exception e)
-                {
-                    return null;
-                }
+                return Transcribed.GetTranscriptionPropertyValue("Stilling_i_husstanden");
             }
         }
         //TODO: If BasePA also adds "sogn" to paris, this override is not necessary
