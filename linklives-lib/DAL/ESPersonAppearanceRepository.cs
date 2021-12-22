@@ -37,23 +37,15 @@ namespace Linklives.DAL
             {
                 return null;
             }
-            //TODO: Fix this up and tag on the transcribed pa before returning
-            var pasSearchResponse = client.Search<BasePA>(s => s
-                .Index("pas")
-                .Query(q => q
-                    .Ids(i => i
-                        .Values(Ids)
-                    )
-                )
-            );
-            //var pass = pasSearchResponse.Documents.Select(x => x["person_appearance"]).ToList();
-            //var sourceids = pass.Select(p => (int)p["source_id"]).ToList();
-            //var sources = sourceRepository.GetByIds(sourceids);
-            //foreach (var pas in pass)
-            //{
-            //    pas.Add("source", sources.Single(s => (int)s["source_id"] == (int)pas["source_id"]));
-            //}
-            return pasSearchResponse.Documents;
+
+            //TODO: This can be more effective (right now each pa requires 3 ES requests)
+            var pas = new List<BasePA>();
+            foreach (var id in Ids)
+            {
+                pas.Add(GetById(id));
+            }
+
+            return pas;
         }
     }
 }
