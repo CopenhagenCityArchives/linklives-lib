@@ -129,9 +129,9 @@ namespace linklives_lib_test
         [Test]
         [TestCase("role", "role")]
         [TestCase(null, null)]
-        public void GetOccupationDisplay_ReturnTranscribedStillingIHusstanden(string stillingIHusstanden, string expected)
+        public void GetOccupationDisplay_ReturnTranscribedErhverv(string erhverv, string expected)
         {
-            dynamic transcription = new { pa_id = "1", Stilling_i_husstanden = stillingIHusstanden };
+            dynamic transcription = new { pa_id = "1", Erhverv = erhverv };
 
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
@@ -142,9 +142,9 @@ namespace linklives_lib_test
         [Test]
         [TestCase("role", "role")]
         [TestCase(null, null)]
-        public void GetOccupationSearcable_ReturnTranscribedStillingIHusstanden(string stillingIHusstanden, string expected)
+        public void GetOccupationSearcable_ReturnTranscribedErhverv(string erhverv, string expected)
         {
-            dynamic transcription = new { pa_id = "1", Stilling_i_husstanden = stillingIHusstanden };
+            dynamic transcription = new { pa_id = "1", Erhverv = erhverv };
 
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);

@@ -56,7 +56,7 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    return Transcribed.GetTranscriptionPropertyValue("Stilling_i_husstanden");
+                    return Transcribed.GetTranscriptionPropertyValue("Erhverv");
                 }
                 catch (Exception e)
                 {
