@@ -13,9 +13,11 @@ namespace Linklives.Domain
         public abstract int? Sourceyear_sortable { get; }
         [CsvHelper.Configuration.Attributes.Ignore]
         [NotMapped]
+        [Nest.Keyword]
         public abstract string First_names_sortable { get; }
         [CsvHelper.Configuration.Attributes.Ignore]
         [NotMapped]
+        [Nest.Keyword]
         public abstract string Family_names_sortable { get; }
         [CsvHelper.Configuration.Attributes.Ignore]
         [NotMapped]
