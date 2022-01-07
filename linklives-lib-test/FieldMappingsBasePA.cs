@@ -228,7 +228,8 @@ namespace linklives_lib_test
         {
             standardPA.Sex = sex;
             var basePA = new BasePA(standardPA, null, source);
-
+            
+            Assert.NotNull(basePA.Gender_searchable);
             Assert.AreEqual(PAStrings.ResourceManager.GetString(sex), basePA.Gender_searchable);
         }
 
@@ -327,16 +328,6 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("father")]
-        public void GetRoleDisplay_ReturnMatchingPAString(string role)
-        {
-            standardPA.Role = role;
-            var basePA = new BasePA(standardPA, null, source);
-
-            Assert.AreEqual(PAStrings.ResourceManager.GetString(role), basePA.Role_display);
-        }
-
-        [Test]
         [TestCase("parish", "parish sogn")]
         [TestCase("", "")]
         public void GetBirthPlaceDisplay_ParishHasValue_ReturnParishWithSogn(string birthParish, string expected)
@@ -408,14 +399,27 @@ namespace linklives_lib_test
             Assert.AreEqual(PAStrings.ResourceManager.GetString(eventTypeDisplay) ?? eventTypeDisplay, basePA.Event_type_display);
         }
 
+        [Test]
+        [TestCase("father")]
+        [TestCase("confirmand")]
+        public void GetRoleDisplay_ReturnMatchingPAString(string role)
+        {
+            standardPA.Role = role;
+            var basePA = new BasePA(standardPA, null, source);
+            
+            Assert.NotNull(basePA.Role_display);
+            Assert.AreEqual(PAStrings.ResourceManager.GetString(role), basePA.Role_display);
+        }
 
         [Test]
         [TestCase("father")]
+        [TestCase("confirmand")]
         public void GetRoleSearchable_ReturnMatchingPAString(string role)
         {
             standardPA.Role = role;
             var basePA = new BasePA(standardPA, null, source);
-
+            
+            Assert.NotNull(basePA.Role_display);
             Assert.AreEqual(PAStrings.ResourceManager.GetString(role), basePA.Role_display);
         }
     }

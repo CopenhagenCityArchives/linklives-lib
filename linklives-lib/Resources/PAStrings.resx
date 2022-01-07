@@ -141,6 +141,9 @@
   <data name="census" xml:space="preserve">
     <value>Folketælling</value>
   </data>
+  <data name="confirmand" xml:space="preserve">
+    <value>Konfirmand</value>
+  </data>
   <data name="confirmant" xml:space="preserve">
     <value>Konfirmand</value>
   </data>

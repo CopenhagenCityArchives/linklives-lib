@@ -135,6 +135,15 @@ namespace Linklives.Domain {
         /// <summary>
         ///   Looks up a localized string similar to Konfirmand.
         /// </summary>
+        public static string confirmand {
+            get {
+                return ResourceManager.GetString("confirmand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Konfirmand.
+        /// </summary>
         public static string confirmant {
             get {
                 return ResourceManager.GetString("confirmant", resourceCulture);
