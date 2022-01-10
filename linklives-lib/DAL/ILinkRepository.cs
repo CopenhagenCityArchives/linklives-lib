@@ -3,11 +3,10 @@ using System.Collections.Generic;
 
 namespace Linklives.DAL
 {
-    public interface ILinkRepository
+    public interface ILinkRepository : IKeyedRepository<Link>
     {
         int Count();
         IEnumerable<Link> GetAll();
-        Link GetByKey(string linkKey);
         void Insert(Link link);
         void Insert(IEnumerable<Link> links);
         void Upsert(IEnumerable<Link> entitties);

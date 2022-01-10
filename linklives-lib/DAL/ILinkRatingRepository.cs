@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Linklives.DAL
 {
-    public interface ILinkRatingRepository
+    public interface ILinkRatingRepository : IKeyedRepository<LinkRating>
     {
         int Count();
         IEnumerable<LinkRating> GetAll();
