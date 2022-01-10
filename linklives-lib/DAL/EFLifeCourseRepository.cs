@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Linklives.DAL
 {
-    public class EFLifeCourseRepository : EFKeyedRepository<LifeCourse>, ILifeCourseRepository
+    public class EFLifeCourseRepository : EFKeyedRepository<LifeCourse>, IEFLifeCourseRepository
     {
         private readonly DbContextOptions<LinklivesContext> contextOptions;
         private readonly int batchSize = 1000;
@@ -15,7 +15,7 @@ namespace Linklives.DAL
             contextOptions = options;
         }
 
-        public IEnumerable<LifeCourse> GetByUserRatings(string userId)
+        public IEnumerable<LifeCourse> GetKeysByUserId(string userId)
         {
             var lifecourseskeys = context.LinkRatings.Where(lr => lr.User == userId).Include(x => x.Link.LifeCourses).SelectMany(lr => lr.Link.LifeCourses.Select(x => x.Key)).Distinct().ToList();
             return GetByKeys(lifecourseskeys);
