@@ -15,10 +15,10 @@ namespace Linklives.DAL
             contextOptions = options;
         }
 
-        public IEnumerable<LifeCourse> GetKeysByUserId(string userId)
+        public IEnumerable<string> GetKeysByUserId(string userId)
         {
             var lifecourseskeys = context.LinkRatings.Where(lr => lr.User == userId).Include(x => x.Link.LifeCourses).SelectMany(lr => lr.Link.LifeCourses.Select(x => x.Key)).Distinct().ToList();
-            return GetByKeys(lifecourseskeys);
+            return lifecourseskeys;
         }
 
         public void GetLinks(LifeCourse lc)
