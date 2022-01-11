@@ -6,9 +6,12 @@ using System.Text;
 
 namespace Linklives.Domain
 {
+    enum TranscriptionType { DICTIONARY, EXPANDO, DYNAMIC }
+
     [ElasticsearchType(IdProperty = nameof(Key))]
     public class TranscribedPA : KeyedItem
     {
+        private TranscriptionType transcriptionType;
         public int Pa_id { get; set; }
         public int Source_id { get; set; }
         public dynamic Transcription { get; set; }
@@ -23,9 +26,28 @@ namespace Linklives.Domain
         public TranscribedPA(dynamic transcription, int sourceId)
         {
             Transcription = transcription;
-            var type = Transcription.GetType();
+            transcriptionType = GetTranscriptionType();
             Pa_id = Convert.ToInt32(GetTranscriptionPropertyValue("pa_id"));
             Source_id = sourceId;
+        }
+
+        private TranscriptionType GetTranscriptionType()
+        {
+
+            if (Transcription.GetType() == typeof(Dictionary<string, object>))
+            {
+                return TranscriptionType.DICTIONARY;
+            }
+            else if (Transcription.GetType() == typeof(ExpandoObject))
+            {
+                return TranscriptionType.EXPANDO;
+            }
+            else
+            {
+                return TranscriptionType.DYNAMIC;
+            }
+            
+            throw new Exception("Could not determine transcription type");
         }
         /// <summary>
         /// Returns a value for the given property of the Transcription property,
@@ -35,20 +57,20 @@ namespace Linklives.Domain
         /// <returns>A string containing the value of the property or null if it is not set</returns>
         public string GetTranscriptionPropertyValue(string propertyName)
         {
-            try
+            switch (transcriptionType)
             {
-                if (Transcription.GetType() == typeof(Dictionary<string, object>))
-                {
+                case TranscriptionType.DICTIONARY:
                     return (string)Transcription?[propertyName];
-                }
-                else
-                {
+
+                case TranscriptionType.EXPANDO:
+                    var val = (IDictionary<string, object>)Transcription;
+                    return (string)val[propertyName];
+
+                case TranscriptionType.DYNAMIC:
                     return (string)Transcription.GetType().GetProperty(propertyName).GetValue(Transcription) ?? null;
-                }
-            }
-            catch (Exception e)
-            {
-                return null;
+
+                default:
+                    throw new Exception("Unknown TranscriptionType");
             }
         }
         public override void InitKey()
