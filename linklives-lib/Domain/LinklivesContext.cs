@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Linklives.Domain
 {
@@ -8,6 +9,7 @@ namespace Linklives.Domain
         public DbSet<Link> Links { get; set; }
         public DbSet<LinkRating> LinkRatings { get; set; }
         public DbSet<RatingOption> RatingOptions { get; set; }
+        
         public LinklivesContext(DbContextOptions<LinklivesContext> options) : base(options)
         {
 

@@ -21,14 +21,13 @@ namespace Linklives.DAL
             return lifecourseskeys;
         }
 
-        public void GetLinks(LifeCourse lc)
+        public void GetLinksAndRatings(LifeCourse lc)
         {
             if (lc.Links != null)
             {
                 return;
             }
-
-            context.Entry(lc).Collection(b => b.Links).Load();
+            lc.Links = context.Links.Where(link => link.LifeCourses.Contains(lc)).Include(link => link.Ratings).ThenInclude(rating => rating.Rating).ToList();
         }
 
         private void ResetContext()
