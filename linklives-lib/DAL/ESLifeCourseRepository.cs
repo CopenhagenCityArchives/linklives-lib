@@ -29,7 +29,7 @@ namespace Linklives.DAL
             .Size(1000)
             .Query(q => q
                 .Terms(t => t
-                    .Field("lifecourse.key")
+                    .Field("key")
                     .Terms(keys))));
 
             return searchResponse.Documents;
