@@ -23,7 +23,7 @@ namespace Linklives.Domain.Utilities
         public static string GetRangePlusMinus3(string input)
         {
             var inputInt = Int32.TryParse(input, out var tempInt) ? tempInt : (int?)null;
-            return input == null ? null : string.Join(' ', new int[]
+            return (input == null || input == "") ? null : string.Join(' ', new int[]
                 {
                     inputInt.Value -3,
                     inputInt.Value -2,
