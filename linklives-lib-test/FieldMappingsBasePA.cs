@@ -305,6 +305,18 @@ namespace linklives_lib_test
         }
 
         [Test]
+        [TestCase("1", "1")]
+        [TestCase(null, null)]
+        [TestCase("", "")]
+        public void GetPaGroupingIdWp4Sortable_ReturnStandardizedImageSequence(string expected, string imageAppearance)
+        { 
+            standardPA.Image_appearance = imageAppearance;
+            var pa = new BasePA(standardPA, null, source);
+
+            Assert.AreEqual(expected, pa.Pa_grouping_id_wp4_sortable);
+        }
+
+        [Test]
         [TestCase("jens Simon nielsen", "Jens Simon Nielsen")]
         [TestCase("jens simon nielsen", "Jens Simon Nielsen")]
         [TestCase("firstname    lastname", "Firstname Lastname")]

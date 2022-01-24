@@ -174,6 +174,13 @@ namespace Linklives.Domain
         public virtual string Source_type_wp4 { get;  }
         [Nest.Keyword]
         public virtual string Pa_grouping_id_wp4 { get; }
+        public virtual string Pa_grouping_id_wp4_sortable
+        {
+            get
+            {
+                return Standard.Image_appearance;
+            }
+        }
 
         //Display
         public string Name_display
