@@ -141,13 +141,15 @@ namespace Linklives.Migrations
 
                     b.Property<string>("User")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(767)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LinkId");
 
                     b.HasIndex("RatingId");
+
+                    b.HasIndex("User");
 
                     b.ToTable("LinkRatings");
                 });
