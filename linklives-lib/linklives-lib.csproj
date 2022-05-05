@@ -5,10 +5,10 @@
     <RootNamespace>Linklives</RootNamespace>
     <Authors>Copenhagen City Archives</Authors>
     <Company>Copenhagen City Archives</Company>
-    <PackageId>LinkLivesLib</PackageId>
-    <Product>LinkLivesLib</Product>
+    <PackageId>linklives-lib</PackageId>
+    <Product>linklives-lib</Product>
     <Copyright>Copenhagen City Archives</Copyright>
-    <AssemblyName>LinkLivesLib</AssemblyName>
+    <AssemblyName>linklives-lib</AssemblyName>
     <VersionPrefix>1.0.$([System.Convert]::ToInt32($([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2000/01/01"))).TotalDays))).$([System.Convert]::ToInt32($([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds),2))))</VersionPrefix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <Target Name="CopyPackage" AfterTargets="Pack" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Copy SourceFiles="$(OutDir)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\svn\Repositories\nuget\LinkLivesLib" />
+    <Copy SourceFiles="$(OutDir)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\svn\Repositories\nuget\linklives-lib" />
   </Target>
 
 </Project>
