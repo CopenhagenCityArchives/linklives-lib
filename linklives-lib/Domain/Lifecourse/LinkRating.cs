@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -16,6 +17,8 @@ namespace Linklives.Domain
             return new LinkRating { LinkId = LinkId, RatingId = RatingId, User = User };
         }
     }
+
+    [Index(nameof(User))]
     public class LinkRating : PostLinkRating
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
