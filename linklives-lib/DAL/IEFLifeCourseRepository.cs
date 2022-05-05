@@ -7,6 +7,9 @@ namespace Linklives.DAL
     {
         int Count();
         IEnumerable<LifeCourse> GetAll();
+
+        LifeCourse GetByLinkId(int linkId);
+
         void GetLinksAndRatings(LifeCourse lc);
         IEnumerable<string> GetKeysByUserId(string userId);
         void Insert(LifeCourse lifeCourse);
