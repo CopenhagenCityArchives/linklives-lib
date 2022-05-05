@@ -19,7 +19,7 @@ When database-changing changes are run, use the commands below to create a new m
 
 * Note that the migrations are made on the database described in the linklives-dummy project
 * Install the ef migration tool: ``dotnet tool install --global dotnet-ef``
-* Add a migration: ``dotnet ef migrations add "MIGRATION_NAME" --project linklives-lib --startup-project linklives-lib-database-migrations``
-* Update the database with the migration: ``dotnet ef database update --project linklives-dummy --startup-project linklives-dummy``
+* Add a migration: ``dotnet ef migrations add "MIGRATION NAME" --project linklives-lib-database-migrations --startup-project linklives-lib-database-migrations``
+* Update the database with the migration: ``dotnet ef database update --project linklives-lib-database-migrations --startup-project linklives-lib-database-migrations``
 
 You can also follow this [guide on EF migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).
