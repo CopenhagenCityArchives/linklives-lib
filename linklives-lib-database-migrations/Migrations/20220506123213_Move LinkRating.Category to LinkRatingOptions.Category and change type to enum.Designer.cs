@@ -3,14 +3,16 @@ using System;
 using Linklives.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Linklives.Migrations
 {
     [DbContext(typeof(LinklivesContext))]
-    partial class LinklivesContextModelSnapshot : ModelSnapshot
+    [Migration("20220506123213_Move LinkRating.Category to LinkRatingOptions.Category and change type to enum")]
+    partial class MoveLinkRatingCategorytoLinkRatingOptionsCategoryandchangetypetoenum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,8 +162,8 @@ namespace Linklives.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Category")
-                        .HasColumnType("CHAR(10)");
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
 
                     b.Property<string>("Heading")
                         .HasColumnType("text");

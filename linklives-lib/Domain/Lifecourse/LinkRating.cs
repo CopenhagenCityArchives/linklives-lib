@@ -29,6 +29,5 @@ namespace Linklives.Domain
         public string User { get; set; }
         [JsonIgnore]
         public virtual Link Link { get; set; }
-        public string Category { get; set; }
     }
 }
