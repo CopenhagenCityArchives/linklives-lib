@@ -17,12 +17,14 @@ namespace Linklives.DAL
 
         public IEnumerable<string> GetKeysByUserId(string userId)
         {
-            var lifecourseskeys = context.LifeCourses
-                .Include(lf => lf.Links)
-                    .ThenInclude(l => l.Ratings
-                        .Where(r => r.User.Equals(userId)))
-                .AsSingleQuery()
-                .Select(lf => lf.Key);
+            var userLinkRatings = context.LinkRatings
+               .Where(lr => lr.User.Equals(userId))
+               .AsNoTracking()
+               .Select(lr => lr.LinkId)
+               .ToList();
+
+            var links = context.Links.Where(l => userLinkRatings.Contains(l.Id)).AsNoTracking().Select(l => l).ToList();
+            var lifecourseskeys = context.Links.AsNoTracking().Where(l => userLinkRatings.Contains(l.Id)).SelectMany(l => l.LifeCourses).Select(lc => lc.Key).ToList();
 
             return lifecourseskeys;
         }
