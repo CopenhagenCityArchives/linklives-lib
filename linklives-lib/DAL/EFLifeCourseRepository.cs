@@ -34,7 +34,7 @@ namespace Linklives.DAL
             Link link = null;
             try
             {
-               link = context.Links.Where(l => l.Id == linkId).First();
+               link = context.Links.Where(l => l.Id == linkId).Include(l => l.LifeCourses).First();
             }
             catch(Exception e){
                 throw new InvalidOperationException($"No link with id {linkId} found.");
