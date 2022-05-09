@@ -31,7 +31,17 @@ namespace Linklives.DAL
 
         public LifeCourse GetByLinkId(int linkId)
         {
-            return context.Links.Where(l => l.Id == linkId).First().LifeCourses.First();
+            Link link = null;
+            try
+            {
+               link = context.Links.Where(l => l.Id == linkId).First();
+            }
+            catch(Exception e){
+                throw new InvalidOperationException($"No link with id {linkId} found.");
+            }
+
+            return link.LifeCourses.First();
+
         }
 
         public void GetLinksAndRatings(LifeCourse lc)
