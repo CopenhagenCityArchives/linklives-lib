@@ -189,6 +189,7 @@ namespace linklives_lib_test
 
         [Test]
         [TestCase("location", "parish", "district", "town", "county", "country", "location parish district town county country")]
+        [TestCase("same", "same", "same", "same", "same", "same", "same")]
         public void GetSourcePlaceSearchable_ReturnUniqueValuesFromEventLocationEventParishEventDistrictEventTownEventCountyAndEventCountry(string location, string parish, string district, string town, string county, string country, string expected)
         {
             standardPA.Event_location = location;
@@ -204,7 +205,8 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("", "", "", "", "", "", "")]
+        [TestCase("", "", "", "", "", "", null)]
+        [TestCase("same", "same", "same", "same", "same", "same", "same")]
         [TestCase("location", "", "district", "town", "county", "country", "location district town county country")]
         [TestCase("location", "parish", "district", "town", "county", "country", "location parish district town county country")]
         public void GetSourcePlaceDisplay_ReturnUniqueValuesFromEventLocationEventParishEventDistrictEventTownEventCountyAndEventCountry(string location, string parish, string district, string town, string county, string country, string expected)

@@ -76,7 +76,11 @@ namespace Linklives.Domain
         {
             get
             {
-                return string.Join(' ', new string[] { Standard.Event_location, string.IsNullOrEmpty(Standard.Event_parish) ? null : Standard.Event_parish + " sogn", Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }.Where(s => !string.IsNullOrEmpty(s))).Trim();  //trim and replace so we dont end up with strings of just commas
+                var sogn = string.IsNullOrEmpty(Standard.Event_parish) ? null : Standard.Event_parish;
+                var locations = string.Join(' ', new string[] { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }.Where(s => !string.IsNullOrEmpty(s)).Distinct()).Trim();  //trim and replace so we dont end up with strings of just commas
+                var str = sogn == null ? locations:  locations.Replace(sogn, sogn + " sogn");
+                if (string.IsNullOrEmpty(str)) return null;
+                return str;
             }
         }
         public CensusPA()

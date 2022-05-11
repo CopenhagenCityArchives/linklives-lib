@@ -119,6 +119,17 @@ namespace Linklives.Domain
                 .Distinct()).Trim();
             }
         }
+        public virtual string Sourceplace_display
+        {
+            get
+            {
+                var locations = string.Join(' ', new string[]
+                { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }
+                .Distinct().Where(s => !string.IsNullOrEmpty(s))).Trim();
+                if (string.IsNullOrEmpty(locations)) return null;
+                return locations;
+            }
+        }
         [Nest.Keyword]
         public virtual int? Deathyear_searchable { get; }
 
@@ -219,15 +230,7 @@ namespace Linklives.Domain
             }
         }
         public virtual string Occupation_display { get; }
-        public virtual string Sourceplace_display
-        {
-            get
-            {
-                return string.Join(' ', new string[]
-                { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }
-                .Distinct().Where(s => !string.IsNullOrEmpty(s))).Trim();
-            }
-        }
+
         [Nest.Keyword]
         public string Event_type_display
         {
