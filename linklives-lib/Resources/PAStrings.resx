@@ -132,6 +132,15 @@
   <data name="baptized" xml:space="preserve">
     <value>Dåbsbarn</value>
   </data>
+  <data name="bride" xml:space="preserve">
+    <value>Brud</value>
+  </data>
+  <data name="bride-father" xml:space="preserve">
+    <value>Brudens far</value>
+  </data>
+  <data name="bride-mother" xml:space="preserve">
+    <value>Brudens mor</value>
+  </data>
   <data name="burial" xml:space="preserve">
     <value>Begravelse</value>
   </data>
@@ -167,6 +176,12 @@
   </data>
   <data name="groom" xml:space="preserve">
     <value>Brudgom</value>
+  </data>
+  <data name="groom-father" xml:space="preserve">
+    <value>Brudgommens far</value>
+  </data>
+  <data name="groom-mother" xml:space="preserve">
+    <value>Brudgommens mor</value>
   </data>
   <data name="m" xml:space="preserve">
     <value>Mand</value>

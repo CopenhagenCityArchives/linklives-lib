@@ -106,6 +106,33 @@ namespace Linklives.Domain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brud.
+        /// </summary>
+        public static string bride {
+            get {
+                return ResourceManager.GetString("bride", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brudens far.
+        /// </summary>
+        public static string bride_father {
+            get {
+                return ResourceManager.GetString("bride-father", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brudens mor.
+        /// </summary>
+        public static string bride_mother {
+            get {
+                return ResourceManager.GetString("bride-mother", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Begravelse.
         /// </summary>
         public static string burial {
@@ -210,6 +237,24 @@ namespace Linklives.Domain {
         public static string groom {
             get {
                 return ResourceManager.GetString("groom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brudgommens far.
+        /// </summary>
+        public static string groom_father {
+            get {
+                return ResourceManager.GetString("groom-father", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brudgommens mor.
+        /// </summary>
+        public static string groom_mother {
+            get {
+                return ResourceManager.GetString("groom-mother", resourceCulture);
             }
         }
         
