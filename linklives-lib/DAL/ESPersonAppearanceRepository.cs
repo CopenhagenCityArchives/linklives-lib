@@ -25,6 +25,10 @@ namespace Linklives.DAL
         public BasePA GetById(string id)
         {
             var basePADoc = client.Get<BasePA>(id, g => g.Index("pas"));
+            if (!basePADoc.Found)
+            {
+                return null;
+            }
             var source = sourceRepository.GetById(basePADoc.Source.Source_id);
             var transcribedPA = transcribedRepository.GetById(id);
             var pa = BasePA.Create(source, basePADoc.Source.Standard, transcribedPA);
