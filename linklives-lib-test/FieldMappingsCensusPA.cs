@@ -129,11 +129,13 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("role", "role")]
-        [TestCase(null, null)]
-        public void GetOccupationDisplay_ReturnTranscribedErhverv(string erhverv, string expected)
+        [TestCase("erhverv", "stilling_i_husstanden", "erhverv")]
+        [TestCase("erhverv", null, "erhverv")]
+        [TestCase(null, "stilling_i_husstanden", "stilling_i_husstanden")]
+        [TestCase(null, null, null)]
+        public void GetOccupationDisplay_ReturnTranscribedErhverv(string erhverv, string stilling_i_husstanden, string expected)
         {
-            dynamic transcription = new { pa_id = "1", Erhverv = erhverv };
+            dynamic transcription = new { pa_id = "1", Erhverv = erhverv, Stilling_i_husstanden = stilling_i_husstanden };
 
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
@@ -142,16 +144,18 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("role", "role")]
-        [TestCase(null, null)]
-        public void GetOccupationSearcable_ReturnTranscribedErhverv(string erhverv, string expected)
+        [TestCase("erhverv", "stilling_i_husstanden", "erhverv stilling_i_husstanden")]
+        [TestCase("erhverv", null, "erhverv")]
+        [TestCase(null, "stilling_i_husstanden", "stilling_i_husstanden")]
+        [TestCase(null, null, null)]
+        public void GetOccupationSearchable_ReturnTranscribedErhvervAndStillingIHusstanden(string erhverv, string stilling_i_husstanden, string expected)
         {
-            dynamic transcription = new { pa_id = "1", Erhverv = erhverv };
+            dynamic transcription = new { pa_id = "1", Erhverv = erhverv, Stilling_i_husstanden = stilling_i_husstanden };
 
             var transcribed = new TranscribedPA(transcription, 1);
             var pa = (CensusPA)BasePA.Create(source, standardPA, transcribed);
 
-            Assert.AreEqual(expected, pa.Occupation_display);
+            Assert.AreEqual(expected, pa.Occupation_searchable);
         }
     }
 }

@@ -56,7 +56,13 @@ namespace Linklives.Domain
             {
                 try
                 {
-                    return Transcribed.GetTranscriptionPropertyValue("Erhverv");
+                    var erhverv = Transcribed.GetTranscriptionPropertyValue("Erhverv");
+                    if (erhverv == null)
+                    {
+                        return Transcribed.GetTranscriptionPropertyValue("Stilling_i_husstanden");
+                    }
+
+                    return erhverv;
                 }
                 catch (Exception e)
                 {
@@ -68,7 +74,19 @@ namespace Linklives.Domain
         {
             get
             {
-                return Transcribed.GetTranscriptionPropertyValue("Stilling_i_husstanden");
+                try
+                {
+                    var erhverv = Transcribed.GetTranscriptionPropertyValue("Erhverv");
+                    var stilling =  Transcribed.GetTranscriptionPropertyValue("Stilling_i_husstanden");
+
+                    var str = erhverv == null && stilling == null ? null : (erhverv + " " + stilling).Trim();
+                    if (string.IsNullOrEmpty(str)) return null;
+                    return str;
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
             }
         }
         //TODO: If BasePA also adds "sogn" to paris, this override is not necessary
