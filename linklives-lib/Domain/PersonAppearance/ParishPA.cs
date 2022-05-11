@@ -15,7 +15,7 @@ namespace Linklives.Domain
             get
             {
                 int deathyearSearchable;
-                if (Standard.Event_type.Equals("burial") && Int32.TryParse(Standard.Event_year, out deathyearSearchable))
+                if (Standard.Event_type.Equals("burial") && Standard.Role.Equals("deceased") && Int32.TryParse(Standard.Event_year, out deathyearSearchable))
                 {
                     return deathyearSearchable;
                 }
@@ -27,7 +27,7 @@ namespace Linklives.Domain
         {
             get
             {
-                if (!Standard.Event_type.Equals("burial")) { return null; }
+                if (!Standard.Event_type.Equals("burial") || !Standard.Role.Equals("deceased")) { return null; }
                 return IntToRangeAsStringHelper.GetRangePlusMinus3(Standard.Event_year);
             }
         }

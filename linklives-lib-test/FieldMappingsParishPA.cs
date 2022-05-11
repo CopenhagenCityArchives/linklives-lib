@@ -22,12 +22,15 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("1886", "burial", 1886)]
-        [TestCase("1886", "anothertype", null)]
-        public void GetDeathYearSearchable_ReturnEventYearIfTypeBurial(string eventYear, string eventType, int? expected)
+        [TestCase("1886", "burial", "deceased", 1886)]
+        [TestCase("1886", "notburial", "deceased", null)]
+        [TestCase("1886", "burial", "notdeceased", null)]
+        [TestCase("1886", "notburial", "notdeceased", null)]
+        public void GetDeathYearSearchable_ReturnEventYearBasedOnTypeAndRole(string eventYear, string eventType, string role, int? expected)
         {
             standardPA.Event_year = eventYear;
             standardPA.Event_type = eventType;
+            standardPA.Role = role;
 
             var pa = (ParishPA)BasePA.Create(source, standardPA, null);
 
@@ -35,12 +38,15 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("1886", "burial", 1886)]
-        [TestCase("1886", "anothertype", null)]
-        public void GetDeathYearSortable_ReturnEventYearIfTypeBurial(string eventYear, string eventType, int? expected)
+        [TestCase("1886", "burial", "deceased", 1886)]
+        [TestCase("1886", "notburial", "deceased", null)]
+        [TestCase("1886", "burial", "notdeceased", null)]
+        [TestCase("1886", "notburial", "notdeceased", null)]
+        public void GetDeathYearSortable_ReturnEventYearBasedOnTypeAndRole(string eventYear, string eventType, string role, int? expected)
         {
             standardPA.Event_year = eventYear;
             standardPA.Event_type = eventType;
+            standardPA.Role = role;
 
             var pa = (ParishPA)BasePA.Create(source, standardPA, null);
 
@@ -48,16 +54,35 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("3", "burial", "0 1 2 3 4 5 6")]
-        [TestCase("3", "anothertype", null)]
-        public void GetDeathYearSearchableFz_ReturnEventYearPlusMinus3IfTypeBurial(string eventYear, string eventType, string? expected)
+        [TestCase("3", "burial", "deceased", "0 1 2 3 4 5 6")]
+        [TestCase("3", "burial", "notdeceased", null)]
+        [TestCase("3", "notburial", "deceased", null)]
+        [TestCase("3", "notburial", "notdeceased", null)]
+        public void GetDeathYearSearchableFz_WithEventTypeAndRole_ReturnEventYearPlusMinus3(string eventYear, string eventType, string role, string? expected)
         {
             standardPA.Event_year = eventYear;
             standardPA.Event_type = eventType;
+            standardPA.Role = role;
 
             var pa = (ParishPA)BasePA.Create(source, standardPA, null);
 
             Assert.AreEqual(expected, pa.Deathyear_searchable_fz);
+        }
+
+        [Test]
+        [TestCase("1886", "burial", "deceased", 1886)]
+        [TestCase("1886", "notburial", "deceased", null)]
+        [TestCase("1886", "burial", "notdeceased", null)]
+        [TestCase("1886", "notburial", "notdeceased", null)]
+        public void GetDeathYearDisplay_WithEventTypeBurialAndRoleDeceased_ReturnEventYear(string eventYear, string eventType, string role, int? expected)
+        {
+            standardPA.Event_year = eventYear;
+            standardPA.Event_type = eventType;
+            standardPA.Role = role;
+
+            var pa = (ParishPA)BasePA.Create(source, standardPA, null);
+
+            Assert.AreEqual(expected, pa.Deathyear_display);
         }
 
         [Test]
@@ -107,29 +132,6 @@ namespace linklives_lib_test
             Assert.AreEqual(expected, pa.Pa_grouping_id_wp4);
         }
 
-        [Test]
-        [TestCase("1886", 1886)]
-        public void GetDeathYearDisplay_WithEventTypeBurial_ReturnEventYear(string eventYear, int? expected)
-        {
-            standardPA.Event_year = eventYear;
-            standardPA.Event_type = "burial";
-
-            var pa = (ParishPA)BasePA.Create(source, standardPA, null);
-
-            Assert.AreEqual(expected, pa.Deathyear_display);
-        }
-
-        [Test]
-        [TestCase("1886", null)]
-        public void GetDeathYearDisplay_WithEventTypeNotBurial_ReturnNull(string eventYear, int? expected)
-        {
-            standardPA.Event_year = eventYear;
-            standardPA.Event_type = "arrival";
-
-            var pa = (ParishPA)BasePA.Create(source, standardPA, null);
-
-            Assert.AreEqual(expected, pa.Deathyear_display);
-        }
         [Test]
         public void GetSourceTypeDisplay_ReturnKirkebog()
         {
