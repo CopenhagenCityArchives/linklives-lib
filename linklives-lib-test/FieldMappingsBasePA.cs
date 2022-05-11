@@ -340,11 +340,18 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("parish", "parish sogn")]
-        [TestCase("", "")]
-        public void GetBirthPlaceDisplay_ParishHasValue_ReturnParishWithSogn(string birthParish, string expected)
+        [TestCase("birth_location", "birth_parish", "birth_town", "birth_county", "birth_country", "birth_foreign_place", "birth_location birth_parish sogn birth_town birth_county birth_country birth_foreign_place")]
+        [TestCase("birth_location", null, "birth_town", "birth_county", "birth_country", "birth_foreign_place", "birth_location birth_town birth_county birth_country birth_foreign_place")]
+        [TestCase("", "", "", "", "", "", null)]
+        [TestCase(null, null, null, null, null, null, null)]
+        public void GetBirthPlaceDisplay_ParishHasValue_ReturnParishWithSogn(string birth_location, string birth_parish, string birth_town, string birth_county, string birth_country, string birth_foreign_place, string expected)
         {
-            standardPA.Birth_parish = birthParish;
+            standardPA.Birth_parish = birth_parish;
+            standardPA.Birth_location = birth_location;
+            standardPA.Birth_town = birth_town;
+            standardPA.Birth_county = birth_county;
+            standardPA.Birth_country = birth_country;
+            standardPA.Birth_foreign_place = birth_foreign_place;
 
             var pa = new BasePA(standardPA, null, source);
 
@@ -353,6 +360,7 @@ namespace linklives_lib_test
 
         [Test]
         [TestCase("place", "location", "parish", "town", "county", "country", "foreignplace", "place location parish town county country foreignplace")]
+        [TestCase("same", "same", "same", "same", "same", "same", "same", "same")]
         public void GetBirthPlaceSearchable_ReturnBirthPlaceBirthLocationBirthParishBirthTownBirthCountyBirthCountryBirthForeignPlace(string place, string location, string parish, string town, string county, string country, string foreignplace, string expected)
         {
             standardPA.Birth_place = place;
@@ -383,7 +391,7 @@ namespace linklives_lib_test
 
         [Test]
         [TestCase("place","location","parish","town","county","country","foreignplace","place location parish sogn town county country foreignplace")]
-        [TestCase(null, null, null, null, null, null, null, "")]
+        [TestCase(null, null, null, null, null, null, null, null)]
         public void GetBirthPlaceDisplay_ReturnBirthPlaceBirthLocationBirthParishBirthTownBirthCountyBirthCountryBirthForeignPlace(string birthPlace, string birthLocation, string birthParish, string birthTown, string birthCounty, string birthCountry, string birthForeignPlace, string expected)
         {
             standardPA.Birth_place = birthPlace;

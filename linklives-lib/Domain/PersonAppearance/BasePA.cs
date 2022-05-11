@@ -87,7 +87,7 @@ namespace Linklives.Domain
         {
             get
             {
-                return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim();
+                return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }.Distinct()).Trim();
             }
         }
         [Nest.Keyword]
@@ -210,7 +210,12 @@ namespace Linklives.Domain
         {
             get
             {
-                return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, string.IsNullOrEmpty(Standard.Birth_parish) ? null : Standard.Birth_parish + " sogn", Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }).Trim();  //trim and replace so we dont end up with strings of just commas
+                var sogn = string.IsNullOrEmpty(Standard.Birth_parish) ? null : Standard.Birth_parish;
+                var places = new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }.Distinct();
+                var locations = string.Join(' ', places).Trim();  //trim and replace so we dont end up with strings of just commas
+                if (string.IsNullOrEmpty(locations)) return null;
+                return sogn == null ? locations : locations.Replace(sogn, sogn + " sogn");
+
             }
         }
         public virtual string Occupation_display { get; }
