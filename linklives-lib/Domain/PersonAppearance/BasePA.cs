@@ -222,9 +222,9 @@ namespace Linklives.Domain
             get
             {
                 var sogn = string.IsNullOrEmpty(Standard.Birth_parish) ? null : Standard.Birth_parish;
-                var places = new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }.Distinct();
+                var places = new string[] { Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }.Distinct();
                 var locations = string.Join(' ', places).Trim();  //trim and replace so we dont end up with strings of just commas
-                if (string.IsNullOrEmpty(locations)) return null;
+                if (string.IsNullOrEmpty(locations)) return Standard.Birth_place;
                 return sogn == null ? locations : locations.Replace(sogn, sogn + " sogn");
 
             }
