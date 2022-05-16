@@ -24,7 +24,11 @@ namespace Linklives.DAL
                .ToList();
 
             var links = context.Links.Where(l => userLinkRatings.Contains(l.Id)).AsNoTracking().Select(l => l).ToList();
-            var lifecourseskeys = context.Links.AsNoTracking().Where(l => userLinkRatings.Contains(l.Id)).SelectMany(l => l.LifeCourses).Select(lc => lc.Key).ToList();
+            var lifecourseskeys = context.Links.AsNoTracking()
+                .Where(l => userLinkRatings.Contains(l.Id))
+                .Where(l => l.Is_historic == false)
+                .SelectMany(l => l.LifeCourses)
+                    .Select(lc => lc.Key).ToList();
 
             return lifecourseskeys;
         }
