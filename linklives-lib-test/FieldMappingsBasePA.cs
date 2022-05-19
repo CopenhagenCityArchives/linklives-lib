@@ -342,8 +342,26 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("birth_location", "birth_parish", "birth_town", "birth_county", "birth_country", "birth_foreign_place", "birth_location birth_parish sogn birth_town birth_county birth_country birth_foreign_place")]
-        [TestCase("birth_location", null, "birth_town", "birth_county", "birth_country", "birth_foreign_place", "birth_location birth_town birth_county birth_country birth_foreign_place")]
+        [TestCase("birth_parish", "birth_parish", "birth_parish sogn")]
+        [TestCase(" birth_parish ", " birth_parish ", "birth_parish sogn")]
+        [TestCase("birth_parish", " birth_parish ", "birth_parish sogn")]
+        [TestCase(" birth_parish ", "birth_parish", "birth_parish sogn")]
+        public void GetBirthPlaceDisplay_ParishHasValueUntrimmedValueAndBirthPlaceHasSameTrimmedValue_ReturnParishWithSognOnce(string untrimmedValue, string birthParish, string expected)
+        {
+            standardPA.Birth_parish = birthParish;
+            standardPA.Birth_location = untrimmedValue;
+            standardPA.Birth_town = untrimmedValue;
+            //standardPA.Birth_county = untrimmedValue;
+            standardPA.Birth_country = untrimmedValue;
+
+            var pa = new BasePA(standardPA, null, source);
+
+            Assert.AreEqual(expected, pa.Birthplace_display);
+        }
+
+        [Test]
+        [TestCase("birth_location", "birth_parish", "birth_town", "birth_county", "birth_country", "birth_foreign_place", "birth_location, birth_parish sogn, birth_town, birth_county amt, birth_country, birth_foreign_place")]
+        [TestCase("birth_location", null, "birth_town", "birth_county", "birth_country", "birth_foreign_place", "birth_location, birth_town, birth_county amt, birth_country, birth_foreign_place")]
         [TestCase("", "", "", "", "", "", null)]
         [TestCase(null, null, null, null, null, null, null)]
         public void GetBirthPlaceDisplay_ParishHasValue_ReturnParishWithSogn(string birth_location, string birth_parish, string birth_town, string birth_county, string birth_country, string birth_foreign_place, string expected)
@@ -361,11 +379,27 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("county", "country", "county country")]
-        [TestCase("county", null, "county")]
-        public void GetBirthPlaceDisplay_SomeFieldsHaveValues_ReturnTrimmedBirthPlaceDisplay(string birthCounty, string birthCountry, string expected)
+        [TestCase("birth_county", "other_values",  "other_values, birth_county amt")]
+        [TestCase(null, "other_values", "other_values")]
+        public void GetBirthPlaceDisplay_CountyHasValue_ReturnCountyWithAmt(string birthCounty, string otherValues, string expected)
         {
+            standardPA.Birth_location = otherValues;
+            standardPA.Birth_town = otherValues;
             standardPA.Birth_county = birthCounty;
+            standardPA.Birth_country = otherValues;
+            standardPA.Birth_foreign_place = otherValues;
+
+            var pa = new BasePA(standardPA, null, source);
+
+            Assert.AreEqual(expected, pa.Birthplace_display);
+        }
+
+        [Test]
+        [TestCase("town", "country", "town, country")]
+        [TestCase("town", null, "town")]
+        public void GetBirthPlaceDisplay_SomeFieldsHaveValues_ReturnTrimmedBirthPlaceDisplay(string birthTown, string birthCountry, string expected)
+        {
+            standardPA.Birth_town = birthTown;
             standardPA.Birth_country = birthCountry;
 
             var pa = new BasePA(standardPA, null, source);
@@ -374,9 +408,42 @@ namespace linklives_lib_test
         }
 
         [Test]
-        [TestCase("place","location","parish","town","county","country","foreignplace","place location parish sogn town county country foreignplace")]
+        public void GetBirthPlaceDisplay_OnlyBirthPlaceHasValue_ReturnBirthplace()
+        {
+            standardPA.Birth_place = "birthPlace";
+            standardPA.Birth_location = "";
+            standardPA.Birth_parish = "";
+            standardPA.Birth_town = "";
+            standardPA.Birth_county = "";
+            standardPA.Birth_country = "";
+            standardPA.Birth_foreign_place = ""; 
+
+            var pa = new BasePA(standardPA, null, source);
+
+            Assert.AreEqual("birthPlace", pa.Birthplace_display);
+        }
+
+        [Test]
+        public void GetBirthPlaceDisplay_OtherFieldsThanBirthPlaceHasValues_ReturnValuesWithoutBirthPlace()
+        {
+            standardPA.Birth_place = "Birth_place";
+            standardPA.Birth_location = "Birth_location";
+            standardPA.Birth_parish = "Birth_parish";
+            standardPA.Birth_town = "Birth_town";
+            standardPA.Birth_county = "Birth_county";
+            standardPA.Birth_country = "Birth_country";
+            standardPA.Birth_foreign_place = "Birth_foreign_place";
+
+            var pa = new BasePA(standardPA, null, source);
+
+            Assert.IsTrue(!pa.Birthplace_display.Contains("Birth_place"));
+        }
+
+        [Test]
+        [TestCase("place","location","parish","town","county","country","foreignplace","location, parish sogn, town, county amt, country, foreignplace")]
+        [TestCase(" place ", " location ", " parish ", " town ", " county ", " country ", " foreignplace ", "location, parish sogn, town, county amt, country, foreignplace")]
         [TestCase(null, null, null, null, null, null, null, null)]
-        public void GetBirthPlaceDisplay_ReturnBirthPlaceBirthLocationBirthParishBirthTownBirthCountyBirthCountryBirthForeignPlace(string birthPlace, string birthLocation, string birthParish, string birthTown, string birthCounty, string birthCountry, string birthForeignPlace, string expected)
+        public void GetBirthPlaceDisplay_ReturnTrimmedBirthPlaceBirthLocationBirthParishBirthTownBirthCountyBirthCountryBirthForeignPlace(string birthPlace, string birthLocation, string birthParish, string birthTown, string birthCounty, string birthCountry, string birthForeignPlace, string expected)
         {
             standardPA.Birth_place = birthPlace;
             standardPA.Birth_location = birthLocation;

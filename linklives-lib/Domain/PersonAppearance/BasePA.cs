@@ -217,16 +217,36 @@ namespace Linklives.Domain
                 return PAStrings.ResourceManager.GetString(Standard.Role.ToLower()) ?? null;
             }
         }
+        private string _birthplace_display;
         public string Birthplace_display
         {
             get
             {
-                var sogn = string.IsNullOrEmpty(Standard.Birth_parish) ? null : Standard.Birth_parish;
-                var places = new string[] { Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }.Distinct();
-                var locations = string.Join(' ', places).Trim();  //trim and replace so we dont end up with strings of just commas
-                if (string.IsNullOrEmpty(locations)) return Standard.Birth_place;
-                return sogn == null ? locations : locations.Replace(sogn, sogn + " sogn");
+                if (_birthplace_display != null) return _birthplace_display;
 
+                // Add "sogn" and "amt" if the respective fields has values
+                var sogn = string.IsNullOrEmpty(Standard.Birth_parish) || (Standard.Birth_parish != null && Standard.Birth_parish.Trim().Length == 0) ? null : Standard.Birth_parish.Trim() + " sogn";
+                var amt = string.IsNullOrEmpty(Standard.Birth_county) || (Standard.Birth_county != null && Standard.Birth_county.Trim().Length == 0) ? null : Standard.Birth_county.Trim() + " amt";
+
+                // Get trimmed, distinct places that are not null or empty
+                var places = new string[] { Standard.Birth_location, sogn, Standard.Birth_town, amt, Standard.Birth_country, Standard.Birth_foreign_place }.Where(l => l != null).Where(s => !string.IsNullOrEmpty(s)).Select(p => p.Trim()).Distinct();
+
+                // Return Birth_place or null if no places are given
+                if (places.Count() == 0) { return string.IsNullOrEmpty(Standard.Birth_place) ? null : Standard.Birth_place; }
+
+                // If all given locations matches, return only sogn, amt and herred
+                var uniqueLocations = new string[] { Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }.Where(s => !string.IsNullOrEmpty(s)).Select(s => s.Trim()).Distinct();
+
+                var specialNotEmptyLocations = new string[] { sogn, amt }.Where(s => !string.IsNullOrEmpty(s));
+
+                if (uniqueLocations.Count() == 1 && specialNotEmptyLocations.Count() > 0)
+                {
+                    return string.Join(", ", specialNotEmptyLocations);
+                }
+
+                _birthplace_display = string.Join(", ", places);
+
+                return _birthplace_display;
             }
         }
         public virtual string Occupation_display { get; }
