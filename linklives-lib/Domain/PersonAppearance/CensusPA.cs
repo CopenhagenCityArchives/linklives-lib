@@ -89,16 +89,39 @@ namespace Linklives.Domain
                 }
             }
         }
+        private string _sourceplace_display;
         //TODO: If BasePA also adds "sogn" to paris, this override is not necessary
         public override string Sourceplace_display
         {
             get
             {
-                var sogn = string.IsNullOrEmpty(Standard.Event_parish) ? null : Standard.Event_parish;
-                var locations = string.Join(' ', new string[] { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }.Where(s => !string.IsNullOrEmpty(s)).Distinct()).Trim();  //trim and replace so we dont end up with strings of just commas
-                var str = sogn == null ? locations:  locations.Replace(sogn, sogn + " sogn");
-                if (string.IsNullOrEmpty(str)) return null;
-                return str;
+                if (_sourceplace_display != null) return _sourceplace_display;
+
+                // Add "sogn", "herred" and "amt" if the respective fields has values
+                var sogn = string.IsNullOrEmpty(Standard.Event_parish) || (Standard.Event_parish != null && Standard.Event_parish.Trim().Length == 0) ? null : Standard.Event_parish.Trim() + " sogn";
+                var herred = string.IsNullOrEmpty(Standard.Event_district) || (Standard.Event_district != null && Standard.Event_district.Trim().Length == 0) ? null : Standard.Event_district.Trim() + " herred";
+                var amt = string.IsNullOrEmpty(Standard.Event_county) || (Standard.Event_county != null && Standard.Event_county.Trim().Length == 0) ? null : Standard.Event_county.Trim() + " amt";
+
+                // Get trimmed, distinct places that are not null or empty
+                var places = new string[] { Standard.Event_location, sogn, herred, Standard.Event_town, amt, Standard.Event_country }.Where(l => l != null).Where(s => !string.IsNullOrEmpty(s)).Select(p => p.Trim()).Distinct();
+                
+                // Return Event_location or null if no places are given
+                if(places.Count() == 0) { return string.IsNullOrEmpty(Standard.Event_location) ? null : Standard.Event_location; }
+                
+                // If all given locations matches, return only sogn, amt and herred
+                var uniqueLocations = new string[] { Standard.Event_location, Standard.Event_town, Standard.Event_country, Standard.Event_parish, Standard.Event_district, Standard.Event_county }.Where(s => !string.IsNullOrEmpty(s)).Select(s => s.Trim()).Distinct();
+
+                var specialNotEmptyLocations = new string[] { sogn, herred, amt }.Where(s => !string.IsNullOrEmpty(s));
+
+                if (uniqueLocations.Count() == 1 && specialNotEmptyLocations.Count() > 0)
+                {
+                    return string.Join(", ", specialNotEmptyLocations);
+                }
+
+                // Join places with ,
+                _sourceplace_display = string.Join(", ", places);
+
+                return _sourceplace_display;
             }
         }
         public CensusPA()
