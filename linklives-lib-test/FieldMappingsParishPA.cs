@@ -141,7 +141,7 @@ namespace linklives_lib_test
         }
         [Test]
         [TestCase("", "", "")]
-        [TestCase("browselevel", "browselevel1", "browselevel, browselevel1")]
+        [TestCase("browselevel", "browselevel1", "browselevel1, browselevel")]
         [TestCase("browselevel", "", "browselevel")]
         public void GetSourcePlaceDisplay_ReturnTranscribedBrowselevel1Browselevel(string browselevel, string browselevel1, string expected)
         {

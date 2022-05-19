@@ -50,7 +50,7 @@ namespace Linklives.Domain
             get
             {
                 try { 
-                    var strList = new List<string>() { Transcribed.GetTranscriptionPropertyValue("BrowseLevel"), Transcribed.GetTranscriptionPropertyValue("BrowseLevel1") };
+                    var strList = new List<string>() { Transcribed.GetTranscriptionPropertyValue("BrowseLevel1"), Transcribed.GetTranscriptionPropertyValue("BrowseLevel") };
 
                     return string.Join(", ", strList.Where(sl => !string.IsNullOrEmpty(sl)));
                 }
