@@ -20,30 +20,64 @@ namespace Linklives.Domain
         public SourceType Type { get; protected set; }
 
         //Searchables
+        private string _name_searchable;
         public string Name_searchable
         {
+            set
+            {
+                _name_searchable = value;
+            }
             get
             {
-                return Standard.Name_cl.Trim();
+                if (_name_searchable != null) return _name_searchable;
+                
+                _name_searchable = Standard.Name_cl.Trim();
+                
+                return _name_searchable;
             }
         }
-        public string Name_searchable_fz {
+        private string _name_searchable_fz;
+        public string Name_searchable_fz
+        {
+            set
+            {
+                _name_searchable_fz = value;
+            }
             get
             {
-                return $"{Standard.Name_cl} {Standard.Name}";
+                if (_name_searchable_fz != null) return _name_searchable_fz;
+                _name_searchable_fz = $"{Standard.Name_cl} {Standard.Name}";
+
+                return _name_searchable_fz;
             }
         }
-        public string Lastname_searchable {
+        private string _lastname_searchable;
+        public string Lastname_searchable
+        {
+            set
+            {
+                _lastname_searchable = value;
+            }
             get
             {
-                return Standard.Name_cl.Trim().Split(' ').Last();
+                if (_lastname_searchable != null) return _lastname_searchable;
+                _lastname_searchable = Standard.Name_cl.Trim().Split(' ').Last();
+
+                return _lastname_searchable;
             }
         }
+        private string _lastname_searchable_fz;
         public string Lastname_searchable_fz
         {
+            set
+            {
+                _lastname_searchable_fz = value;
+            }
             get
             {
-                return string.Join(' ', new string[]
+                if (_lastname_searchable_fz != null) return _lastname_searchable_fz;
+
+                _lastname_searchable_fz =  string.Join(' ', new string[]
                     { Standard.Name_cl.Trim().Split(' ').Last() }
                     .Concat(Standard.Patronyms.Split(' '))
                     .Concat(Standard.Family_names.Split(' '))
@@ -51,56 +85,122 @@ namespace Linklives.Domain
                     .Concat(Standard.All_patronyms.Split(' '))
                     .Concat(Standard.All_family_names.Split(' '))
                     .Distinct()).Replace("  ", " ").Trim();
+
+                return _lastname_searchable_fz;
             }
         }
+        private string _firstnames_searchable;
         public string Firstnames_searchable
         {
+            set
+            {
+                _firstnames_searchable = value;
+            }
             get
             {
-                return string.Join(" ", Standard.Name_cl.Split(" ").SkipLast(1));
+                if (_firstnames_searchable != null) return _firstnames_searchable;
+                
+                _firstnames_searchable = string.Join(" ", Standard.Name_cl.Split(" ").SkipLast(1));
+
+                return _firstnames_searchable;
             }
         }
-        public string Firstnames_searchable_fz {
+        private string _firstnames_searchable_fz;
+        public string Firstnames_searchable_fz
+        {
+            set
+            {
+                _firstnames_searchable_fz = value;
+            }
             get
             {
-                return string.Join(' ', new string[] { }
+                if (_firstnames_searchable_fz != null) return _firstnames_searchable_fz;
+
+                _firstnames_searchable_fz =  string.Join(' ', new string[] { }
                 .Concat(Standard.Name_cl.Split(" ").SkipLast(1))
                 .Concat(Standard.First_names.Split(' '))
                 .Distinct()).Trim();
+
+                return _firstnames_searchable_fz;
             }
         }
+        private int? _birthyear_searchable;
         [Nest.Keyword]
-        public int? Birthyear_searchable {
+        public int? Birthyear_searchable
+        {
+            set
+            {
+                _birthyear_searchable = value;
+            }
             get
             {
-                return Int32.TryParse(Standard.Birth_year, out var tempBirthyear) ? tempBirthyear : (int?)null;
+                if (_birthyear_searchable != null) return _birthyear_searchable;
+
+                _birthyear_searchable = Int32.TryParse(Standard.Birth_year, out var tempBirthyear) ? tempBirthyear : (int?)null;
+
+                return _birthyear_searchable;
             }
         }
+        private string _birthyear_searchable_fz;
         public string Birthyear_searchable_fz
         {
+            set
+            {
+                _birthyear_searchable_fz = value;
+            }
             get
             {
-                return IntToRangeAsStringHelper.GetRangePlusMinus3(Birthyear_searchable);
+                if (_birthyear_searchable_fz != null) return _birthyear_searchable_fz;
+
+                _birthyear_searchable_fz = IntToRangeAsStringHelper.GetRangePlusMinus3(Birthyear_searchable);
+
+                return _birthyear_searchable_fz;
             }
         }
+        private string _birthplace_searchable;
         public virtual string Birthplace_searchable
         {
+            set
+            {
+                _birthplace_searchable = value;
+            }
             get
             {
-                return string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }.Distinct()).Trim();
+                if (_birthplace_searchable != null) return _birthplace_searchable;
+                _birthplace_searchable = string.Join(' ', new string[] { Standard.Birth_place, Standard.Birth_location, Standard.Birth_parish, Standard.Birth_town, Standard.Birth_county, Standard.Birth_country, Standard.Birth_foreign_place }.Distinct()).Trim();
+
+                return _birthplace_searchable;
             }
         }
+        private int? _sourceyear_display;
         [Nest.Keyword]
-        public int? Sourceyear_searchable {
+        public int? Sourceyear_searchable
+        {
+            set
+            {
+                _sourceyear_display = value;
+            }
             get
             {
-                return Int32.TryParse(Standard.Event_year, out var tempSourceYear) ? tempSourceYear : (int?)null;
+                if (_sourceyear_display != null) return _sourceyear_display;
+                _sourceyear_display =  Int32.TryParse(Standard.Event_year, out var tempSourceYear) ? tempSourceYear : (int?)null;
+
+                return _sourceyear_display;
             }
         }
-        public string Sourceyear_searchable_fz {
+        private string _sourceyear_searchable_fz;
+        public string Sourceyear_searchable_fz
+        {
+            set
+            {
+                _sourceyear_searchable_fz = value;
+            }
             get
             {
-                return IntToRangeAsStringHelper.GetRangePlusMinus3(Sourceyear_searchable);
+                if (_sourceyear_searchable_fz != null) return _sourceyear_searchable_fz;
+                _sourceyear_searchable_fz = IntToRangeAsStringHelper.GetRangePlusMinus3(Sourceyear_searchable);
+
+                return _sourceyear_searchable_fz;
             }
         }
         public override int? Sourceyear_sortable
@@ -110,24 +210,41 @@ namespace Linklives.Domain
                 return Sourceyear_searchable;
             }
         }
+        private string _sourceplace_searchable;
         public virtual string Sourceplace_searchable
         {
+            set
+            {
+                _sourceplace_searchable = value;
+            }
             get
             {
-                return string.Join(' ', new string[]
+                if (_sourceplace_searchable != null) return _sourceplace_searchable;
+
+                _sourceplace_searchable = string.Join(' ', new string[]
                 { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }
                 .Distinct()).Trim();
+
+                return _sourceplace_searchable;
             }
         }
+        private string _sourceplace_display;
         public virtual string Sourceplace_display
         {
+            set
+            {
+                _sourceplace_display = value;
+            }
             get
             {
-                var locations = string.Join(' ', new string[]
+                if (_sourceplace_display != null) return _sourceplace_display;
+                _sourceplace_display = string.Join(' ', new string[]
                 { Standard.Event_location, Standard.Event_parish, Standard.Event_district, Standard.Event_town, Standard.Event_county, Standard.Event_country }
                 .Distinct().Where(s => !string.IsNullOrEmpty(s))).Trim();
-                if (string.IsNullOrEmpty(locations)) return null;
-                return locations;
+                
+                if (string.IsNullOrEmpty(_sourceplace_display)) return null;
+                
+                return _sourceplace_display;
             }
         }
         [Nest.Keyword]
@@ -142,15 +259,25 @@ namespace Linklives.Domain
                 return PAStrings.ResourceManager.GetString(Standard.Sex.ToLower()) ?? "not given";
             }
         }
+
+        private string _birthname_searchable;
         public string Birthname_searchable
         {
+            set
+            {
+                _birthname_searchable = value;
+            }
             get
             {
-                return Standard.Maiden_names != "" ? Standard.Maiden_names : null;
+                if (_birthname_searchable != null) return _birthname_searchable;
+
+                _birthname_searchable = Standard.Maiden_names != "" ? Standard.Maiden_names : null;
+
+                return _birthname_searchable;
             }
         }
         public virtual string Occupation_searchable { get; set; }
-        
+
         //Sortables
         public override string First_names_sortable
         {
@@ -168,7 +295,8 @@ namespace Linklives.Domain
         }
         public override int? Birthyear_sortable
         {
-            get {
+            get
+            {
                 return Birthyear_searchable;
             }
         }
@@ -182,7 +310,7 @@ namespace Linklives.Domain
             }
         }
         [Nest.Keyword]
-        public virtual string Source_type_wp4 { get;  }
+        public virtual string Source_type_wp4 { get; }
         [Nest.Keyword]
         public virtual string Pa_grouping_id_wp4 { get; }
         public virtual string Pa_grouping_id_wp4_sortable
@@ -194,12 +322,21 @@ namespace Linklives.Domain
         }
 
         //Display
+        private string _name_display;
         public string Name_display
         {
+            set
+            {
+                _name_display = value;
+            }
             get
             {
+                if (_name_display != null) return _name_display;
                 string uppercaseWords = string.IsNullOrEmpty(Standard.Name_cl) ? Standard.Name_cl : string.Join(' ', Standard.Name_cl.Split(' ').Select(s => s.Length > 1 ? (s[0].ToString().ToUpper() + s.Substring(1)) : s.ToUpper())); //Make first letter of each word uppercase
-                return Regex.Replace(uppercaseWords, @"\s+", " ");
+                
+                _name_display = Regex.Replace(uppercaseWords, @"\s+", " ");
+                
+                return _name_display;
             }
         }
         [Nest.Keyword]
@@ -220,6 +357,10 @@ namespace Linklives.Domain
         private string _birthplace_display;
         public string Birthplace_display
         {
+            set
+            {
+                _birthplace_display = value;
+            }
             get
             {
                 if (_birthplace_display != null) return _birthplace_display;
@@ -278,13 +419,14 @@ namespace Linklives.Domain
         }
         [Nest.Keyword]
         public virtual int? Deathyear_display { get; }
-        public override int? Deathyear_sortable {
+        public override int? Deathyear_sortable
+        {
             get
             {
                 return Deathyear_searchable;
             }
         }
-        public  virtual string Deathplace_searchable { get; }
+        public virtual string Deathplace_searchable { get; }
         [Nest.Keyword]
         public virtual string Source_type_display { get; }
         public virtual string Source_archive_display { get; }
@@ -337,5 +479,5 @@ namespace Linklives.Domain
         {
             Key = $"{Source_id}-{Pa_id}";
         }
-    }    
+    }
 }
