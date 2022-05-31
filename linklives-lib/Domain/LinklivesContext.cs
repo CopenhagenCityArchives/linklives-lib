@@ -33,6 +33,7 @@ namespace Linklives.Domain
             {
                 entity.HasKey(x => x.Id);
                 entity.HasOne(x => x.Rating).WithMany().HasForeignKey(x => x.RatingId);
+                entity.Property(e => e.Created).HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
             modelBuilder.Entity<RatingOption>(entity =>

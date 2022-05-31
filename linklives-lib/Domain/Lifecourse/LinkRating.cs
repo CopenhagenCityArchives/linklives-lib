@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -27,6 +28,7 @@ namespace Linklives.Domain
         public virtual RatingOption Rating { get; set; }
         [DataMember, Required(AllowEmptyStrings = false, ErrorMessage = "Must have valid user id")]
         public string User { get; set; }
+        public DateTime Created { get; set; }
         [JsonIgnore]
         public virtual Link Link { get; set; }
     }
