@@ -28,6 +28,7 @@ namespace Linklives.Domain
         public virtual RatingOption Rating { get; set; }
         [DataMember, Required(AllowEmptyStrings = false, ErrorMessage = "Must have valid user id")]
         public string User { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime Created { get; set; }
         [JsonIgnore]
         public virtual Link Link { get; set; }
