@@ -5,8 +5,8 @@ namespace Linklives.DAL
 {
     public interface ISourceRepository
     {
-        public IEnumerable<dynamic> GetAll();
+        public IEnumerable<Source> GetAll();
         public Source GetById(int id);
-        public IEnumerable<dynamic> GetByIds(IList<int> ids);
+        public IEnumerable<Source> GetByIds(IList<int> ids);
     }
 }
