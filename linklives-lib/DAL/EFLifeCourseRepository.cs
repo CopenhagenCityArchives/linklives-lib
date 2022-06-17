@@ -23,6 +23,11 @@ namespace Linklives.DAL
                .Select(lr => lr.LinkId)
                .ToList();
 
+            if (userLinkRatings.Count == 0)
+            {
+                return new List<string>();
+            }
+
             var links = context.Links.Where(l => userLinkRatings.Contains(l.Id)).AsNoTracking().Select(l => l).ToList();
             var lifecourseskeys = context.Links.AsNoTracking()
                 .Where(l => userLinkRatings.Contains(l.Id))
