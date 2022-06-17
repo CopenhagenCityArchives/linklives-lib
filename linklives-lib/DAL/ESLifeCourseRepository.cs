@@ -23,10 +23,12 @@ namespace Linklives.DAL
 
         public IEnumerable<LifeCourse> GetByKeys(IList<string> keys)
         {
+            if(keys.Count == 0) { return new List<LifeCourse>(); }
+
             var searchResponse = client.Search<LifeCourse>(s => s
             .Index("lifecourses")
             .From(0)
-            .Size(1000)
+            .Size(100)
             .Query(q => q
                 .Terms(t => t
                     .Field("key")
