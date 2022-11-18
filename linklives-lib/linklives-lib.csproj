@@ -14,16 +14,16 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <Version>2.0.7986.15318</Version>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="27.1.1" />
-    <PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.5" />
-    <PackageReference Include="NEST" Version="7.15.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="5.2.15" />
+    <PackageReference Include="CsvHelper" Version="27.1.1"/>
+    <PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.5"/>
+    <PackageReference Include="NEST" Version="7.15.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
+    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="5.2.15"/>
+    <PackageReference Include="CarlosAgExcelXmlWriterLibrary" Version="1.0.0"/>
+    <PackageReference Include="NPOI" Version="2.6.0.1"/>
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Resources\PAStrings.Designer.cs">
       <DesignTime>True</DesignTime>

@@ -3,9 +3,8 @@ using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Resources;
-using System.Text;
 using System.Text.RegularExpressions;
+using Linklives.Serialization;
 
 namespace Linklives.Domain
 {
@@ -15,12 +14,18 @@ namespace Linklives.Domain
     [ElasticsearchType(IdProperty = nameof(Key))]
     public class BasePA : SortableItem
     {
+        [Exportable(FieldCategory.Identification)]
         public int Source_id { get; set; }
+
+        [Exportable(FieldCategory.Identification)]
         public int Pa_id { get; set; }
+
+        [Exportable(FieldCategory.Standard)]
         public SourceType Type { get; protected set; }
 
         //Searchables
         private string _name_searchable;
+        [Exportable(FieldCategory.Standard)]
         public string Name_searchable
         {
             set
