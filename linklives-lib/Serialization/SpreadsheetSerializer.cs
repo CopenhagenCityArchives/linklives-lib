@@ -62,8 +62,4 @@ public enum FieldCategory {
     Transcribed = 500,
     Other = 999,
 }
-
-public interface RowSerializable {
-    Dictionary<string, string>[] Serialize();
-}
 }
