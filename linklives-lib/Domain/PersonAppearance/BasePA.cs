@@ -3,9 +3,8 @@ using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Resources;
-using System.Text;
 using System.Text.RegularExpressions;
+using Linklives.Serialization;
 
 namespace Linklives.Domain
 {
@@ -15,8 +14,13 @@ namespace Linklives.Domain
     [ElasticsearchType(IdProperty = nameof(Key))]
     public class BasePA : SortableItem
     {
+        [Exportable(FieldCategory.Identification)]
         public int Source_id { get; set; }
+
+        [Exportable(FieldCategory.Identification)]
         public int Pa_id { get; set; }
+
+        [Exportable(FieldCategory.Identification)]
         public SourceType Type { get; protected set; }
 
         //Searchables
@@ -441,11 +445,13 @@ namespace Linklives.Domain
         /// <summary>
         /// The original standardised Person Appearance data
         /// </summary>
+        [NestedExportable("st_", extraWeight: 1000, includeAllProperties: true)]
         public StandardPA Standard { get; set; }
         /// <summary>
         /// The raw transcribed Person Appearance data
         /// </summary>
         [Nest.Ignore] //Tells nest to ignore the property when indexing but still lets us include it when serializing to json
+        [NestedExportable("tr_", extraWeight: 2000, includeAllProperties: true)]
         public TranscribedPA Transcribed { get; set; }
         [Nest.Ignore]
         public Source Source { get; set; }
