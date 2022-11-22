@@ -5,24 +5,26 @@ using System.Text;
 
 namespace Linklives.Serialization {
 public static class SpreadsheetSerializer {
-    public static Dictionary<string, string>[] Serialize(object[] items) {
+    public static Dictionary<string, (string, Exportable)>[] Serialize(object[] items) {
         Dictionary<string, string> result = new Dictionary<string, string>();
         return items.SelectMany((item) => Serialize(item)).ToArray();
     }
 
-    public static Dictionary<string, string>[] Serialize(object item) {
-        var result = new Dictionary<string,string>{};
+    public static Dictionary<string, (string, Exportable)>[] Serialize(object item) {
+        var result = new Dictionary<string,(string, Exportable)>{};
 
         var serializableProperties = item.GetType().GetProperties()
             .Where((prop) => prop.CanRead)
-            .Where((prop) => {
+            .Select((prop) => {
                 var attrs = prop.GetCustomAttributes(true);
-                return attrs.Any((attr) => attr is Exportable);
-            });
+                var exportableAttr = (Exportable)attrs.FirstOrDefault((attr) => attr is Exportable);
+                return (prop, exportableAttr);
+            })
+            .Where((propAttrPair) => propAttrPair.Item2 != null);
 
-        foreach(var prop in serializableProperties) {
+        foreach(var (prop, attr) in serializableProperties) {
             var value = prop.GetValue(item, null);
-            result[prop.Name.ToLower()] = value?.ToString();
+            result[attr.BuildName(prop.Name)] = (value?.ToString(), attr);
         }
 
         return new [] { result };
@@ -52,7 +54,13 @@ public class Exportable : Attribute {
         sb.Append(_prefix);
         sb.Append(name);
 
-        return sb.ToString();
+        return sb.ToString().ToLower();
+    }
+
+    public int Weight {
+        get {
+            return (int)this._cat;
+        }
     }
 }
 

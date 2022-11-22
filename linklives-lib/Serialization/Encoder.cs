@@ -23,18 +23,27 @@ public abstract class Encoder {
         get;
     }
 
-    public abstract MemoryStream Encode(Dictionary<string, string>[] rows);
+    public abstract MemoryStream Encode(Dictionary<string, (string, Exportable)>[] rows);
 
-    protected Dictionary<string, int> GetColumnKeys(Dictionary<string, string>[] rows) {
+    protected Dictionary<string, int> GetColumnKeys(Dictionary<string, (string, Exportable)>[] rows) {
         // TODO: maybe a default ordering we strip things from that are not in any rows?
-        var result = new Dictionary<string, int>();
+        var keyToLowestWeightMap = new Dictionary<string, int>();
         foreach(var row in rows) {
             foreach(var key in row.Keys) {
-                if(!result.ContainsKey(key)) {
-                    result[key] = result.Count;
-                }
+                var existingWeight = keyToLowestWeightMap.ContainsKey(key) ? keyToLowestWeightMap[key] : int.MaxValue;
+                var lowestWeight = (new int[] { existingWeight, row[key].Item2.Weight }).Min();
+                keyToLowestWeightMap[key] = lowestWeight;
             }
         }
+
+        var keysInOrder = keyToLowestWeightMap.Keys.OrderBy((key) => keyToLowestWeightMap[key]);
+
+        // create map from key to column index
+        var result = new Dictionary<string, int>();
+        foreach(var key in keysInOrder) {
+            result[key] = result.Count;
+        }
+
         return result;
     }
 
@@ -45,14 +54,14 @@ public abstract class Encoder {
             .ToArray();
     }
 
-    protected string[] GetOrderedValues(Dictionary<string, int> columnMap, Dictionary<string, string> row) {
+    protected string[] GetOrderedValues(Dictionary<string, int> columnMap, Dictionary<string, (string, Exportable)> row) {
         // The result will be the length of the columnMap
         var result = new string[columnMap.Count];
 
         // Map each key to its position in the result using the columnMap as lookup
         foreach(var key in row.Keys) {
             var i = columnMap[key];
-            result[i] = row[key];
+            result[i] = row[key].Item1;
         }
         return result;
     }
@@ -72,7 +81,7 @@ public class XlsxEncoder: Encoder {
         }
     }
 
-    public override MemoryStream Encode(Dictionary<string, string>[] rows)
+    public override MemoryStream Encode(Dictionary<string, (string, Exportable)>[] rows)
     {
         // Write to Workbook
         var workbook = new NPOI.XSSF.UserModel.XSSFWorkbook();
@@ -121,7 +130,7 @@ public class XlsEncoder: Encoder {
         }
     }
 
-    public override MemoryStream Encode(Dictionary<string, string>[] rows)
+    public override MemoryStream Encode(Dictionary<string, (string, Exportable)>[] rows)
     {
         // Write to Workbook
         var workbook = new CarlosAg.ExcelXmlWriter.Workbook();
@@ -178,7 +187,7 @@ public class CsvEncoder: Encoder {
         }
     }
 
-    public override MemoryStream Encode(Dictionary<string, string>[] rows) {
+    public override MemoryStream Encode(Dictionary<string, (string, Exportable)>[] rows) {
         var result = new StringBuilder();
 
         var columnMap = GetColumnKeys(rows);

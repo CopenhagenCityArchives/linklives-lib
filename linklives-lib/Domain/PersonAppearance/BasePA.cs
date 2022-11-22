@@ -57,6 +57,7 @@ namespace Linklives.Domain
             }
         }
         private string _lastname_searchable;
+        [Exportable(FieldCategory.Standard)]
         public string Lastname_searchable
         {
             set
@@ -95,6 +96,7 @@ namespace Linklives.Domain
             }
         }
         private string _firstnames_searchable;
+        [Exportable(FieldCategory.Standard)]
         public string Firstnames_searchable
         {
             set
