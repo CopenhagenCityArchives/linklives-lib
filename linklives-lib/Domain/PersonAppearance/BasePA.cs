@@ -20,12 +20,11 @@ namespace Linklives.Domain
         [Exportable(FieldCategory.Identification)]
         public int Pa_id { get; set; }
 
-        [Exportable(FieldCategory.Standard)]
+        [Exportable(FieldCategory.Identification)]
         public SourceType Type { get; protected set; }
 
         //Searchables
         private string _name_searchable;
-        [Exportable(FieldCategory.Standard)]
         public string Name_searchable
         {
             set
@@ -57,7 +56,6 @@ namespace Linklives.Domain
             }
         }
         private string _lastname_searchable;
-        [Exportable(FieldCategory.Standard)]
         public string Lastname_searchable
         {
             set
@@ -96,7 +94,6 @@ namespace Linklives.Domain
             }
         }
         private string _firstnames_searchable;
-        [Exportable(FieldCategory.Standard)]
         public string Firstnames_searchable
         {
             set
@@ -448,11 +445,13 @@ namespace Linklives.Domain
         /// <summary>
         /// The original standardised Person Appearance data
         /// </summary>
+        [NestedExportable("st_", extraWeight: 1000, includeAllProperties: true)]
         public StandardPA Standard { get; set; }
         /// <summary>
         /// The raw transcribed Person Appearance data
         /// </summary>
         [Nest.Ignore] //Tells nest to ignore the property when indexing but still lets us include it when serializing to json
+        [NestedExportable("tr_", extraWeight: 2000, includeAllProperties: true)]
         public TranscribedPA Transcribed { get; set; }
         [Nest.Ignore]
         public Source Source { get; set; }
