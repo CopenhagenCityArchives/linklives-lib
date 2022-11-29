@@ -24,6 +24,9 @@ public static class SpreadsheetSerializer {
                     else if(exportableAttr is Exportable) {
                         exportableAttr = ((Exportable)exportableAttr).Expand(parent.Prefix, parent.ExtraWeight);
                     }
+                    else if(exportableAttr is NestedExportable) {
+                        exportableAttr = ((NestedExportable)exportableAttr).Expand(parent.Prefix, parent.ExtraWeight);
+                    }
                 }
 
                 return (prop, exportableAttr);
@@ -66,9 +69,20 @@ public static class SpreadsheetSerializer {
                     return new Dictionary<string,(string, Exportable)>[] {};
                 }
 
-                if(typeof(IEnumerable<object>).IsAssignableFrom(prop.PropertyType)) {
+                // Key-value string dictionary can be inlined
+                if(typeof(Dictionary<string, string>).IsAssignableFrom(value.GetType())) {
+                    var dict = (Dictionary<string, string>)value;
+                    var result = dict.SelectDict(keyValue => {
+                        var (key, value) = keyValue;
+                        var attr = new Exportable(prefix: nestedExportable.Prefix, extraWeight: nestedExportable.ExtraWeight);
+                        return (attr.BuildName(key), (value, attr));
+                    });
+                    return new Dictionary<string, (string, Exportable)>[] { result };
+                }
+
+                if(typeof(IEnumerable<object>).IsAssignableFrom(value.GetType())) {
                     var enumerable = (IEnumerable<object>)value;
-                    return enumerable.SelectMany((item, i) => Serialize(item, nestedExportable.Expand(extraWeight: i)));
+                    return enumerable.SelectMany((item) => Serialize(item, nestedExportable));
                 }
 
                 return Serialize(value, nestedExportable);
@@ -112,6 +126,15 @@ public static class SpreadsheetSerializer {
 
         var result = listOfRowsOfRows.Skip(2).Prepend(resultRows);
         return BraidRows(result.ToArray());
+    }
+
+    private static Dictionary<string, U> SelectDict<T, U>(this Dictionary<string, T> dict, Func<(string, T), (string, U)> map) {
+        var result = new Dictionary<string, U>();
+        foreach(var (key, val) in dict) {
+            var (newKey, newValue) = map((key, val));
+            result[newKey] = newValue;
+        }
+        return result;
     }
 }
 
@@ -184,9 +207,9 @@ public class NestedExportable : Attribute {
         _includeAllProperties = includeAllProperties;
     }
 
-    public NestedExportable Expand(int extraWeight = 0) {
+    public NestedExportable Expand(string prefix = "", int extraWeight = 0) {
         return new NestedExportable(
-            _prefix,
+            prefix + _prefix,
             _extraWeight + extraWeight,
             _includeAllProperties
         );

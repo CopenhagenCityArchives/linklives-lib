@@ -451,7 +451,7 @@ namespace Linklives.Domain
         /// The raw transcribed Person Appearance data
         /// </summary>
         [Nest.Ignore] //Tells nest to ignore the property when indexing but still lets us include it when serializing to json
-        [NestedExportable("tr_", extraWeight: 2000, includeAllProperties: true)]
+        [NestedExportable("tr_", extraWeight: 2000)]
         public TranscribedPA Transcribed { get; set; }
         [Nest.Ignore]
         public Source Source { get; set; }
