@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Text;
+using Linklives.Serialization;
 
 namespace Linklives.Domain
 {
@@ -14,6 +14,8 @@ namespace Linklives.Domain
         private TranscriptionType transcriptionType;
         public int Pa_id { get; set; }
         public int Source_id { get; set; }
+
+        [NestedExportable()]
         public dynamic Transcription { get; set; }
         public TranscribedPA()
         {

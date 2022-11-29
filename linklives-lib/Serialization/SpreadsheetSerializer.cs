@@ -24,11 +24,20 @@ public static class SpreadsheetSerializer {
                     else if(exportableAttr is Exportable) {
                         exportableAttr = ((Exportable)exportableAttr).Expand(parent.Prefix, parent.ExtraWeight);
                     }
+                    else if(exportableAttr is NestedExportable) {
+                        exportableAttr = ((NestedExportable)exportableAttr).Expand(parent.Prefix, parent.ExtraWeight);
+                    }
                 }
 
                 return (prop, exportableAttr);
             })
-            .Where((propAttrPair) => propAttrPair.Item2 != null);
+            .Where((propAttrPair) => propAttrPair.Item2 != null)
+            .Where((propAttrPair) => {
+                if(propAttrPair.Item2 is Exportable) {
+                    return ((Exportable)propAttrPair.Item2).ShouldExport(item);
+                }
+                return true;
+            });
 
         var flatFields = serializableProperties
             .Where((propAttrPair) => {
@@ -60,9 +69,20 @@ public static class SpreadsheetSerializer {
                     return new Dictionary<string,(string, Exportable)>[] {};
                 }
 
-                if(typeof(IEnumerable<object>).IsAssignableFrom(prop.PropertyType)) {
+                // Key-value string dictionary can be inlined
+                if(typeof(Dictionary<string, string>).IsAssignableFrom(value.GetType())) {
+                    var dict = (Dictionary<string, string>)value;
+                    var result = dict.SelectDict(keyValue => {
+                        var (key, value) = keyValue;
+                        var attr = new Exportable(prefix: nestedExportable.Prefix, extraWeight: nestedExportable.ExtraWeight);
+                        return (attr.BuildName(key), (value, attr));
+                    });
+                    return new Dictionary<string, (string, Exportable)>[] { result };
+                }
+
+                if(typeof(IEnumerable<object>).IsAssignableFrom(value.GetType())) {
                     var enumerable = (IEnumerable<object>)value;
-                    return enumerable.SelectMany((item, i) => Serialize(item, nestedExportable.Expand(extraWeight: i)));
+                    return enumerable.SelectMany((item) => Serialize(item, nestedExportable));
                 }
 
                 return Serialize(value, nestedExportable);
@@ -83,8 +103,18 @@ public static class SpreadsheetSerializer {
     }
 
     private static Dictionary<string, (string, Exportable)>[] BraidRows(IEnumerable<Dictionary<string, (string, Exportable)>>[] listOfRowsOfRows) {
+        if(listOfRowsOfRows.Length == 1) {
+            return listOfRowsOfRows[0].ToArray();
+        }
+
         var firstColSet = listOfRowsOfRows[0];
+        if(firstColSet.Count() == 0) {
+            return BraidRows(listOfRowsOfRows.Skip(1).ToArray());
+        }
         var secondColSet = listOfRowsOfRows[1];
+        if(secondColSet.Count() == 0) {
+            return BraidRows(listOfRowsOfRows.Skip(2).Prepend(firstColSet).ToArray());
+        }
 
         var resultRows = new List<Dictionary<string, (string, Exportable)>>();
         foreach(var firstColSetRow in firstColSet) {
@@ -107,6 +137,15 @@ public static class SpreadsheetSerializer {
         var result = listOfRowsOfRows.Skip(2).Prepend(resultRows);
         return BraidRows(result.ToArray());
     }
+
+    private static Dictionary<string, U> SelectDict<T, U>(this Dictionary<string, T> dict, Func<(string, T), (string, U)> map) {
+        var result = new Dictionary<string, U>();
+        foreach(var (key, val) in dict) {
+            var (newKey, newValue) = map((key, val));
+            result[newKey] = newValue;
+        }
+        return result;
+    }
 }
 
 [AttributeUsage(AttributeTargets.Property)]
@@ -115,17 +154,26 @@ public class Exportable : Attribute {
     private string _prefix;
     private int _extraWeight;
 
-    public Exportable(FieldCategory cat = FieldCategory.Other, string prefix = "", int extraWeight = 0) {
+    private Type _exportIfType;
+
+    public Exportable(
+        FieldCategory cat = FieldCategory.Other,
+        string prefix = "",
+        int extraWeight = 0,
+        Type exportIfType = null
+    ) {
         this._cat = cat;
         this._prefix = prefix;
         this._extraWeight = extraWeight;
+        this._exportIfType = exportIfType;
     }
 
     public Exportable Expand(string prefix = "", int extraWeight = 0) {
         return new Exportable(
             _cat,
             prefix + _prefix,
-            extraWeight + _extraWeight
+            extraWeight + _extraWeight,
+            _exportIfType
         );
     }
 
@@ -142,6 +190,13 @@ public class Exportable : Attribute {
         get {
             return _extraWeight + (int)this._cat;
         }
+    }
+
+    public bool ShouldExport(object subject) {
+        if(_exportIfType == null) {
+            return true;
+        }
+        return subject.GetType() == _exportIfType;
     }
 }
 
@@ -162,9 +217,9 @@ public class NestedExportable : Attribute {
         _includeAllProperties = includeAllProperties;
     }
 
-    public NestedExportable Expand(int extraWeight = 0) {
+    public NestedExportable Expand(string prefix = "", int extraWeight = 0) {
         return new NestedExportable(
-            _prefix,
+            prefix + _prefix,
             _extraWeight + extraWeight,
             _includeAllProperties
         );
