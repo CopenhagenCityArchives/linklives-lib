@@ -21,7 +21,6 @@ namespace Linklives.Domain
         [Name("pa_ids")]
         public string Pa_ids { get; set; }
         [Name("source_ids")]
-        [Exportable(FieldCategory.Identification)]
         public string Source_ids { get; set; }
         [Name("link_ids")]
         public string Link_ids { get; set; }
