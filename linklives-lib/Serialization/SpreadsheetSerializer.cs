@@ -103,8 +103,18 @@ public static class SpreadsheetSerializer {
     }
 
     private static Dictionary<string, (string, Exportable)>[] BraidRows(IEnumerable<Dictionary<string, (string, Exportable)>>[] listOfRowsOfRows) {
+        if(listOfRowsOfRows.Length == 1) {
+            return listOfRowsOfRows[0].ToArray();
+        }
+
         var firstColSet = listOfRowsOfRows[0];
+        if(firstColSet.Count() == 0) {
+            return BraidRows(listOfRowsOfRows.Skip(1).ToArray());
+        }
         var secondColSet = listOfRowsOfRows[1];
+        if(secondColSet.Count() == 0) {
+            return BraidRows(listOfRowsOfRows.Skip(2).Prepend(firstColSet).ToArray());
+        }
 
         var resultRows = new List<Dictionary<string, (string, Exportable)>>();
         foreach(var firstColSetRow in firstColSet) {
