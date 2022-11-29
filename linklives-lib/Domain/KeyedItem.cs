@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Linklives.Serialization;
+using Linklives.Domain;
 
 namespace Linklives.Domain
 {
@@ -18,6 +20,7 @@ namespace Linklives.Domain
         public bool Is_historic { get; set; }
         [Nest.Keyword]
         [CsvHelper.Configuration.Attributes.Ignore]
+        [Exportable(FieldCategory.Identification, exportIfType: typeof(LifeCourse))]
         public string Data_version { get; set; }
         public abstract void InitKey();
     }

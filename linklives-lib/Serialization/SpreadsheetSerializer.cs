@@ -28,7 +28,13 @@ public static class SpreadsheetSerializer {
 
                 return (prop, exportableAttr);
             })
-            .Where((propAttrPair) => propAttrPair.Item2 != null);
+            .Where((propAttrPair) => propAttrPair.Item2 != null)
+            .Where((propAttrPair) => {
+                if(propAttrPair.Item2 is Exportable) {
+                    return ((Exportable)propAttrPair.Item2).ShouldExport(item);
+                }
+                return true;
+            });
 
         var flatFields = serializableProperties
             .Where((propAttrPair) => {
@@ -115,17 +121,26 @@ public class Exportable : Attribute {
     private string _prefix;
     private int _extraWeight;
 
-    public Exportable(FieldCategory cat = FieldCategory.Other, string prefix = "", int extraWeight = 0) {
+    private Type _exportIfType;
+
+    public Exportable(
+        FieldCategory cat = FieldCategory.Other,
+        string prefix = "",
+        int extraWeight = 0,
+        Type exportIfType = null
+    ) {
         this._cat = cat;
         this._prefix = prefix;
         this._extraWeight = extraWeight;
+        this._exportIfType = exportIfType;
     }
 
     public Exportable Expand(string prefix = "", int extraWeight = 0) {
         return new Exportable(
             _cat,
             prefix + _prefix,
-            extraWeight + _extraWeight
+            extraWeight + _extraWeight,
+            _exportIfType
         );
     }
 
@@ -142,6 +157,13 @@ public class Exportable : Attribute {
         get {
             return _extraWeight + (int)this._cat;
         }
+    }
+
+    public bool ShouldExport(object subject) {
+        if(_exportIfType == null) {
+            return true;
+        }
+        return subject.GetType() == _exportIfType;
     }
 }
 
