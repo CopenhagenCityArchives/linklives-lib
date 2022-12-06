@@ -23,7 +23,8 @@ public abstract class Encoder {
         get;
     }
 
-    public abstract MemoryStream Encode(Dictionary<string, (string, Exportable)>[] rows);
+    public abstract MemoryStream Encode(string sheetName, Dictionary<string, (string, Exportable)>[] rows);
+    public abstract MemoryStream Encode(Dictionary<string, Dictionary<string, (string, Exportable)>[]> sheets);
 
     protected Dictionary<string, int> GetColumnKeys(Dictionary<string, (string, Exportable)>[] rows) {
         // TODO: maybe a default ordering we strip things from that are not in any rows?
@@ -81,11 +82,8 @@ public class XlsxEncoder: Encoder {
         }
     }
 
-    public override MemoryStream Encode(Dictionary<string, (string, Exportable)>[] rows)
-    {
-        // Write to Workbook
-        var workbook = new NPOI.XSSF.UserModel.XSSFWorkbook();
-        var sheet = workbook.CreateSheet("Link-lives Download");
+    private NPOI.SS.UserModel.ISheet FillSheet(NPOI.XSSF.UserModel.XSSFWorkbook workbook, string sheetName, Dictionary<string, (string, Exportable)>[] rows) {
+        var sheet = workbook.CreateSheet(sheetName);
 
         var columnMap = GetColumnKeys(rows);
         var orderedColumns = GetOrderedColumns(columnMap);
@@ -105,6 +103,28 @@ public class XlsxEncoder: Encoder {
                 var cell = sheetRow.CreateCell(j);
                 cell.SetCellValue(orderedValues[j]);
             }
+        }
+
+        return sheet;
+    }
+    public override MemoryStream Encode(string sheetName, Dictionary<string, (string, Exportable)>[] rows)
+    {
+        // Write to Workbook
+        var workbook = new NPOI.XSSF.UserModel.XSSFWorkbook();
+        var sheet = FillSheet(workbook, sheetName, rows);
+
+        // Output to stream - NPOI closes a memory stream on write, so we need to discard one (so weird tbh)
+        var intermediate = new MemoryStream();
+        workbook.Write(intermediate);
+        var bytes = intermediate.ToArray();
+
+        return new MemoryStream(bytes);
+    }
+
+    public override MemoryStream Encode(Dictionary<string, Dictionary<string, (string, Exportable)>[]> sheets) {
+        var workbook = new NPOI.XSSF.UserModel.XSSFWorkbook();
+        foreach(var (name, rows) in sheets) {
+            FillSheet(workbook, name, rows);
         }
 
         // Output to stream - NPOI closes a memory stream on write, so we need to discard one (so weird tbh)
@@ -130,10 +150,7 @@ public class XlsEncoder: Encoder {
         }
     }
 
-    public override MemoryStream Encode(Dictionary<string, (string, Exportable)>[] rows)
-    {
-        // Write to Workbook
-        var workbook = new CarlosAg.ExcelXmlWriter.Workbook();
+    private CarlosAg.ExcelXmlWriter.Worksheet FillSheet(CarlosAg.ExcelXmlWriter.Workbook workbook, string sheetName, Dictionary<string, (string, Exportable)>[] rows) {
         var sheet = workbook.Worksheets.Add("Link-lives Download");
 
         var columnMap = GetColumnKeys(rows);
@@ -151,6 +168,41 @@ public class XlsEncoder: Encoder {
             foreach(var val in orderedValues) {
                 sheetRow.Cells.Add(val ?? "");
             }
+        }
+
+        return sheet;
+    }
+
+    public override MemoryStream Encode(string sheetName, Dictionary<string, (string, Exportable)>[] rows)
+    {
+        // Write to Workbook
+        var workbook = new CarlosAg.ExcelXmlWriter.Workbook();
+        var sheet = FillSheet(workbook, sheetName, rows);
+
+        // Output to stream via temp file
+        var result = new MemoryStream();
+        var tempFilePath = Path.GetTempFileName();
+        try {
+            workbook.Save(tempFilePath);
+
+            using (var readingFileStream = File.OpenRead(tempFilePath)) {
+                readingFileStream.CopyTo(result);
+            }
+        }
+        finally {
+            File.Delete(tempFilePath);
+        }
+
+        //result.Seek(0, SeekOrigin.Begin); // Needed?
+
+        return result;
+    }
+
+    public override MemoryStream Encode(Dictionary<string, Dictionary<string, (string, Exportable)>[]> sheets) {
+        // Write to Workbook
+        var workbook = new CarlosAg.ExcelXmlWriter.Workbook();
+        foreach(var (name, rows) in sheets) {
+            FillSheet(workbook, name, rows);
         }
 
         // Output to stream via temp file
@@ -187,7 +239,7 @@ public class CsvEncoder: Encoder {
         }
     }
 
-    public override MemoryStream Encode(Dictionary<string, (string, Exportable)>[] rows) {
+    public override MemoryStream Encode(string sheetName, Dictionary<string, (string, Exportable)>[] rows) {
         var result = new StringBuilder();
 
         var columnMap = GetColumnKeys(rows);
@@ -201,6 +253,12 @@ public class CsvEncoder: Encoder {
 
         var bytes = Encoding.UTF8.GetBytes(result.ToString());
         return new MemoryStream(bytes);
+    }
+
+    public override MemoryStream Encode(Dictionary<string, Dictionary<string, (string, Exportable)>[]> sheets) {
+        // CSV does not support multiple sheets, cut off any but first sheet
+        var (sheetName, rows) = sheets.First();
+        return Encode(sheetName, rows);
     }
 
     private Regex quotesRegex = new Regex("\"");
