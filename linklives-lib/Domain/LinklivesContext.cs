@@ -8,6 +8,7 @@ namespace Linklives.Domain
         public DbSet<Link> Links { get; set; }
         public DbSet<LinkRating> LinkRatings { get; set; }
         public DbSet<RatingOption> RatingOptions { get; set; }
+        public DbSet<DownloadHistoryEntry> DownloadHistoryEntries { get; set; }
         
         public LinklivesContext(DbContextOptions<LinklivesContext> options) : base(options)
         {
@@ -52,6 +53,11 @@ namespace Linklives.Domain
                 new RatingOption() { Id = 8, Text = "Nogle af informationerne passer sammen. Andre gør ikke.", Heading = "Måske", Category = "neutral" },
                 new RatingOption() { Id = 9, Text = "Der er ikke personinformation nok til at afgøre, om det er troværdigt.", Heading = "Måske", Category = "neutral" }
             );
+
+            modelBuilder.Entity<DownloadHistoryEntry>(entity => {
+                entity.HasKey(x => x.Id);
+                entity.Property(e => e.Created).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
         }
     }
 }
