@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Linklives.Serialization {
 public static class SpreadsheetSerializer {
-    public static Dictionary<string, (string, Exportable)>[] Serialize(object[] items) {
+    public static Dictionary<string, (string, Exportable)>[] SerializeAll(object[] items, NestedExportable parent = null) {
         Dictionary<string, string> result = new Dictionary<string, string>();
-        return items.SelectMany((item) => Serialize(item)).ToArray();
+        return items.SelectMany((item) => Serialize(item, parent)).ToArray();
     }
 
     public static Dictionary<string, (string, Exportable)>[] Serialize(object item, NestedExportable parent = null) {
@@ -52,6 +52,14 @@ public static class SpreadsheetSerializer {
         var flatFieldsRow = new Dictionary<string,(string, Exportable)>{};
         foreach(var (prop, attr) in flatFields) {
             var value = prop.GetValue(item, null);
+
+            // If value is an array, stringify nicely with commas per default
+            if(value != null && typeof(object[]).IsAssignableFrom(value.GetType())) {
+                var prettyValue = String.Join(",", (value as object[]).Select((entry) => entry.ToString()));
+                flatFieldsRow[attr.BuildName(prop.Name)] = (prettyValue, attr);
+                continue;
+            }
+
             flatFieldsRow[attr.BuildName(prop.Name)] = (value?.ToString(), attr);
             continue;
         }
