@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Linklives.Serialization {
 public static class SpreadsheetSerializer {
-    public static Dictionary<string, (string, Exportable)>[] Serialize(object[] items) {
+    public static Dictionary<string, (string, Exportable)>[] SerializeAll(object[] items, NestedExportable parent = null) {
         Dictionary<string, string> result = new Dictionary<string, string>();
-        return items.SelectMany((item) => Serialize(item)).ToArray();
+        return items.SelectMany((item) => Serialize(item, parent)).ToArray();
     }
 
     public static Dictionary<string, (string, Exportable)>[] Serialize(object item, NestedExportable parent = null) {
