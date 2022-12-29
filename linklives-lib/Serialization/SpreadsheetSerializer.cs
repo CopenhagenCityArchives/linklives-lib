@@ -52,6 +52,14 @@ public static class SpreadsheetSerializer {
         var flatFieldsRow = new Dictionary<string,(string, Exportable)>{};
         foreach(var (prop, attr) in flatFields) {
             var value = prop.GetValue(item, null);
+
+            // If value is an array, stringify nicely with commas per default
+            if(value != null && typeof(object[]).IsAssignableFrom(value.GetType())) {
+                var prettyValue = String.Join(",", (value as object[]).Select((entry) => entry.ToString()));
+                flatFieldsRow[attr.BuildName(prop.Name)] = (prettyValue, attr);
+                continue;
+            }
+
             flatFieldsRow[attr.BuildName(prop.Name)] = (value?.ToString(), attr);
             continue;
         }
