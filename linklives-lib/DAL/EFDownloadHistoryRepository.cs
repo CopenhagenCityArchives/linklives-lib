@@ -11,7 +11,6 @@ namespace Linklives.DAL
     public class EFDownloadHistoryRepository : DBRepository<DownloadHistoryEntry>, IEFDownloadHistoryRepository
     {
         private readonly DbContextOptions<LinklivesContext> contextOptions;
-        private readonly int batchSize = 1000;
         public EFDownloadHistoryRepository(LinklivesContext context, DbContextOptions<LinklivesContext> options) : base(context)
         {
             contextOptions = options;
