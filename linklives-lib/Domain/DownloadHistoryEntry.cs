@@ -26,6 +26,19 @@ namespace Linklives.Domain
                     return "Download";
             }
         }
+
+        public static DownloadType FromString(string type) {
+            switch(type) {
+                case "PersonAppearance":
+                    return DownloadType.PersonAppearance;
+                case "Lifecourse":
+                    return DownloadType.Lifecourse;
+                case "SearchResult":
+                    return DownloadType.SearchResult;
+                default:
+                    throw new InvalidOperationException($"Trying to create a DownloadType from an unrecognized string key '{type}'");
+            }
+        }
     }
 
     public class DownloadHistoryEntry {
@@ -46,6 +59,15 @@ namespace Linklives.Domain
 
         public DownloadHistoryEntry(DownloadType downloadType, string query, string downloadedBy) {
             DownloadType = downloadType.Stringify();
+            Query = query;
+            DownloadedBy = downloadedBy;
+        }
+
+        public DownloadHistoryEntry(string downloadType, string query, string downloadedBy) {
+            //Validate downloadType input string is valid
+            DownloadTypeExt.FromString(downloadType);
+
+            DownloadType = downloadType;
             Query = query;
             DownloadedBy = downloadedBy;
         }
