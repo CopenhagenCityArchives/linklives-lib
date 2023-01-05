@@ -15,7 +15,7 @@ namespace linklives_dummy
             //TODO: Before wiping prod database remember to take backups of the RatingOptions table so that the data can be rolled back on afterwards.
             //This factory is used by EF when running migrations to db, change dbConn to connect to different databases
             var dbConn = @"server=127.0.0.1;uid=root;pwd=123456;database=linklives_data";
-            var dbContext = new LinklivesContext(new DbContextOptionsBuilder<LinklivesContext>().UseMySQL(dbConn).Options);
+            var dbContext = new LinklivesContext(new DbContextOptionsBuilder<LinklivesContext>().UseMySQL(dbConn, b => b.MigrationsAssembly("linklives-lib-database-migrations")).Options);
 
             return dbContext;
         }
