@@ -88,6 +88,18 @@ public static class SpreadsheetSerializer {
                     return new Dictionary<string, (string, Exportable)>[] { result };
                 }
 
+                // Key-value dynamic object should be inlined if nestedExpandable.ForcedStrategy == NestingStrategy.Inline
+                if(nestedExportable.ForcedStrategy == NestingStrategy.Inline) {
+                    var props = value.GetType().GetProperties().Where((nestedProp) => nestedProp.CanRead);
+                    var result = new Dictionary<string, (string, Exportable)> {};
+                    foreach(var nestedProp in props) {
+                        var propAttr = new Exportable(prefix: nestedExportable.Prefix, extraWeight: nestedExportable.ExtraWeight);
+                        var propValue = nestedProp.GetValue(value, null);
+                        result[propAttr.BuildName(nestedProp.Name)] = (propValue.ToString(), propAttr);
+                    }
+                    return new Dictionary<string, (string, Exportable)>[] { result };
+                }
+
                 if(typeof(IEnumerable<object>).IsAssignableFrom(value.GetType())) {
                     var enumerable = (IEnumerable<object>)value;
                     return enumerable.SelectMany((item) => Serialize(item, nestedExportable));
@@ -208,6 +220,11 @@ public class Exportable : Attribute {
     }
 }
 
+public enum NestingStrategy {
+    Auto,
+    Inline,
+}
+
 [AttributeUsage(AttributeTargets.Property)]
 public class NestedExportable : Attribute {
     string _prefix;
@@ -219,17 +236,22 @@ public class NestedExportable : Attribute {
     bool _includeAllProperties;
     public bool IncludeAllProperties { get { return _includeAllProperties; } }
 
-    public NestedExportable(string prefix = "", int extraWeight = 1000, bool includeAllProperties = false) {
+    NestingStrategy _forcedStrategy;
+    public NestingStrategy ForcedStrategy { get { return _forcedStrategy; } }
+
+    public NestedExportable(string prefix = "", int extraWeight = 1000, bool includeAllProperties = false, NestingStrategy forcedStrategy = NestingStrategy.Auto) {
         _prefix = prefix;
         _extraWeight = extraWeight;
         _includeAllProperties = includeAllProperties;
+        _forcedStrategy = forcedStrategy;
     }
 
     public NestedExportable Expand(string prefix = "", int extraWeight = 0) {
         return new NestedExportable(
             prefix + _prefix,
             _extraWeight + extraWeight,
-            _includeAllProperties
+            _includeAllProperties,
+            _forcedStrategy
         );
     }
 }
