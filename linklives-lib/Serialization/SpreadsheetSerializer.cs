@@ -77,14 +77,26 @@ public static class SpreadsheetSerializer {
                     return new Dictionary<string,(string, Exportable)>[] {};
                 }
 
-                // Key-value string dictionary can be inlined
-                if(typeof(Dictionary<string, string>).IsAssignableFrom(value.GetType())) {
-                    var dict = (Dictionary<string, string>)value;
+                // Key-value string dictionary (or dictionary-like) can be inlined
+                if(typeof(IDictionary<string, string>).IsAssignableFrom(value.GetType())) {
+                    var dict = (IDictionary<string, string>)value;
                     var result = dict.SelectDict(keyValue => {
                         var (key, value) = keyValue;
                         var attr = new Exportable(prefix: nestedExportable.Prefix, extraWeight: nestedExportable.ExtraWeight);
                         return (attr.BuildName(key), (value, attr));
                     });
+                    return new Dictionary<string, (string, Exportable)>[] { result };
+                }
+
+                // Key-value dynamic object should be inlined if nestedExpandable.ForcedStrategy == NestingStrategy.Inline
+                if(nestedExportable.ForcedStrategy == NestingStrategy.Inline) {
+                    var props = value.GetType().GetProperties().Where((nestedProp) => nestedProp.CanRead);
+                    var result = new Dictionary<string, (string, Exportable)> {};
+                    foreach(var nestedProp in props) {
+                        var propAttr = new Exportable(prefix: nestedExportable.Prefix, extraWeight: nestedExportable.ExtraWeight);
+                        var propValue = nestedProp.GetValue(value, null);
+                        result[propAttr.BuildName(nestedProp.Name)] = (propValue.ToString(), propAttr);
+                    }
                     return new Dictionary<string, (string, Exportable)>[] { result };
                 }
 
@@ -146,7 +158,7 @@ public static class SpreadsheetSerializer {
         return BraidRows(result.ToArray());
     }
 
-    private static Dictionary<string, U> SelectDict<T, U>(this Dictionary<string, T> dict, Func<(string, T), (string, U)> map) {
+    private static Dictionary<string, U> SelectDict<T, U>(this IDictionary<string, T> dict, Func<(string, T), (string, U)> map) {
         var result = new Dictionary<string, U>();
         foreach(var (key, val) in dict) {
             var (newKey, newValue) = map((key, val));
@@ -208,6 +220,11 @@ public class Exportable : Attribute {
     }
 }
 
+public enum NestingStrategy {
+    Auto,
+    Inline,
+}
+
 [AttributeUsage(AttributeTargets.Property)]
 public class NestedExportable : Attribute {
     string _prefix;
@@ -219,17 +236,22 @@ public class NestedExportable : Attribute {
     bool _includeAllProperties;
     public bool IncludeAllProperties { get { return _includeAllProperties; } }
 
-    public NestedExportable(string prefix = "", int extraWeight = 1000, bool includeAllProperties = false) {
+    NestingStrategy _forcedStrategy;
+    public NestingStrategy ForcedStrategy { get { return _forcedStrategy; } }
+
+    public NestedExportable(string prefix = "", int extraWeight = 1000, bool includeAllProperties = false, NestingStrategy forcedStrategy = NestingStrategy.Auto) {
         _prefix = prefix;
         _extraWeight = extraWeight;
         _includeAllProperties = includeAllProperties;
+        _forcedStrategy = forcedStrategy;
     }
 
     public NestedExportable Expand(string prefix = "", int extraWeight = 0) {
         return new NestedExportable(
             prefix + _prefix,
             _extraWeight + extraWeight,
-            _includeAllProperties
+            _includeAllProperties,
+            _forcedStrategy
         );
     }
 }

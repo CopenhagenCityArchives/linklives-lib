@@ -15,8 +15,9 @@ namespace Linklives.Domain
         public int Pa_id { get; set; }
         public int Source_id { get; set; }
 
-        [NestedExportable()]
+        [NestedExportable(forcedStrategy: NestingStrategy.Inline)]
         public dynamic Transcription { get; set; }
+
         public TranscribedPA()
         {
 
