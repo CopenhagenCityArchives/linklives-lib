@@ -78,12 +78,12 @@ public static class SpreadsheetSerializer {
                 }
 
                 // Key-value string dictionary (or dictionary-like) can be inlined
-                if(typeof(IDictionary<string, string>).IsAssignableFrom(value.GetType())) {
-                    var dict = (IDictionary<string, string>)value;
+                if(typeof(IDictionary<string, object>).IsAssignableFrom(value.GetType())) {
+                    var dict = (IDictionary<string, object>)value;
                     var result = dict.SelectDict(keyValue => {
                         var (key, value) = keyValue;
                         var attr = new Exportable(prefix: nestedExportable.Prefix, extraWeight: nestedExportable.ExtraWeight);
-                        return (attr.BuildName(key), (value, attr));
+                        return (attr.BuildName(key), (value.ToString(), attr));
                     });
                     return new Dictionary<string, (string, Exportable)>[] { result };
                 }
