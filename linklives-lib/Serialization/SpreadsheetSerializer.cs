@@ -90,7 +90,7 @@ public static class SpreadsheetSerializer {
 
                 // Key-value dynamic object should be inlined if nestedExpandable.ForcedStrategy == NestingStrategy.Inline
                 if(nestedExportable.ForcedStrategy == NestingStrategy.Inline) {
-                    var props = value.GetType().GetProperties().Where((nestedProp) => nestedProp.CanRead);
+                    var props = value.GetType().GetProperties().Where((nestedProp) => nestedProp.CanRead && nestedProp.GetIndexParameters().Length == 0);
                     var result = new Dictionary<string, (string, Exportable)> {};
                     foreach(var nestedProp in props) {
                         var propAttr = new Exportable(prefix: nestedExportable.Prefix, extraWeight: nestedExportable.ExtraWeight);
