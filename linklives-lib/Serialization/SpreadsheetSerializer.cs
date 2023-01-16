@@ -77,9 +77,9 @@ public static class SpreadsheetSerializer {
                     return new Dictionary<string,(string, Exportable)>[] {};
                 }
 
-                // Key-value string dictionary can be inlined
-                if(typeof(Dictionary<string, string>).IsAssignableFrom(value.GetType())) {
-                    var dict = (Dictionary<string, string>)value;
+                // Key-value string dictionary (or dictionary-like) can be inlined
+                if(typeof(IDictionary<string, string>).IsAssignableFrom(value.GetType())) {
+                    var dict = (IDictionary<string, string>)value;
                     var result = dict.SelectDict(keyValue => {
                         var (key, value) = keyValue;
                         var attr = new Exportable(prefix: nestedExportable.Prefix, extraWeight: nestedExportable.ExtraWeight);
@@ -158,7 +158,7 @@ public static class SpreadsheetSerializer {
         return BraidRows(result.ToArray());
     }
 
-    private static Dictionary<string, U> SelectDict<T, U>(this Dictionary<string, T> dict, Func<(string, T), (string, U)> map) {
+    private static Dictionary<string, U> SelectDict<T, U>(this IDictionary<string, T> dict, Func<(string, T), (string, U)> map) {
         var result = new Dictionary<string, U>();
         foreach(var (key, val) in dict) {
             var (newKey, newValue) = map((key, val));
