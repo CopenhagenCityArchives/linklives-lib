@@ -64,7 +64,7 @@ namespace Linklives.DAL
 
             return pas
                 .Select((pa) => BasePA.Create(
-                    sourcesBySourceId[pa.Source.Source_id],
+                    pa.Source != null && sourcesBySourceId.ContainsKey(pa.Source.Source_id) ? sourcesBySourceId[pa.Source.Source_id] : null,
                     pa.Standard,
                     transcribedPasByPaId[pa.Key]
                 ));
