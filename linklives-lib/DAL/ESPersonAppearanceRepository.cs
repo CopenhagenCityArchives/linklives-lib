@@ -35,21 +35,35 @@ namespace Linklives.DAL
             return pa;
         }
 
-        public IEnumerable<BasePA> GetByIds(List<string> Ids)
+        public IEnumerable<BasePA> GetByIds(List<string> ids)
         {
-            if (Ids.Count == 0)
+            if (ids.Count == 0)
             {
-                return null;
+                return new List<BasePA>();
             }
 
-            //TODO: This can be more effective (right now each pa requires 3 ES requests)
-            var pas = new List<BasePA>();
-            foreach (var id in Ids)
-            {
-                pas.Add(GetById(id));
+            var pas = client.MultiGet(m => m.GetMany<BasePA>(ids))
+                .GetMany<BasePA>(ids)
+                .Select((hit) => hit.Source)
+                .ToList();
+
+            var transcribedPasByPaId = transcribedRepository.GetByIds(ids)
+                .ToDictionary(t => t.Pa_id, t => t);
+
+            var sourceIds = new HashSet<int>();
+            foreach(var pa in pas) {
+                sourceIds.Add(pa.Source.Source_id);
             }
 
-            return pas;
+            var sourcesBySourceId = sourceRepository.GetByIds(sourceIds.ToList())
+                .ToDictionary(s => s.Source_id, s => s);
+
+            return pas
+                .Select((pa) => BasePA.Create(
+                    sourcesBySourceId[pa.Source.Source_id],
+                    pa.Standard,
+                    transcribedPasByPaId[pa.Pa_id]
+                ));
         }
     }
 }
