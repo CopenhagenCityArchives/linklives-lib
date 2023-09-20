@@ -52,6 +52,10 @@ namespace Linklives.DAL
 
             var sourceIds = new HashSet<int>();
             foreach(var pa in pas) {
+                if(pa.Source == null || pa.Source.Source_id == null) {
+                    System.Console.WriteLine($"Found pa without source id {pa} {pa.Key}");
+                    continue;
+                }
                 sourceIds.Add(pa.Source.Source_id);
             }
 
