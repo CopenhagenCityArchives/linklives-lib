@@ -52,7 +52,18 @@ namespace Linklives.DAL
 
         public IEnumerable<Source> GetByIds(IList<int> ids)
         {
-            return GetAll().Where(s => ids.Contains(s.Source_id));
+            var allSources = GetAll();
+            return ids
+                .Select((id) => {
+                    try {
+                        return allSources.First((s) => s.Source_id == id);
+                    }
+                    catch(KeyNotFoundException e) {
+                        System.Console.WriteLine($"Tried to find source that was not found for id {id}");
+                        return null;
+                    }
+                })
+                .Where((source) => source != null);
         }
     }
 }
