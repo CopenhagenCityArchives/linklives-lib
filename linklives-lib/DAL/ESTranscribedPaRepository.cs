@@ -22,7 +22,9 @@ namespace Linklives.DAL
         }
 
         public IEnumerable<TranscribedPA> GetByIds(List<string> ids) {
-            return client.MultiGet(m => m.GetMany<TranscribedPA>(ids))
+            return client.MultiGet((m) => {
+                return m.GetMany<TranscribedPA>(ids, (operation, id) => operation.Index("transcribed"));
+            })
                 .GetMany<TranscribedPA>(ids)
                 .Select((hit) => hit.Source);
         }
