@@ -42,13 +42,13 @@ namespace Linklives.DAL
                 return new List<BasePA>();
             }
 
+            System.Console.WriteLine($"Looking up PAs by ID: {ids}");
             var pas = client.MultiGet(m => m.Index("pas").GetMany<BasePA>(ids))
                 .GetMany<BasePA>(ids)
                 .Select((hit) => hit.Source)
                 .Where((pa) => {
-                    if(pa == null || pa.Source == null) {
-                        var sourceString = pa.Source == null ? "(no source)" : pa.Source.ToString();
-                        System.Console.WriteLine($"Found pa null or without source id {pa} {sourceString}");
+                    if(pa == null) {
+                        System.Console.WriteLine($"Found pa null");
                         return false;
                     }
                     return true;
@@ -60,7 +60,7 @@ namespace Linklives.DAL
 
             var sourceIds = new HashSet<int>();
             foreach(var pa in pas) {
-                sourceIds.Add(pa.Source.Source_id);
+                sourceIds.Add(pa.Source_id);
             }
 
             var sourcesBySourceId = sourceRepository.GetByIds(sourceIds.ToList())
@@ -68,14 +68,14 @@ namespace Linklives.DAL
 
             return pas
                 .Where((pa) => {
-                    if(!sourcesBySourceId.ContainsKey(pa.Source.Source_id)) {
-                        System.Console.WriteLine($"No source found for PA source with source_id {pa.Source.Source_id}");
+                    if(!sourcesBySourceId.ContainsKey(pa.Source_id)) {
+                        System.Console.WriteLine($"No source found for PA source with source_id {pa.Source_id}");
                         return false;
                     }
                     return true;
                 })
                 .Select((pa) => BasePA.Create(
-                    sourcesBySourceId[pa.Source.Source_id],
+                    sourcesBySourceId[pa.Source_id],
                     pa.Standard,
                     transcribedPasByPaId[pa.Key]
                 ));
