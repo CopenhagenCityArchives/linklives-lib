@@ -24,7 +24,8 @@ namespace Linklives.DAL
         public IEnumerable<TranscribedPA> GetByIds(List<string> ids) {
             return client.MultiGet(m => m.Index("transcribed").GetMany<TranscribedPA>(ids))
                 .GetMany<TranscribedPA>(ids)
-                .Select((hit) => hit.Source);
+                .Select((hit) => hit.Source)
+                .Where((hit) => hit != null);
         }
 
         public IList<TranscribedPA> GetBySource(int sourceId)
