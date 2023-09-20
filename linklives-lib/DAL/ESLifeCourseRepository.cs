@@ -25,7 +25,7 @@ namespace Linklives.DAL
         {
             if(keys.Count == 0) { return new List<LifeCourse>(); }
 
-            var result = client.MultiGet(m => m.GetMany<LifeCourse>(keys));
+            var result = client.MultiGet(m => m.Index("lifecourses").GetMany<LifeCourse>(keys));
             return result.GetMany<LifeCourse>(keys)
                 .Select((hit) => hit.Source);
         }
