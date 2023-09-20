@@ -46,7 +46,7 @@ namespace Linklives.DAL
                 .GetMany<BasePA>(ids)
                 .Select((hit) => hit.Source)
                 .Where((pa) => {
-                    if(pa == null || pa.Source == null || pa.Source.Source_id == null) {
+                    if(pa == null || pa.Source == null) {
                         var sourceString = pa.Source == null ? "(no source)" : pa.Source.ToString();
                         System.Console.WriteLine($"Found pa null or without source id {pa} {sourceString}");
                         return false;
