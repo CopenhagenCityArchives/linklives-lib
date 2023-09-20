@@ -25,16 +25,9 @@ namespace Linklives.DAL
         {
             if(keys.Count == 0) { return new List<LifeCourse>(); }
 
-            var searchResponse = client.Search<LifeCourse>(s => s
-            .Index("lifecourses")
-            .From(0)
-            .Size(100)
-            .Query(q => q
-                .Terms(t => t
-                    .Field("key")
-                    .Terms(keys))));
-
-            return searchResponse.Documents;
+            var result = client.MultiGet(m => m.GetMany<LifeCourse>(keys));
+            return result.GetMany<LifeCourse>(keys)
+                .Select((hit) => hit.Source);
         }
     }
 }
