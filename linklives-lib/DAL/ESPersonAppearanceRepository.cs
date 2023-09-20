@@ -42,9 +42,7 @@ namespace Linklives.DAL
                 return new List<BasePA>();
             }
 
-            var pas = client.MultiGet((m) => {
-                return m.GetMany<BasePA>(ids, (operation, id) => operation.Index("pas"));
-            })
+            var pas = client.MultiGet(m => m.GetMany<BasePA>(ids))
                 .GetMany<BasePA>(ids)
                 .Select((hit) => hit.Source)
                 .ToList();
