@@ -63,7 +63,7 @@ namespace Microsoft.EntityFrameworkCore
                 {
                     foreach (var navigation in entityNavigations)
                     {
-                        var inverseNavigation = navigation.FindInverse();
+                        var inverseNavigation = navigation.Inverse;
                         if (inverseNavigation != null)
                             includedNavigations.Add(inverseNavigation);
                     }
@@ -77,7 +77,7 @@ namespace Microsoft.EntityFrameworkCore
                 if (stack.Count == 0)
                     break;
 
-                entityType = stack.Peek().Current!.GetTargetType();
+                entityType = stack.Peek().Current!.TargetEntityType;
             }
         }
     }
