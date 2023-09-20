@@ -121,6 +121,7 @@ namespace Linklives.Domain
                 }
                 catch(Exception e)
                 {
+                    System.Console.WriteLine($"BurialPA with no valid occupation_display: {e}");
                     return "";
                 }
             }
@@ -155,6 +156,7 @@ namespace Linklives.Domain
                 }
                 catch(Exception e)
                 {
+                    System.Console.WriteLine($"BurialPA with no valid occupation_searchable: {e}");
                     return "";
                 }
             }

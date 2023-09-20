@@ -46,7 +46,7 @@ namespace Linklives.DAL
                link = context.Links.Where(l => l.Id == linkId).Include(l => l.LifeCourses).First();
             }
             catch(Exception e){
-                throw new InvalidOperationException($"No link with id {linkId} found.");
+                throw new InvalidOperationException($"No link with id {linkId} found: {e}");
             }
 
             return link.LifeCourses.First();
@@ -87,11 +87,11 @@ namespace Linklives.DAL
                 }
                 catch(DbUpdateException e)
                 {
-                    System.Console.WriteLine();
+                    System.Console.WriteLine($"Could not update db entry: {e}");
                 }
                 catch (Exception e)
                 {
-                    System.Console.WriteLine("Could not insert data");
+                    System.Console.WriteLine($"Could not insert data: {e}");
                 }
             }
         }

@@ -66,6 +66,7 @@ namespace Linklives.Domain
                 }
                 catch (Exception e)
                 {
+                    System.Console.WriteLine($"CensusPA with no valid occupation_display: {e}");
                     return null;
                 }
             }
@@ -85,6 +86,7 @@ namespace Linklives.Domain
                 }
                 catch (Exception e)
                 {
+                    System.Console.WriteLine($"CensusPA with no valid occupation_searchable: {e}");
                     return null;
                 }
             }

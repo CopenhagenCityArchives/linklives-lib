@@ -56,6 +56,7 @@ namespace Linklives.Domain
                 }
                 catch(Exception e)
                 {
+                    System.Console.WriteLine($"ParishPA with no valid sourceplace_display: {e}");
                     return null;
                 }
             }
