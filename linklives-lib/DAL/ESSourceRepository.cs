@@ -34,7 +34,7 @@ namespace Linklives.DAL
             if (!_cache.TryGetValue(_sourcesListCacheKey, out List<Source> sources))
             {
                 var searchResponse = _client.Search<Source>(s => s
-                    .Size(100)
+                    .Size(1000)
                     .Index("sources")
                     .Query(q => q.MatchAll()));
 
