@@ -66,7 +66,7 @@ namespace Linklives.DAL
                 .Select((pa) => BasePA.Create(
                     sourcesBySourceId[pa.Source.Source_id],
                     pa.Standard,
-                    transcribedPasByPaId[pa.Pa_id]
+                    transcribedPasByPaId[pa.Key]
                 ));
         }
     }
