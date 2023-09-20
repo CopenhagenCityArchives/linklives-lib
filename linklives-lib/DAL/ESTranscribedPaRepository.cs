@@ -21,6 +21,12 @@ namespace Linklives.DAL
             return searchResponse.Source;
         }
 
+        public IEnumerable<TranscribedPA> GetByIds(List<string> ids) {
+            return client.MultiGet(m => m.GetMany<TranscribedPA>(ids))
+                .GetMany<TranscribedPA>(ids)
+                .Select((hit) => hit.Source);
+        }
+
         public IList<TranscribedPA> GetBySource(int sourceId)
         {
             //TODO: It easily takes a couple of minutes to scroll through all results, can we improve on this?

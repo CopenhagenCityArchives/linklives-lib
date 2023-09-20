@@ -36,22 +36,18 @@ namespace Linklives.Domain
 
         private TranscriptionType GetTranscriptionType()
         {
-
-            if (Transcription.GetType() == typeof(Dictionary<string, object>))
+            var type = Transcription.GetType();
+            if (type == typeof(Dictionary<string, object>))
             {
                 return TranscriptionType.DICTIONARY;
             }
-            else if (Transcription.GetType() == typeof(ExpandoObject))
+            else if (type == typeof(ExpandoObject))
             {
                 return TranscriptionType.EXPANDO;
             }
-            else
-            {
-                return TranscriptionType.DYNAMIC;
-            }
-            
-            throw new Exception("Could not determine transcription type");
+            return TranscriptionType.DYNAMIC;
         }
+
         /// <summary>
         /// Returns a value for the given property of the Transcription property,
         /// or null if the property does not exists
@@ -70,7 +66,7 @@ namespace Linklives.Domain
                     return (string)val[propertyName];
 
                 case TranscriptionType.DYNAMIC:
-                    return (string)Transcription.GetType().GetProperty(propertyName).GetValue(Transcription) ?? null;
+                    return (string)Transcription.GetType()?.GetProperty(propertyName)?.GetValue(Transcription) ?? null;
 
                 default:
                     throw new Exception("Unknown TranscriptionType");
