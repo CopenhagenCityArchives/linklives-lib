@@ -48,7 +48,7 @@ namespace Linklives.DAL
                 .ToList();
 
             var transcribedPasByPaId = transcribedRepository.GetByIds(ids)
-                .ToDictionary(t => t.Pa_id, t => t);
+                .ToDictionary(t => t.Key, t => t);
 
             var sourceIds = new HashSet<int>();
             foreach(var pa in pas) {
