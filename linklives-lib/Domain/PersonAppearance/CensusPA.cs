@@ -78,7 +78,7 @@ namespace Linklives.Domain
                 try
                 {
                     var erhverv = Transcribed.GetTranscriptionPropertyValue("Erhverv");
-                    var stilling =  Transcribed.GetTranscriptionPropertyValue("Stilling_i_husstanden");
+                    var stilling = Transcribed.GetTranscriptionPropertyValue("Stilling_i_husstanden");
 
                     var str = erhverv == null && stilling == null ? null : (erhverv + " " + stilling).Trim();
                     if (string.IsNullOrEmpty(str)) return null;
