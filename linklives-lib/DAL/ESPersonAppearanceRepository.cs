@@ -45,6 +45,7 @@ namespace Linklives.DAL
             var pas = client.MultiGet(m => m.Index("pas").GetMany<BasePA>(ids))
                 .GetMany<BasePA>(ids)
                 .Select((hit) => hit.Source)
+                .Where((pa) => pa != null)
                 .ToList();
 
             var transcribedPasByPaId = transcribedRepository.GetByIds(ids)
